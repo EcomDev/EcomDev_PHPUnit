@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * PHP Unit test suite for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   EcomDev
+ * @package    EcomDev_PHPUnit
+ * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
+ */
+-->
+<config>
+    <modules>
+        <EcomDev_PHPUnit>
+            <version>0.1.0</version>
+        </EcomDev_PHPUnit>
+    </modules>
+    <global>
+        <models>
+            <ecomdev_phpunit>
+                <class>EcomDev_PHPUnit_Model</class>
+                <resourceModel>ecomdev_phpunit_mysql4</resourceModel>
+            </ecomdev_phpunit>
+            <ecomdev_phpunit_mysql4>
+                <class>EcomDev_PHPUnit_Model_Mysql4</class>
+            </ecomdev_phpunit_mysql4>
+        </models>
+    </global>
+    <phpunit>
+        <suite>
+            <!-- The names of directories inside Test for recognizion of tests per group -->
+            <groups>
+                <models>Model</models>
+                <helpers>Helper</helpers>
+                <blocks>Block</blocks>
+            </groups>
+            <!-- Application model class name for running tests -->
+            <app>EcomDev_PHPUnit_Model_App</app>
+            <modules>
+                <!-- Place your module name in your module config.xml 
+                     For adding it to test suite -->
+                <!-- Example: 
+                <Namespace_MyModule />
+                -->
+            </modules>
+        </suite>
+    </phpunit>
+</config>

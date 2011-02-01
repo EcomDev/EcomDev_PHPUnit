@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <global>
+        <resources>
+            <default_setup>
+                <connection>
+                    <dbname><![CDATA[magento_unit_tests]]></dbname>
+                </connection>
+            </default_setup>
+        </resources>
+    </global>
+</config>
