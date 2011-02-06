@@ -78,8 +78,28 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $this->_expectations = new Varien_Object($expectations);
         }
 
+        $arguments = func_get_args();
+        if ($arguments) {
+           if (count($arguments) > 1) {
+               $dataKey = call_user_func_array('sprintf', $arguments);
+           } else {
+               $dataKey = array_shift($arguments);
+           }
+
+           $dataPart = $this->_expectations->getData($dataKey);
+           if (!is_array($dataPart)) {
+               throw new InvalidArgumentException(
+                   'Argument values for specifying special scope of expectations should be presented '
+                   . ' in expectation file and should be an associative list'
+               );
+           }
+
+           return new Varien_Object($dataPart);
+        }
+
         return $this->_expectations;
     }
+
 
     /**
      * Retrieves fixture model singleton
