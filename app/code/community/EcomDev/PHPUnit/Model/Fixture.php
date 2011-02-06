@@ -63,8 +63,17 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
      * Associative array of configuration values that was changed by fixture,
      * it is used to preserve
      *
+     * @var array
      */
     protected $_originalConfiguration = array();
+
+    /**
+     * Associative array of configuration nodes xml that was changed by fixture,
+     * it is used to preserve
+     *
+     * @var array
+     */
+    protected $_originalConfigurationXml = array();
 
     /**
      * Model constuctor, just defines wich resource model to use
@@ -144,8 +153,79 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
             throw new InvalidArgumentException('Configuration part should be an associative list');
         }
         foreach ($configuration as $path => $value) {
-            $this->_originalConfiguration[$path] = Mage::getConfig()->getNode($path);
-            Mage::getConfig()->setNode($path, $value);
+            $this->_originalConfiguration[$path] = (string) Mage::getConfig()->getNode($path);
+            $this->_setConfigNodeValue($path, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Setting config value with applying the values to stores and websites
+     *
+     * @param string $path
+     * @param string $value
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _setConfigNodeValue($path, $value)
+    {
+        $pathArray = explode('/', $path);
+
+        $scope = array_shift($pathArray);
+
+        switch ($scope) {
+            case 'stores':
+                $storeCode = array_shift($pathArray);
+                Mage::app()->getStore($storeCode)->setConfig(
+                    implode('/', $pathArray), $value
+                );
+                break;
+
+            case 'websites':
+                $websiteCode = array_shift($pathArray);
+                Mage::app()->getWebsite($websiteCode)->setConfig(
+                    implode('/', $pathArray), $value
+                );
+                break;
+
+            default:
+                Mage::getConfig()->setNode($path, $value);
+                break;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Applies raw xml data to config node
+     *
+     * @param array $configuration
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _applyConfigXml($configuration)
+    {
+        if (!is_array($configuration)) {
+            throw new InvalidArgumentException('Configuration part should be an associative list');
+        }
+
+        foreach ($configuration as $path => $value) {
+            if (!is_string($value)) {
+                throw new InvalidArgumentException('Configuration value should be a valid xml string');
+            }
+            try {
+                $xmlElement = new Varien_Simplexml_Element($value);
+            } catch (Exception $e) {
+                throw new InvalidArgumentException('Configuration value should be a valid xml string', 0, $e);
+            }
+
+            $node = Mage::getConfig()->getNode($path);
+
+            if (!$node) {
+                throw new InvalidArgumentException('Configuration value should be a valid xml string');
+            }
+
+            $this->_originalConfigurationXml[$path] = $node->asNiceXml();
+            $node->extend($xmlElement, true);
         }
 
         return $this;
@@ -159,10 +239,28 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
     protected function _discardConfig()
     {
         foreach ($this->_originalConfiguration as $path => $value) {
-            Mage::getConfig()->setNode($path, $value);
+            $this->_setConfigNodeValue($path, $value);
         }
 
         $this->_originalConfiguration = array();
+        return $this;
+    }
+    /**
+     * Reverts fixture configuration xml values in Mage_Core_Model_Config
+     *
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _discardConfigXml()
+    {
+        foreach ($this->_originalConfigurationXml as $path => $value) {
+            $node = Mage::getConfig()->getNode($path);
+            $parentNode = $node->getParent();
+            unset($parentNode->{$node->getName()});
+            $oldXml = new Varien_Simplexml_Element($value);
+            $parentNode->appendChild($oldXml);
+        }
+
+        $this->_originalConfigurationXml = array();
         return $this;
     }
 
