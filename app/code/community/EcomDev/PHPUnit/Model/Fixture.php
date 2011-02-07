@@ -280,7 +280,9 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
 
         foreach ($tables as $tableEntity => $data) {
             $this->getResource()->cleanTable($tableEntity);
-            $this->getResource()->loadTableData($tableEntity, $data);
+            if (!empty($data)) {
+                $this->getResource()->loadTableData($tableEntity, $data);
+            }
         }
     }
 
