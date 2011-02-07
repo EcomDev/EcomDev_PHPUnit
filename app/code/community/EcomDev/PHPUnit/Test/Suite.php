@@ -111,7 +111,8 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
                     if (class_exists($className, true)) {
 
                         $reflectionClass = EcomDev_Utils_Reflection::getRelflection($className);
-                        if (!$reflectionClass->isSubclassOf('EcomDev_PHPUnit_Test_Case')) {
+                        if (!$reflectionClass->isSubclassOf('EcomDev_PHPUnit_Test_Case')
+                            || $reflectionClass->isAbstract()) {
                             continue;
                         }
 
