@@ -35,6 +35,14 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     protected $_expectations = null;
 
     /**
+     * Original store kept for tearDown,
+     * if was set in test method
+     *
+     * @var Mage_Core_Model_Store
+     */
+    protected $_originalStore = null;
+
+    /**
      * Loads expectations for current test case
      *
      * @throws RuntimeException if no expectation was found
@@ -78,8 +86,28 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $this->_expectations = new Varien_Object($expectations);
         }
 
+        $arguments = func_get_args();
+        if ($arguments) {
+           if (count($arguments) > 1) {
+               $dataKey = call_user_func_array('sprintf', $arguments);
+           } else {
+               $dataKey = array_shift($arguments);
+           }
+
+           $dataPart = $this->_expectations->getData($dataKey);
+           if (!is_array($dataPart)) {
+               throw new InvalidArgumentException(
+                   'Argument values for specifying special scope of expectations should be presented '
+                   . ' in expectation file and should be an associative list (dataKey: "' . $dataKey . '")'
+               );
+           }
+
+           return new Varien_Object($dataPart);
+        }
+
         return $this->_expectations;
     }
+
 
     /**
      * Retrieves fixture model singleton
@@ -148,7 +176,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
                 $this->_getFixture()->loadYaml($filePath);
             }
         }
-
+        // Pass methods for
+        $this->_getFixture()->setOptions($annotations['method']);
         $this->_getFixture()->apply();
         parent::setUp();
     }
@@ -173,12 +202,35 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Set current store scope for test
+     *
+     * @param int|string|Mage_Core_Model_Store $store
+     * @return EcomDev_PHPUnit_Test_Case
+     */
+    public function setCurrentStore($store)
+    {
+        if (!$this->_originalStore) {
+            $this->_originalStore = Mage::app()->getStore();
+        }
+
+        Mage::app()->setCurrentStore(
+            Mage::app()->getStore($store)
+        );
+        return $this;
+    }
+
+    /**
      * Performs a clean up after a particular test was run
      * (non-PHPdoc)
      * @see PHPUnit_Framework_TestCase::tearDown()
      */
     protected function tearDown()
     {
+        if ($this->_originalStore) { // Remove store scope, that was set in test
+            Mage::app()->setCurrentStore($this->_originalStore);
+            $this->_originalStore = null;
+        }
+
         $this->_expectations = null; // Clear expectation values
         $this->_getFixture()->discard(); // Clear applied fixture
         parent::tearDown();

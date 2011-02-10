@@ -57,6 +57,13 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     protected static $_oldEventCollection = null;
 
     /**
+     * List of singletons in original application
+     *
+     * @var array
+     */
+    protected static $_oldRegistry = null;
+
+    /**
      * Configuration model class name for unit tests
      *
      * @var string
@@ -78,6 +85,13 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     protected static $_cacheClass = 'EcomDev_PHPUnit_Model_Cache';
 
     /**
+     * Enabled events flag
+     *
+     * @var boolean
+     */
+    protected $_eventsEnabled = true;
+
+    /**
      * This method replaces application, event and config objects
      * in Mage to perform unit tests in separate Magento steam
      *
@@ -88,15 +102,14 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         self::$_oldApplication = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_app');
         self::$_oldConfig = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config');
         self::$_oldEventCollection = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events');
-
-        $resource = Mage::getSingleton('core/resource');
+        self::$_oldEventCollection = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry');
 
 
         // Setting environment variables for unit tests
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', new self::$_configClass);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', new self);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', new self::$_eventCollectionClass);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue($resource, '_connections', array());
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', array());
 
         // All unit tests will be runned in admin scope, to get rid of frontend restrictions
         Mage::app()->initTest();
@@ -113,7 +126,22 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         $this->_config->setOptions($options);
         $this->_initBaseConfig();
         $this->_initCache();
+
+        // Set using cache
+        // for things that shouldn't be reloaded each time
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+            $this->_cache,
+            '_allowedCacheOptions',
+            array(
+                'eav' => 1,
+                'layout' => 1,
+                'translate' => 1
+            )
+        );
+
+        // Clean cache before the whole suite is running
         $this->getCache()->clean();
+
         // Init modules runs install proccess for table structures,
         // It is required for setting up proper setup script
         $this->_initModules();
@@ -128,6 +156,18 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     }
 
     /**
+     * Overriden to fix issue with stores loading
+     * (non-PHPdoc)
+     * @see Mage_Core_Model_App::_initStores()
+     */
+    protected function _initStores()
+    {
+        $this->_store = null;
+        parent::_initStores();
+        return $this;
+    }
+
+    /**
      * Discard test scope for application, returns all the objects from live version
      *
      */
@@ -137,18 +177,44 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', self::$_oldApplication);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', self::$_oldConfig);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', self::$_oldEventCollection);
-        $resource = Mage::getSingleton('core/resource');
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue($resource, '_connections', array());
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', self::$_oldRegistry);
     }
 
-   /**
-    * We will not use cache for UnitTests
-    *
-    * @return boolean
-    */
-    public function useCache($type=null)
+    /**
+     * Disables events fire
+     *
+     * @return EcomDev_PHPUnit_Model_App
+     */
+    public function disableEvents()
     {
-        return false;
+        $this->_eventsEnabled = false;
+        return $this;
     }
 
+    /**
+     * Enable events fire
+     *
+     * @return EcomDev_PHPUnit_Model_App
+     */
+    public function enableEvents()
+    {
+        $this->_eventsEnabled = true;
+        return $this;
+    }
+
+    /**
+     * Overriden for disabling events
+     * fire during fixutre loading
+     *
+     * (non-PHPdoc)
+     * @see Mage_Core_Model_App::dispatchEvent()
+     */
+    public function dispatchEvent($eventName, $args)
+    {
+        if ($this->_eventsEnabled) {
+            parent::dispatchEvent($eventName, $args);
+        }
+
+        return $this;
+    }
 }
