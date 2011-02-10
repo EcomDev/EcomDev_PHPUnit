@@ -24,6 +24,77 @@
 class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
 {
     /**
+     * Scope snapshot without applied configurations,
+     * It is used for proper store/website/default loading on per store basis
+     *
+     * @var Mage_Core_Model_Config_Base
+     */
+    protected $_scopeSnapshot = null;
+
+	/**
+     * Load config data from DB
+     *
+     * @return Mage_Core_Model_Config
+     */
+    public function loadDb()
+    {
+        if ($this->_isLocalConfigLoaded
+            && Mage::isInstalled()
+            && $this->_scopeSnapshot === null) {
+            $this->saveScopeSnapshot();
+        }
+        parent::loadDb();
+        return $this;
+    }
+
+    /**
+     * Loads scope snapshot
+     *
+     * @return EcomDev_PHPUnit_Model_Config
+     */
+    public function loadScopeSnapshot()
+    {
+        if ($this->_scopeSnapshot === null) {
+            throw new RuntimeException('Cannot load scope snapshot, because it was not saved before');
+        }
+
+        $scopeNode = $this->_scopeSnapshot->getNode();
+        foreach ($scopeNode->children() as $nodeName => $values) {
+            // Remove somehow modified before xml node
+            unset($this->getNode()->$nodeName);
+            // Add saved snapshot of configuration node
+            $this->getNode()->addChild($nodeName);
+            $this->getNode()->$nodeName->extend($values);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Saves current configuration snapshot,
+     * for pussible restoring in feature
+     *
+     * @param array $nodesToSave list of nodes for saving data, by default it is 'default', 'webistes', 'stores'
+     * @return EcomDev_PHPUnit_Model_Config
+     */
+    public function saveScopeSnapshot($nodesToSave = array('default', 'websites', 'stores'))
+    {
+        $this->_scopeSnapshot = clone $this->_prototype;
+        $this->_scopeSnapshot->loadString('<config />');
+        $scopeNode = $this->_scopeSnapshot->getNode();
+
+        foreach ($nodesToSave as $node) {
+            $scopeNode->addChild($node);
+            $scopeNode->{$node}->extend(
+                $this->getNode($node),
+                true
+            );
+        }
+
+        return $this;
+    }
+
+    /**
      * Loads additional configuration for unit tests
      * (non-PHPdoc)
      * @see Mage_Core_Model_Config::loadBase()

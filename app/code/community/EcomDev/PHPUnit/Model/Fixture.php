@@ -28,6 +28,15 @@ require_once 'Spyc/spyc.php';
  */
 class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
 {
+    // Configuration path for eav loaders
+    const XML_PATH_FIXTURE_EAV_LOADERS = 'phpunit/suite/fixture/eav';
+
+    // Default eav loader class node in loaders configuration
+    const DEFAULT_EAV_LOADER_NODE = 'default';
+
+    // Default eav loader class alias
+    const DEFAULT_EAV_LOADER_CLASS = 'ecomdev_phpunit/fixture_eav_default';
+
     /**
      * Fixtures array, contains config,
      * table and eav keys.
@@ -59,13 +68,13 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
      */
     protected $_fixture = array();
 
+
     /**
-     * Associative array of configuration values that was changed by fixture,
-     * it is used to preserve
+     * Fixture options
      *
      * @var array
      */
-    protected $_originalConfiguration = array();
+    protected $_options = array();
 
     /**
      * Associative array of configuration nodes xml that was changed by fixture,
@@ -76,6 +85,14 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
     protected $_originalConfigurationXml = array();
 
     /**
+     * Hash of current scope instances (store, website, group)
+     *
+     * @return array
+     */
+    protected $_currentScope = array();
+
+
+    /**
      * Model constuctor, just defines wich resource model to use
      * (non-PHPdoc)
      * @see Varien_Object::_construct()
@@ -83,6 +100,18 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
     protected function _construct()
     {
         $this->_init('ecomdev_phpunit/fixture');
+    }
+
+    /**
+     * Set fixture options
+     *
+     * @param array $options
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    public function setOptions(array $options)
+    {
+        $this->_options = $options;
+        return $this;
     }
 
     /**
@@ -152,47 +181,12 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
         if (!is_array($configuration)) {
             throw new InvalidArgumentException('Configuration part should be an associative list');
         }
+        Mage::getConfig()->loadScopeSnapshot();
         foreach ($configuration as $path => $value) {
-            $this->_originalConfiguration[$path] = (string) Mage::getConfig()->getNode($path);
             $this->_setConfigNodeValue($path, $value);
         }
-
-        return $this;
-    }
-
-    /**
-     * Setting config value with applying the values to stores and websites
-     *
-     * @param string $path
-     * @param string $value
-     * @return EcomDev_PHPUnit_Model_Fixture
-     */
-    protected function _setConfigNodeValue($path, $value)
-    {
-        $pathArray = explode('/', $path);
-
-        $scope = array_shift($pathArray);
-
-        switch ($scope) {
-            case 'stores':
-                $storeCode = array_shift($pathArray);
-                Mage::app()->getStore($storeCode)->setConfig(
-                    implode('/', $pathArray), $value
-                );
-                break;
-
-            case 'websites':
-                $websiteCode = array_shift($pathArray);
-                Mage::app()->getWebsite($websiteCode)->setConfig(
-                    implode('/', $pathArray), $value
-                );
-                break;
-
-            default:
-                Mage::getConfig()->setNode($path, $value);
-                break;
-        }
-
+        Mage::getConfig()->loadDb();
+        Mage::app()->reinitStores();
         return $this;
     }
 
@@ -238,13 +232,12 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
      */
     protected function _discardConfig()
     {
-        foreach ($this->_originalConfiguration as $path => $value) {
-            $this->_setConfigNodeValue($path, $value);
-        }
-
-        $this->_originalConfiguration = array();
+        Mage::getConfig()->loadScopeSnapshot();
+        Mage::getConfig()->loadDb();
+        Mage::app()->reinitStores();
         return $this;
     }
+
     /**
      * Reverts fixture configuration xml values in Mage_Core_Model_Config
      *
@@ -306,10 +299,165 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @todo Create Implementation for EAV models
+     * Setting config value with applying the values to stores and websites
+     *
+     * @param string $path
+     * @param string $value
+     * @return EcomDev_PHPUnit_Model_Fixture
      */
+    protected function _setConfigNodeValue($path, $value)
+    {
+        $pathArray = explode('/', $path);
+
+        $scope = array_shift($pathArray);
+
+        switch ($scope) {
+            case 'stores':
+                $storeCode = array_shift($pathArray);
+                Mage::app()->getStore($storeCode)->setConfig(
+                    implode('/', $pathArray), $value
+                );
+                break;
+
+            case 'websites':
+                $websiteCode = array_shift($pathArray);
+                $website = Mage::app()->getWebsite($websiteCode);
+                $website->setConfig(implode('/', $pathArray), $value);
+                break;
+
+            default:
+                Mage::getConfig()->setNode($path, $value);
+                break;
+        }
+
+        return $this;
+    }
 
     /**
-     * @todo Create Implementation for Websites/Stores/Groups
+     * Retrieves eav loader for a particular entity type
+     *
+     * @param string $entityType
+     * @return EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
      */
+    protected function _getEavLoader($entityType)
+    {
+        $loaders = Mage::getConfig()->getNode(self::XML_PATH_FIXTURE_EAV_LOADERS);
+
+        if (isset($loaders->$entityType)) {
+            $classAlias = (string)$loaders->$entityType;
+        } elseif (isset($loaders->{self::DEFAULT_EAV_LOADER_NODE})) {
+            $classAlias = (string)$loaders->{self::DEFAULT_EAV_LOADER_NODE};
+        } else {
+            $classAlias = self::DEFAULT_EAV_LOADER_CLASS;
+        }
+
+        return Mage::getResourceSingleton($classAlias);
+    }
+
+    /**
+     * Applies fixture EAV values
+     *
+     * @param array $configuration
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _applyEav($entities)
+    {
+        if (!is_array($entities)) {
+            throw new InvalidArgumentException('EAV part should be an associative list with rows as value and entity type as key');
+        }
+
+        foreach ($entities as $entityType => $values) {
+            $this->_getEavLoader($entityType)
+                ->setOptions($this->_options)
+                ->loadEntity($entityType, $values);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clean applied eav data
+     *
+     * @param array $entities
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _discardEav($entities)
+    {
+        foreach (array_keys($entities) as $entityType) {
+            $this->_getEavLoader($entityType)
+                ->cleanEntity($entityType);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Applies scope fixture,
+     * i.e., website, store, store group
+     *
+     * @param array $types
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _applyScope($types)
+    {
+        $modelByType = array(
+            'store' => 'core/store',
+            'group' => 'core/store_group',
+            'website' => 'core/website'
+        );
+
+        Mage::app()->disableEvents();
+
+        foreach ($types as $type => $rows) {
+            if (!isset($modelByType[$type])) {
+                throw new RuntimeException(sprintf('Unknown "%s" scope type specified', $type));
+            }
+
+            foreach ($rows as $row) {
+                $scopeModel = Mage::getModel($modelByType[$type]);
+                $this->_currentScope[$type][] = $scopeModel;
+                $scopeModel->setData($row);
+                // Change property for saving new objects with specified ids
+                EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+                    $scopeModel->getResource(), '_useIsObjectNew', true
+                );
+                $scopeModel->isObjectNew(true);
+                $scopeModel->save();
+                // Revert changed property
+                EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+                    $scopeModel->getResource(), '_useIsObjectNew', false
+                );
+
+            }
+        }
+        Mage::app()->enableEvents();
+        Mage::app()->reinitStores();
+        return $this;
+    }
+
+    /**
+     * Removes scope fixture changes,
+     * i.e., website, store, store group
+     *
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _discardScope()
+    {
+        Mage::app()->disableEvents();
+        $scope = array_reverse($this->_currentScope);
+        foreach ($scope as $models) {
+            foreach ($models as $model) {
+                $model->delete();
+            }
+        }
+
+        $this->_currentScope = array();
+        Mage::app()->getCache()->clean(
+            Zend_Cache::CLEANING_MODE_MATCHING_TAG,
+            array(Mage_Core_Model_Mysql4_Collection_Abstract::CACHE_TAG)
+        );
+        Mage::app()->enableEvents();
+        Mage::app()->reinitStores();
+        return $this;
+    }
 }

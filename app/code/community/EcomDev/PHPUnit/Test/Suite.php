@@ -29,6 +29,8 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
     const XML_PATH_UNIT_TEST_GROUPS = 'phpunit/suite/groups';
     const XML_PATH_UNIT_TEST_MODULES = 'phpunit/suite/modules';
     const XML_PATH_UNIT_TEST_APP = 'phpunit/suite/app';
+    const CACHE_TAG = 'ECOMDEV_PHPUNIT';
+    const CACHE_TYPE = 'ecomdev_phpunit';
 
     /**
      * Setting up test scope for Magento
@@ -86,40 +88,17 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
                     continue;
                 }
 
-                $directoryIterator = new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($searchPath)
-                );
-
                 $currentGroups = array(
                     $group->getName(),
                     $module->getName()
                 );
 
-                foreach ($directoryIterator as $fileObject) {
-                    /* @var $fileObject SplFileObject */
-                    // Skip entry if it is not a php file
-                    if (!$fileObject->isFile() || $fileObject->getBasename('.php') === $fileObject->getBasename()) {
-                        continue;
-                    }
+                $testCases = self::_loadTestCases($searchPath, $moduleCodeDir);
 
-
-                    $classPath = substr($fileObject->getPath() . DS . $fileObject->getBasename('.php'), strlen($moduleCodeDir));
-                    $className = uc_words(ltrim($classPath, DS), '_', DS);
-
-                    // Add unit test case only
-                    // if it is a valid class extended from EcomDev_PHPUnit_Test_Case
-                    if (class_exists($className, true)) {
-
-                        $reflectionClass = EcomDev_Utils_Reflection::getRelflection($className);
-                        if (!$reflectionClass->isSubclassOf('EcomDev_PHPUnit_Test_Case')
-                            || $reflectionClass->isAbstract()) {
-                            continue;
-                        }
-
-                        $suite->addTest(new PHPUnit_Framework_TestSuite($reflectionClass), $currentGroups);
-                    }
+                foreach ($testCases as $className) {
+                    $classReflection = EcomDev_Utils_Reflection::getRelflection($className);
+                    $suite->addTest(new PHPUnit_Framework_TestSuite($classReflection), $currentGroups);
                 }
-
             }
         }
 
@@ -128,5 +107,63 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
         }
 
         return $suite;
+    }
+
+    /**
+     * Loads test cases from search path,
+     * Will return cached result
+     *
+     * @param string $searchPath path for searching files with tests
+     * @param string $moduleCodeDir path where the module files are placed (e.g. app/code/local),
+     *                              used for determining the class name
+     */
+    protected static function _loadTestCases($searchPath, $moduleCodeDir)
+    {
+        if (Mage::app()->useCache(self::CACHE_TYPE)) {
+            $cachedTestCases = Mage::app()->loadCache(
+                self::CACHE_TYPE . md5($searchPath)
+            );
+            if ($cachedTestCases) {
+                return unserialize($cachedTestCases);
+            }
+        }
+
+        $testCases = array();
+
+        $directoryIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($searchPath)
+        );
+
+        foreach ($directoryIterator as $fileObject) {
+            /* @var $fileObject SplFileObject */
+            // Skip entry if it is not a php file
+            if (!$fileObject->isFile() || $fileObject->getBasename('.php') === $fileObject->getBasename()) {
+                continue;
+            }
+
+            $classPath = substr($fileObject->getPath() . DS . $fileObject->getBasename('.php'), strlen($moduleCodeDir));
+            $className = uc_words(ltrim($classPath, DS), '_', DS);
+
+            // Add unit test case only
+            // if it is a valid class extended from EcomDev_PHPUnit_Test_Case
+            if (class_exists($className, true)) {
+                $reflectionClass = EcomDev_Utils_Reflection::getRelflection($className);
+                if (!$reflectionClass->isSubclassOf('EcomDev_PHPUnit_Test_Case')
+                    || $reflectionClass->isAbstract()) {
+                    continue;
+                }
+                $testCases[] = $className;
+            }
+        }
+
+        if (Mage::app()->useCache(self::CACHE_TYPE)) {
+            Mage::app()->saveCache(
+                serialize($testCases),
+                self::CACHE_TYPE . md5($searchPath),
+                array(self::CACHE_TAG)
+            );
+        }
+
+        return $testCases;
     }
 }

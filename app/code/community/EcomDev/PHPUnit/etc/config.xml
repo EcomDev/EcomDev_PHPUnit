@@ -33,6 +33,15 @@
                 <class>EcomDev_PHPUnit_Model_Mysql4</class>
             </ecomdev_phpunit_mysql4>
         </models>
+        <cache>
+            <types>
+                <ecomdev_phpunit>
+                    <label>Unit Test Cases</label>
+                    <description>Unit test case file paths cache.</description>
+                    <tags>ECOMDEV_PHPUNIT</tags>
+                </ecomdev_phpunit>
+            </types>
+        </cache>
     </global>
     <phpunit>
         <suite>
@@ -42,6 +51,16 @@
                 <helpers>Helper</helpers>
                 <blocks>Block</blocks>
             </groups>
+            <fixture>
+                <eav>
+                    <!-- Here goes the list of fixture loaders for EAV
+                         If no fixture loader is specified for entity, then default will be used 
+                    -->
+                    <default>ecomdev_phpunit/fixture_eav_default</default>
+                    <catalog_product>ecomdev_phpunit/fixture_eav_catalog_product</catalog_product>
+                    <catalog_category>ecomdev_phpunit/fixture_eav_catalog_category</catalog_category>
+                </eav>
+            </fixture>
             <!-- Application model class name for running tests -->
             <app>EcomDev_PHPUnit_Model_App</app>
             <modules>
