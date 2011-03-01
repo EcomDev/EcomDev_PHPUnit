@@ -267,31 +267,6 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
 
 
     /**
-     * Prepares entity table record from array
-     *
-     * @param array $row
-     * @param array $tableColumns list of entity_table columns
-     * @return array
-     */
-    protected function _getTableRecord($row, $tableColumns)
-    {
-        $record = array();
-
-        // Fullfil table records with data
-        foreach ($tableColumns as $columnName => $definition) {
-            if (isset($row[$columnName])) {
-                $record[$columnName] = $row[$columnName];
-            } elseif ($definition['DEFAULT'] !== null) {
-                $record[$columnName] = $definition['DEFAULT'];
-            } else {
-                $record[$columnName] = (($definition['NULLABLE']) ? null : '');
-            }
-        }
-
-        return $record;
-    }
-
-    /**
      * Retrieves attribute records for single entity
      *
      * @param array $row

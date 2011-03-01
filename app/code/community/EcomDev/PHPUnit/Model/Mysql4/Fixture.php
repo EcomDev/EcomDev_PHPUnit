@@ -50,11 +50,71 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
      */
     public function loadTableData($tableEntity, $tableData)
     {
+        $tableColumns = $this->_getWriteAdapter()
+            ->describeTable($this->getTable($tableEntity));
+
+        $records = array();
+        foreach ($tableData as $row) {
+            $records[] = $this->_getTableRecord($row, $tableColumns);
+        }
+
         $this->_getWriteAdapter()->insertMultiple(
             $this->getTable($tableEntity),
-            $tableData
+            $records
         );
 
         return $this;
+    }
+
+	/**
+     * Prepares entity table record from array
+     *
+     * @param array $row
+     * @param array $tableColumns list of entity_table columns
+     * @return array
+     */
+    protected function _getTableRecord($row, $tableColumns)
+    {
+        $record = array();
+
+        // Fullfil table records with data
+        foreach ($tableColumns as $columnName => $definition) {
+            if (isset($row[$columnName])) {
+                $record[$columnName] = $this->_getTableRecordValue($row[$columnName]);
+            } elseif ($definition['DEFAULT'] !== null) {
+                $record[$columnName] = $definition['DEFAULT'];
+            } else {
+                $record[$columnName] = (($definition['NULLABLE']) ? null : '');
+            }
+        }
+
+        return $record;
+    }
+
+    /**
+     * Processes table record values,
+     * used for transforming custom values like serialized
+     * or JSON data
+     *
+     *
+     * @param mixed $value
+     * @return string
+     */
+    protected function _getTableRecordValue($value)
+    {
+        // If it is scalar php type, then just return itself
+        if (!is_array($value)) {
+            return $value;
+        }
+
+        if (isset($value['json'])) {
+            return Mage::helper('core')->jsonEncode($value['json']);
+        }
+
+        if (isset($value['serialized'])) {
+            return serialize($value['serialized']);
+        }
+
+        throw new InvalidArgumentException('Unrecognized type for DB column');
     }
 }
