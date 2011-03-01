@@ -67,7 +67,7 @@ class EcomDev_Utils_Reflection
         $reflectionMethod->setAccessible(true);
 
         if (!empty($args)) {
-            return $reflectionMethod->invokeArgs($reflectionObject, $args);
+            return $reflectionMethod->invokeArgs((is_string($object) ? null : $object), $args);
         }
 
         return $reflectionMethod->invoke((is_string($object) ? null : $object));
@@ -96,7 +96,7 @@ class EcomDev_Utils_Reflection
             if (isset(self::$_reflectionCache[$objectHash])) {
                 return self::$_reflectionCache[$objectHash];
             }
-            $reflection = new ReflectionClass($object);
+            $reflection = new ReflectionObject($object);
             self::$_reflectionCache[$objectHash] = $reflection;
             return $reflection;
         }

@@ -16,6 +16,7 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
+
 /**
  * Test suite for Magento
  *
@@ -29,6 +30,7 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
     const XML_PATH_UNIT_TEST_GROUPS = 'phpunit/suite/groups';
     const XML_PATH_UNIT_TEST_MODULES = 'phpunit/suite/modules';
     const XML_PATH_UNIT_TEST_APP = 'phpunit/suite/app';
+    const XML_PATH_UNIT_TEST_SUITE = 'phpunit/suite/test_suite';
     const CACHE_TAG = 'ECOMDEV_PHPUNIT';
     const CACHE_TYPE = 'ecomdev_phpunit';
 
@@ -71,7 +73,14 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
     {
         $groups = Mage::getConfig()->getNode(self::XML_PATH_UNIT_TEST_GROUPS);
         $modules = Mage::getConfig()->getNode(self::XML_PATH_UNIT_TEST_MODULES);
+        $testSuiteClass = EcomDev_Utils_Reflection::getRelflection((string) Mage::getConfig()->getNode(self::XML_PATH_UNIT_TEST_SUITE));
+
+        if (!$testSuiteClass->isSubclassOf('EcomDev_PHPUnit_Test_Suite_Group')) {
+            new RuntimeException('Test Suite class should be extended from EcomDev_PHPUnit_Test_Suite_Group');
+        }
+
         $suite = new self('Magento Test Suite');
+
         // Walk through different groups in modules for finding test cases
         foreach ($groups->children() as $group) {
             foreach ($modules->children() as $module) {
@@ -96,8 +105,7 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
                 $testCases = self::_loadTestCases($searchPath, $moduleCodeDir);
 
                 foreach ($testCases as $className) {
-                    $classReflection = EcomDev_Utils_Reflection::getRelflection($className);
-                    $suite->addTest(new PHPUnit_Framework_TestSuite($classReflection), $currentGroups);
+                    $suite->addTest($testSuiteClass->newInstance($className, $currentGroups));
                 }
             }
         }
