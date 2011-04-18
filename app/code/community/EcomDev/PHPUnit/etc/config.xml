@@ -51,6 +51,8 @@
                 <helpers>Helper</helpers>
                 <blocks>Block</blocks>
             </groups>
+            <!-- Test suite that will be used for creation of each of the tests -->
+            <test_suite>EcomDev_PHPUnit_Test_Suite_Group</test_suite>
             <layout>
                 <model>ecomdev_phpunit/layout</model>
             </layout>
