@@ -193,7 +193,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public function getGroupedClassMockBuilder($type, $classAlias)
     {
-        $className = Mage::getConfig()->getGroupedClassName($type, $classAlias);
+        $className = $this->getGroupedClassName($type, $classAlias);
 
         return $this->getMockBuilder($className);
     }
@@ -218,6 +218,17 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     public function getModelMockBuilder($classAlias)
     {
         return $this->getGroupedClassMockBuilder('model', $classAlias);
+    }
+
+    /**
+     * Retrieves a mock builder for a resource model class alias
+     *
+     * @param string $classAlias
+     * @return PHPUnit_Framework_MockObject_MockBuilder
+     */
+    public function getResourceModelMockBuilder($classAlias)
+    {
+        return $this->getGroupedClassMockBuilder('resource_model', $classAlias);
     }
 
     /**
@@ -250,6 +261,30 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
                                  $callOriginalClone = true, $callAutoload = true)
     {
         return $this->getGroupedClassMock('model', $methods, $isAbstract,
+                                   $constructorArguments, $mockClassAlias,
+                                   $callOriginalConstructor, $callOriginalClone,
+                                   $callAutoload);
+    }
+
+	/**
+     * Retrieves a mock object for the specified resource model class alias.
+     *
+     * @param  string  $classAlias
+     * @param  array   $methods
+     * @param  boolean $isAbstract
+     * @param  array   $constructorArguments
+     * @param  string  $mockClassAlias
+     * @param  boolean $callOriginalConstructor
+     * @param  boolean $callOriginalClone
+     * @param  boolean $callAutoload
+     * @return PHPUnit_Framework_MockObject_MockObject
+     */
+    public function getResourceModelMock($classAlias, $methods = array(), $isAbstract = false,
+                                 array $constructorArguments = array(),
+                                 $mockClassAlias = '',  $callOriginalConstructor = true,
+                                 $callOriginalClone = true, $callAutoload = true)
+    {
+        return $this->getGroupedClassMock('resource_model', $methods, $isAbstract,
                                    $constructorArguments, $mockClassAlias,
                                    $callOriginalConstructor, $callOriginalClone,
                                    $callAutoload);
@@ -338,7 +373,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
                                         $callOriginalClone = true, $callAutoload = true)
     {
         if (!empty($mockClassAlias)) {
-
+            $mockClassName = $this->getGroupedClassName($type, $mockClassAlias);
         } else {
             $mockClassName = '';
         }
