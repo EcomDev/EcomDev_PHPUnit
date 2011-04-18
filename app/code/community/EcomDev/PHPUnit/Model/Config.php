@@ -31,6 +31,13 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
      */
     protected $_scopeSnapshot = null;
 
+    /**
+     * List of replaced instance creation
+     *
+     * @return array
+     */
+    protected $_replaceInstanceCreation = array();
+
 	/**
      * Load config data from DB
      *
@@ -45,6 +52,62 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
         }
         parent::loadDb();
         return $this;
+    }
+
+    /**
+     * Replaces creation of some instance by mock object
+     *
+     *
+     * @param string $type
+     * @param string $classAlias
+     * @param PHPUnit_Framework_MockObject_MockObject|PHPUnit_Framework_MockObject_MockBuilder $mock
+     * @return EcomDev_PHPUnit_Model_Config
+     */
+    public function replaceInstanceCreation($type, $classAlias, $mock)
+    {
+        $this->_replaceInstanceCreation[$type][$classAlias] = $mock;
+        return $this;
+    }
+
+    /**
+     * Flushes instance creation instruction list
+     *
+     * @return EcomDev_PHPUnit_Model_Config
+     */
+    public function flushReplaceInstanceCreation()
+    {
+        $this->_replaceInstanceCreation = array();
+        return $this;
+    }
+
+    /**
+     * Overriden for test case model instance creation mocking
+     *
+     * (non-PHPdoc)
+     * @see Mage_Core_Model_Config::getModelInstance()
+     */
+    public function getModelInstance($modelClass='', $constructArguments=array())
+    {
+        if (!isset($this->_replaceInstanceCreation['model'][$modelClass])) {
+            return parent::getModelInstance($modelClass='', $constructArguments=array());
+        }
+
+        return $this->_replaceInstanceCreation['model'][$modelClass];
+    }
+
+    /**
+     * Overriden for test case model instance creation mocking
+     *
+     * (non-PHPdoc)
+     * @see Mage_Core_Model_Config::getModelInstance()
+     */
+    public function getResourceModelInstance($modelClass='', $constructArguments=array())
+    {
+        if (!isset($this->_replaceInstanceCreation['resource_model'][$modelClass])) {
+            return parent::getResourceModelInstance($modelClass='', $constructArguments=array());
+        }
+
+        return $this->_replaceInstanceCreation['resource_model'][$modelClass];
     }
 
     /**

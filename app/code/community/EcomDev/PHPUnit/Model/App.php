@@ -32,6 +32,9 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     // Admin store code
     const ADMIN_STORE_CODE = 'admin';
 
+    const REGISTRY_PATH_LAYOUT_SINGLETON = '_singleton/core/layout';
+    const XML_PATH_LAYOUT_MODEL_FOR_TEST = 'phpunit/suite/layout/model';
+
     /**
      * Old configuration model to be returned back
      * after unit tests are finished
@@ -122,8 +125,15 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
      */
     public function initTest()
     {
+        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
+            // If garbage collector is not enabled,
+            // we enable it for tests
+            if (!gc_enabled()) {
+                gc_enable();
+            }
+        }
+
         $this->_config = Mage::getConfig();
-        $this->_config->setOptions($options);
         $this->_initBaseConfig();
         $this->_initCache();
 
@@ -151,6 +161,12 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
             $this->_initRequest();
             Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
         }
+
+        $layoutModel = Mage::getModel(
+            $this->getConfig()->getNode(self::XML_PATH_LAYOUT_MODEL_FOR_TEST)
+        );
+
+        Mage::register(self::REGISTRY_PATH_LAYOUT_SINGLETON, $layoutModel, true);
 
         return $this;
     }

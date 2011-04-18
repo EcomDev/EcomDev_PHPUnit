@@ -26,7 +26,9 @@ require_once 'Spyc/spyc.php';
  * Created for operations with different fixture types
  *
  */
-class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
+class EcomDev_PHPUnit_Model_Fixture
+    extends Mage_Core_Model_Abstract
+    implements EcomDev_PHPUnit_Model_Fixture_Interface
 {
     // Configuration path for eav loaders
     const XML_PATH_FIXTURE_EAV_LOADERS = 'phpunit/suite/fixture/eav';
@@ -111,6 +113,36 @@ class EcomDev_PHPUnit_Model_Fixture extends Mage_Core_Model_Abstract
     public function setOptions(array $options)
     {
         $this->_options = $options;
+        return $this;
+    }
+
+    /**
+     * Loads fixture from test case annotations
+     *
+     * @param EcomDev_PHPUnit_Test_Case $testCase
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    public function loadByTestCase(EcomDev_PHPUnit_Test_Case $testCase)
+    {
+        $fixtures = $testCase->getAnnotationByName(
+            'loadFixture',
+            array('class', 'method')
+        );
+
+        foreach ($fixtures as $fixture) {
+            if (empty($fixture)) {
+                $fixture = null;
+            }
+
+            $filePath = $testCase->getYamlFilePath('fixtures', $fixture);
+
+            if (!$filePath) {
+                throw new RuntimeException('Unable to load fixture for test');
+            }
+
+            $this->loadYaml($filePath);
+        }
+
         return $this;
     }
 

@@ -51,9 +51,16 @@
                 <helpers>Helper</helpers>
                 <blocks>Block</blocks>
             </groups>
-            <!-- Test suite that will be used for creation of each of the tests -->
-            <test_suite>EcomDev_PHPUnit_Test_Suite_Group</test_suite>
+            <layout>
+                <model>ecomdev_phpunit/layout</model>
+            </layout>
+            <expectation>
+                <!-- Default model for loading of expectations -->
+                <model>ecomdev_phpunit/expectation</model>
+            </expectation>
             <fixture>
+                <!-- Default model for loading of fixtures -->
+                <model>ecomdev_phpunit/fixture</model>
                 <eav>
                     <!-- Here goes the list of fixture loaders for EAV
                          If no fixture loader is specified for entity, then default will be used 
