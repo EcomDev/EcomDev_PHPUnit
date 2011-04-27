@@ -29,7 +29,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
 {
 
     const XML_PATH_DEFAULT_FIXTURE_MODEL = 'phpunit/suite/fixture/model';
-    const XML_PATH_DEFAULT_EXPECTATION_MODEL = 'phpunit/suite/expectatio/model';
+    const XML_PATH_DEFAULT_EXPECTATION_MODEL = 'phpunit/suite/expectation/model';
 
 
     /**
@@ -54,6 +54,37 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @var Mage_Core_Model_Store
      */
     protected $_originalStore = null;
+
+
+    /**
+     * Retrieves the module name for current test case
+     *
+     * @return string
+     * @throws RuntimeException if module name was not found for the passed class name
+     */
+    public function getModuleName()
+    {
+        return Mage::app()->getModuleNameByClassName($this);
+    }
+
+    /**
+     * Retrieves module name from call stack objects
+     *
+     * @return string
+     * @throws RuntimeException if assertion is called in not from EcomDev_PHPUnit_Test_Case
+     */
+    protected static function getModuleNameFromCallStack()
+    {
+        $backTrace = debug_backtrace(true);
+        foreach ($backTrace as $call) {
+            if (isset($call['object']) && $call['object'] instanceof EcomDev_PHPUnit_Test_Case) {
+                return $call['object']->getModuleName();
+            }
+        }
+
+        throw new RuntimeException('Unable to retrieve module name from call stack, because assertion is not called from EcomDev_PHPUnit_Test_Case based class method');
+    }
+
 
     /**
      * Retrieves annotation by its name from different sources (class, method)
@@ -393,7 +424,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         }
 
         $mockBuilder->setMethods($methods);
-        $mockBuilder->setConstructorArgs($arguments);
+        $mockBuilder->setConstructorArgs($constructorArguments);
         $mockBuilder->setMockClassName($mockClassName);
 
         if ($isAbstract) {
@@ -591,5 +622,6 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         $this->getFixture()->discard(); // Clear applied fixture
         parent::tearDown();
     }
+
 
 }

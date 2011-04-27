@@ -95,6 +95,13 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     protected $_eventsEnabled = true;
 
     /**
+     * List of module names stored by class name
+     *
+     * @var array
+     */
+    protected $_moduleNameByClassName = array();
+
+    /**
      * This method replaces application, event and config objects
      * in Mage to perform unit tests in separate Magento steam
      *
@@ -105,7 +112,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         self::$_oldApplication = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_app');
         self::$_oldConfig = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config');
         self::$_oldEventCollection = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events');
-        self::$_oldEventCollection = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry');
+        self::$_oldRegistry = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry');
 
 
         // Setting environment variables for unit tests
@@ -194,6 +201,54 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', self::$_oldConfig);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', self::$_oldEventCollection);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', self::$_oldRegistry);
+    }
+
+    /**
+     * Returns module name for a particular object
+     *
+     * @param string|object $className
+     * @throws RuntimeException if module name was not found for the passed class name
+     * @return string
+     */
+    public function getModuleNameByClassName($className)
+    {
+        if (is_object($className)) {
+            $className = get_class($className);
+        }
+
+        if (!isset($this->_moduleNameByClassName[$className])) {
+            // Try to find the module name by class name
+            $moduleName = false;
+            foreach ($this->getConfig()->getNode('modules')->children() as $module) {
+                if (strpos($className, $module->getName()) === 0) {
+                   $moduleName = $module->getName();
+                   break;
+                }
+            }
+
+            if (!$moduleName) {
+                throw new RuntimeException('Cannot to find the module name for class name: ' . $className);
+            }
+
+            $this->setModuleNameForClassName($className, $moduleName);
+        }
+
+        return $this->_moduleNameByClassName[$className];
+    }
+
+    /**
+     * Set associated module name for a class name,
+     * Usually used for making possible dependency injection in the test cases
+     *
+     *
+     * @param string $className
+     * @param string $moduleName
+     * @return EcomDev_PHPUnit_Model_App
+     */
+    public function setModuleNameForClassName($className, $moduleName)
+    {
+        $this->_moduleNameByClassName[$className] = $moduleName;
+        return $this;
     }
 
     /**
