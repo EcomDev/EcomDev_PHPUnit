@@ -32,6 +32,9 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     // Admin store code
     const ADMIN_STORE_CODE = 'admin';
 
+    const AREA_ADMINHTML = 'adminhtml';
+    const AREA_FRONTEND = 'frontend';
+
     const REGISTRY_PATH_LAYOUT_SINGLETON = '_singleton/core/layout';
     const XML_PATH_LAYOUT_MODEL_FOR_TEST = 'phpunit/suite/layout/model';
 

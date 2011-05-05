@@ -111,6 +111,26 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     }
 
     /**
+     * Retrieves real resource model class alias
+     *
+     * @param string $classAlias
+     * @return string
+     */
+    public function getRealResourceModelClassAlias($classAlias)
+    {
+        list($classAliasPrefix,) = explode('/', $classAlias, 2);
+
+        if (isset($this->_xml->global->models->$classAliasPrefix->resourceModel)) {
+            $realClassAliasPrefix = $this->_xml->global->models->$classAliasPrefix->resourceModel;
+            $classAlias = $realClassAliasPrefix . substr(
+                $classAlias, strlen($classAliasPrefix)
+            );
+        }
+
+        return $classAlias;
+    }
+
+    /**
      * Loads scope snapshot
      *
      * @return EcomDev_PHPUnit_Model_Config

@@ -63,6 +63,60 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     }
 
     /**
+     * A new constraint for checking module node
+     *
+     * @param string $moduleName
+     * @param string $type
+     * @param string|null $expectedValue
+     */
+    public static function configClassAlias($group, $classAlias, $expectedClassName,
+        $type = EcomDev_PHPUnit_Constraint_Config_ClassAlias::TYPE_CLASS_ALIAS)
+    {
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_ClassAlias($group, $classAlias, $expectedClassName, $type)
+        );
+    }
+
+    /**
+     * Creates layout constraint
+     *
+     * @param string $area
+     * @param string $expectedFile
+     * @param string $type
+     * @param string|null $layoutUpdate
+     * @param string|null $theme
+     * @param string|null $designPackage
+     */
+    public static function configLayout($area, $expectedFile, $type, $layoutUpdate = null, $theme = null, $designPackage = null)
+    {
+        if (!EcomDev_PHPUnit_Constraint_Config_Layout::getDesignPackageModel()) {
+            EcomDev_PHPUnit_Constraint_Config_Layout::setDesignPackageModel(Mage::getModel('ecomdev_phpunit/design_package'));
+        }
+
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_Layout($area, $expectedFile, $type, $layoutUpdate, $theme, $designPackage)
+        );
+    }
+
+    /**
+     * Constraint for testing observer
+     * event definitions in configuration
+     *
+     * @param string $area
+     * @param string $eventName
+     * @param string $observerClassAlias
+     * @param string $observerMethod
+     * @param string|null $observerName
+     */
+    public static function configEventObserver($area, $eventName, $observerClassAlias, $observerMethod,
+        $type = EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINDED, $observerName = null)
+    {
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_EventObserver($area, $eventName, $observerClassAlias, $observerMethod, $type, $observerName)
+        );
+    }
+
+    /**
      * Executes configuration constraint
      *
      * @param EcomDev_PHPUnit_Constraint_Config $constraint
@@ -573,6 +627,287 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
                     $moduleName,
                     EcomDev_PHPUnit_Constraint_Config_Module::TYPE_GREATER_THAN_VERSION,
                     $expectedVersion
+                )
+            ),
+            $message
+        );
+    }
+
+
+    /**
+     * Assert that grouped class alias is mapped to expected class name
+     *
+     * @param string $group
+     * @param string $classAlias
+     * @param string $expectedClassName
+     */
+    public static function assertGroupedClassAlias($group, $classAlias, $expectedClassName, $message = '')
+    {
+        self::assertThatConfig(
+            self::configClassAlias($group, $classAlias, $expectedClassName),
+            $message
+        );
+    }
+
+    /**
+     * Assert that grouped class alias is not mapped to expected class name
+     *
+     * @param string $group
+     * @param string $classAlias
+     * @param string $expectedClassName
+     */
+    public static function assertGroupedClassAliasNot($group, $classAlias, $expectedClassName, $message = '')
+    {
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configClassAlias($group, $classAlias, $expectedClassName)
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Assert that block alias is mapped to expected class name
+     *
+     * @param string $classAlias
+     * @param string $expectedClassName
+     * @param string $message
+     */
+    public static function assertBlockAlias($classAlias, $expectedClassName, $message = '')
+    {
+        self::assertGroupedClassAlias(
+            EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_BLOCK,
+            $classAlias,
+            $expectedClassName
+        );
+    }
+
+    /**
+     * Assert that block alias is not mapped to expected class name
+     *
+     * @param string $classAlias
+     * @param string $expectedClassName
+     * @param string $message
+     */
+    public static function assertBlockAliasNot($classAlias, $expectedClassName, $message = '')
+    {
+        self::assertGroupedClassAliasNot(
+            EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_BLOCK,
+            $classAlias,
+            $expectedClassName
+        );
+    }
+
+    /**
+     * Assert that model alias is mapped to expected class name
+     *
+     * @param string $classAlias
+     * @param string $expectedClassName
+     * @param string $message
+     */
+    public static function assertModelAlias($classAlias, $expectedClassName, $message = '')
+    {
+        self::assertGroupedClassAlias(
+            EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
+            $classAlias,
+            $expectedClassName
+        );
+    }
+
+    /**
+     * Assert that model alias is not mapped to expected class name
+     *
+     * @param string $classAlias
+     * @param string $expectedClassName
+     * @param string $message
+     */
+    public static function assertModelAliasNot($classAlias, $expectedClassName, $message = '')
+    {
+        self::assertGroupedClassAliasNot(
+            EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
+            $classAlias,
+            $expectedClassName
+        );
+    }
+
+    /**
+     * Assert that resource model alias is mapped to expected class name
+     *
+     * @param string $classAlias
+     * @param string $expectedClassName
+     * @param string $message
+     */
+    public static function assertResourceModelAlias($classAlias, $expectedClassName, $message = '')
+    {
+        $classAlias = Mage::getConfig()->getRealResourceModelClassAlias($classAlias);
+
+        self::assertGroupedClassAlias(
+            EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
+            $classAlias,
+            $expectedClassName
+        );
+    }
+
+    /**
+     * Assert that resource model alias is not mapped to expected class name
+     *
+     * @param string $classAlias
+     * @param string $expectedClassName
+     * @param string $message
+     */
+    public static function assertResourceModelAliasNot($classAlias, $expectedClassName, $message = '')
+    {
+        $classAlias = Mage::getConfig()->getRealResourceModelClassAlias($classAlias);
+
+        self::assertGroupedClassAliasNot(
+            EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
+            $classAlias,
+            $expectedClassName
+        );
+    }
+
+    /**
+     * Assert that helper alias is mapped to expected class name
+     *
+     * @param string $classAlias
+     * @param string $expectedClassName
+     * @param string $message
+     */
+    public static function assertHelperAlias($classAlias, $expectedClassName, $message = '')
+    {
+        self::assertGroupedClassAlias(
+            EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_HELPER,
+            $classAlias,
+            $expectedClassName
+        );
+    }
+
+    /**
+     * Assert that helper alias is not mapped to expected class name
+     *
+     * @param string $classAlias
+     * @param string $expectedClassName
+     * @param string $message
+     */
+    public static function assertHelperAliasNot($classAlias, $expectedClassName, $message = '')
+    {
+        self::assertGroupedClassAliasNot(
+            EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_HELPER,
+            $classAlias,
+            $expectedClassName
+        );
+    }
+
+    /**
+     * Assert that configuration has definition of the layout file.
+     * If layout update name is specified, then it will restrict assertion by it.
+     *
+     * @param string $area (frontend|adminhtml)
+     * @param string $expectedFileName
+     * @param string $layoutUpdate
+     * @param string $message
+     */
+    public static function assertLayoutFileDefined($area, $expectedFileName, $layoutUpdate = null, $message = '')
+    {
+        self::assertThatConfig(
+            self::configLayout(
+                $area, $expectedFileName,
+                EcomDev_PHPUnit_Constraint_Config_Layout::TYPE_LAYOUT_DEFINITION,
+                $layoutUpdateName
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that layout file exists in current design package
+     *
+     * @param string $area (frontend|adminhtml)
+     * @param string $expectedFileName
+     * @param string $message
+     */
+    public static function assertLayoutFileExists($area, $expectedFileName, $message = '')
+    {
+        self::assertLayoutFileDefined($area, $expectedFileName, null, $message);
+
+        self::assertThatConfig(
+            self::configLayout(
+                $area, $expectedFileName,
+                EcomDev_PHPUnit_Constraint_Config_Layout::TYPE_LAYOUT_FILE
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that layout file exists in a particular theme and design package
+     *
+     * @param string $area (frontend|adminhtml)
+     * @param string $expectedFileName
+     * @param string $message
+     */
+    public static function assertLayoutFileExistsInTheme($area, $expectedFileName, $theme,
+        $designPackage = null, $message = '')
+    {
+        self::assertLayoutFileDefined($area, $expectedFileName, null, $message);
+
+        self::assertThatConfig(
+            self::configLayout(
+                $area, $expectedFileName,
+                EcomDev_PHPUnit_Constraint_Config_Layout::TYPE_LAYOUT_FILE,
+                null,
+                $theme,
+                $designPackage
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that event observer is defined for an event
+     * and not disabled. If observer name is defined, it additionaly checks it.
+     *
+     * @param string $area
+     * @param string $eventName
+     * @param string $observerClassAlias
+     * @param string $observerMethod
+     * @param string|null $observerName
+     * @param string $message
+     */
+    public static function assertEventObserverDefined($area, $eventName, $observerClassAlias,
+        $observerMethod, $observerName = null, $message = '')
+    {
+        self::assertThatConfig(
+            self::configEventObserver(
+                $area, $eventName, $observerClassAlias, $observerMethod,
+                EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINDED,
+                $observerName
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that event observer is not defined for an event
+     * or disabled.
+     * If observer name is defined, it additionaly checks it.
+     *
+     * @param string $area
+     * @param string $eventName
+     * @param string $observerClassAlias
+     * @param string $observerMethod
+     * @param string|null $observerName
+     * @param string $message
+     */
+    public static function assertEventObserverNotDefined($area, $eventName, $observerClassAlias,
+        $observerMethod, $observerName = null, $message = '')
+    {
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configEventObserver(
+                    $area, $eventName, $observerClassAlias, $observerMethod,
+                    EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINDED,
+                    $observerName
                 )
             ),
             $message
