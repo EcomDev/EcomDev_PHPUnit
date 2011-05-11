@@ -17,32 +17,22 @@
  */
 
 /**
- * Exception for failed constraints execution
- *
+ * Abstract constraint for controller response assetions
  *
  */
-class EcomDev_PHPUnit_Constraint_Exception extends PHPUnit_Framework_ExpectationFailedException
+abstract class EcomDev_PHPUnit_Constraint_Controller_Response_Abstract
+    extends EcomDev_PHPUnit_Constraint_Abstract
 {
-    protected $diff = null;
-
-    public function __construct($description, $diff = '', $message = '')
+    /**
+     * Custom failure description for showing response related errors
+     * (non-PHPdoc)
+     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     */
+    protected function customFailureDescription($other, $description, $not)
     {
-        if (!is_scalar($diff)) {
-            $diff = print_r($diff, true);
-        }
-
-        $this->diff = $diff;
-        parent::__construct($description, null, $message);
-    }
-
-    public function toString()
-    {
-        $result = parent::toString();
-
-        if (!empty($this->diff)) {
-            $result .= "\n" . $this->diff;
-        }
-
-        return $result;
+        return sprintf(
+            'Failed asserting that request %s.',
+            $this->toString()
+        );
     }
 }

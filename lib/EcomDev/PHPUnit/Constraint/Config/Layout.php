@@ -99,9 +99,9 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
     /**
      * Sets design package model for assertions
      *
-     * @param EcomDev_PHPUnit_Constraint_Config_Design_Package_Interface $model
+     * @param EcomDev_PHPUnit_Design_Package_Interface $model
      */
-    public static function setDesignPackageModel(EcomDev_PHPUnit_Constraint_Config_Design_Package_Interface $model)
+    public static function setDesignPackageModel(EcomDev_PHPUnit_Design_Package_Interface $model)
     {
         self::$_designPackageModel = $model;
     }
@@ -109,7 +109,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
     /**
      * Retrieves design package model that was set before
      *
-     * @return EcomDev_PHPUnit_Constraint_Config_Design_Package_Interface
+     * @return EcomDev_PHPUnit_Design_Package_Interface
      */
     public static function getDesignPackageModel()
     {
@@ -162,7 +162,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
             ->getLayoutFileAssertion($this->_expectedValue, $this->_area, $this->_designPackage, $this->_theme);
 
         $this->setActualValue($assertion['actual']);
-        $this->_expectedValue = $assertin['expected'];
+        $this->_expectedValue = $assertion['expected'];
 
         return $this->_actualValue !== $this->_expectedValue;
     }

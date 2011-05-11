@@ -55,6 +55,182 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected $_originalStore = null;
 
+    /**
+     * Returns app for test case, created for type hinting
+     * in the test case code
+     *
+     * @return EcomDev_PHPUnit_Model_App
+     */
+    public static function app()
+    {
+        return Mage::app();
+    }
+
+    /**
+     * Asserts that event was dispatched at least once
+     *
+     * @param string|array $event
+     * @param string $message
+     */
+    public static function assertEventDispatched($eventName)
+    {
+        if (is_array($eventName)) {
+            foreach ($eventNames as $eventName) {
+                self::assertEventDispatched($eventName);
+            }
+            return;
+        }
+
+        $actual = self::app()->getDispatchedEventCount($eventName);
+        $message = sprintf('%s event was not dispatched', $eventName);
+        self::assertGreaterThanOrEqual(1, $actual, $message);
+    }
+
+    /**
+     * Asserts that event was not dispatched
+     *
+     * @param string|array $event
+     * @param string $message
+     */
+    public static function assertEventNotDispatched($eventName)
+    {
+        if (is_array($eventName)) {
+            foreach ($eventNames as $eventName) {
+                self::assertEventNotDispatched($eventName);
+            }
+            return;
+        }
+
+        $actual = self::app()->getDispatchedEventCount($eventName);
+        $message = sprintf('%s event was dispatched', $eventName);
+        self::assertEquals(0, $actual, $message);
+    }
+
+    /**
+     * Assert that event was dispatched exactly $times
+     *
+     * @param string $eventName
+     * @param int
+     */
+    public static function assertEventDispatchedExactly($eventName, $times)
+    {
+        $actual = self::app()->getDispatchedEventCount($eventName);
+        $message = sprintf(
+            '%s event was dispatched only %d times, but expected to be dispatched %d times',
+            $eventName, $actual, $times
+        );
+
+        self::assertEquals($times, $actual, $message);
+    }
+
+    /**
+     * Assert that event was dispatched at least $times
+     *
+     * @param string $eventName
+     * @param int
+     */
+    public static function assertEventDispatchedAtLeast($eventName, $times)
+    {
+        $actual = self::app()->getDispatchedEventCount($eventName);
+        $message = sprintf(
+            '%s event was dispatched only %d times, but expected to be dispatched at least %d times',
+            $eventName, $actual, $times
+        );
+
+        self::assertGreaterThanOrEqual($times, $actual, $message);
+    }
+
+    /**
+     * Creates a constraint for checking that string is valid JSON
+     *
+     * @return EcomDev_PHPUnit_Constraint_Json
+     */
+    public static function isJson()
+    {
+        return new EcomDev_PHPUnit_Constraint_Json(
+            EcomDev_PHPUnit_Constraint_Json::TYPE_VALID
+        );
+    }
+
+    /**
+     * Creates a constraint for checking that string
+     * is matched expected JSON structure
+     *
+     * @param array $expectedValue
+     * @param strign $matchType
+     * @return EcomDev_PHPUnit_Constraint_Json
+     */
+    public static function matchesJson(array $expectedValue, $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
+    {
+        return new EcomDev_PHPUnit_Constraint_Json(
+            EcomDev_PHPUnit_Constraint_Json::TYPE_MATCH,
+            $expectedValue,
+            $matchType
+        );
+    }
+
+    /**
+     * Assert that string is a valid JSON
+     *
+     * @param string $string
+     * @param string $message
+     */
+    public static function assertJson($string, $message = '')
+    {
+        self::assertThat($string, self::isJson(), $message);
+    }
+
+    /**
+     * Assert that string is not a valid JSON
+     *
+     * @param string $string
+     * @param string $message
+     */
+    public static function assertNotJson($string, $message = '')
+    {
+        self::assertThat($string, self::logicalNot(self::isJson()), $message);
+    }
+
+    /**
+     * Assert that JSON string matches expected value,
+     * Can accept different match type for matching logic.
+     *
+     * @param string $string
+     * @param array $expectedValue
+     * @param string $message
+     * @param strign $matchType
+     */
+    public static function assertJsonMatch($string, array $expectedValue, $message = '',
+        $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
+    {
+        self::assertThat(
+            $string,
+            self::matchesJson($expectedValue, $matchType),
+            $message
+        );
+    }
+
+    /**
+     * Assert that JSON string doesn't matches expected value,
+     * Can accept different match type for matching logic.
+     *
+     * @param string $string
+     * @param array $expectedValue
+     * @param string $message
+     * @param strign $matchType
+     */
+    public static function assertJsonNotMatch($string, array $expectedValue, $message = '',
+        $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
+    {
+        self::assertThat(
+            $string,
+            self::logicalNot(
+                self::matchesJson($expectedValue, $matchType)
+            ),
+            $message
+        );
+    }
+
 
     /**
      * Retrieves the module name for current test case
@@ -64,7 +240,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public function getModuleName()
     {
-        return Mage::app()->getModuleNameByClassName($this);
+        return $this->app()->getModuleNameByClassName($this);
     }
 
     /**
@@ -155,10 +331,10 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         }
 
         if (in_array($type, array('model', 'resource_model'))) {
-            Mage::getConfig()->replaceInstanceCreation($type, $classAlias, $mock);
+            $this->app()->getConfig()->replaceInstanceCreation($type, $classAlias, $mock);
             $type = str_replace('model', 'singleton', $type);
         } elseif ($type == 'block') {
-            Mage::app()->getLayout()->replaceBlockCreation($classAlias, $mock);
+            $this->app()->getLayout()->replaceBlockCreation($classAlias, $mock);
         }
 
         if (in_array($type, array('singleton', 'resource_singleton', 'helper'))) {
@@ -178,7 +354,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     protected function replaceRegistry($key, $value)
     {
         $oldValue = Mage::registry($key);
-        Mage::register($key, $value, true);
+
+        $this->app()->replaceRegistry($key, $value);
 
         $this->_replacedRegistry[$key] = $oldValue;
         return $this;
@@ -291,7 +468,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
                                  $mockClassAlias = '',  $callOriginalConstructor = true,
                                  $callOriginalClone = true, $callAutoload = true)
     {
-        return $this->getGroupedClassMock('model', $methods, $isAbstract,
+        return $this->getGroupedClassMock('model', $classAlias, $methods, $isAbstract,
                                    $constructorArguments, $mockClassAlias,
                                    $callOriginalConstructor, $callOriginalClone,
                                    $callAutoload);
@@ -315,7 +492,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
                                  $mockClassAlias = '',  $callOriginalConstructor = true,
                                  $callOriginalClone = true, $callAutoload = true)
     {
-        return $this->getGroupedClassMock('resource_model', $methods, $isAbstract,
+        return $this->getGroupedClassMock('resource_model', $classAlias, $methods, $isAbstract,
                                    $constructorArguments, $mockClassAlias,
                                    $callOriginalConstructor, $callOriginalClone,
                                    $callAutoload);
@@ -339,7 +516,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
                                  $mockClassAlias = '',  $callOriginalConstructor = true,
                                  $callOriginalClone = true, $callAutoload = true)
     {
-        return $this->getGroupedClassMock('helper', $methods, $isAbstract,
+        return $this->getGroupedClassMock('helper', $classAlias, $methods, $isAbstract,
                                    $constructorArguments, $mockClassAlias,
                                    $callOriginalConstructor, $callOriginalClone,
                                    $callAutoload);
@@ -363,7 +540,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
                                  $mockClassAlias = '',  $callOriginalConstructor = true,
                                  $callOriginalClone = true, $callAutoload = true)
     {
-        return $this->getGroupedClassMock('block', $methods, $isAbstract,
+        return $this->getGroupedClassMock('block', $classAlias, $methods, $isAbstract,
                                    $constructorArguments, $mockClassAlias,
                                    $callOriginalConstructor, $callOriginalClone,
                                    $callAutoload);
@@ -378,10 +555,10 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     protected function getGroupedClassName($type, $classAlias)
     {
         if ($type === 'resource_model') {
-            return Mage::getConfig()->getResourceModelClassName($classAlias);
+            return $this->app()->getConfig()->getResourceModelClassName($classAlias);
         }
 
-        return Mage::getConfig()->getGroupedClassName($type, $classAlias);
+        return $this->app()->getConfig()->getGroupedClassName($type, $classAlias);
     }
 
     /**
@@ -398,7 +575,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callAutoload
      * @return PHPUnit_Framework_MockObject_MockObject
      */
-    public function getGroupedClassMock($type, $classAlias, $methods = array(), $isAbstract = false,
+    public function getGroupedClassMock($type, $classAlias, array $methods = array(), $isAbstract = false,
                                         array $constructorArguments = array(),
                                         $mockClassAlias = '',  $callOriginalConstructor = true,
                                         $callOriginalClone = true, $callAutoload = true)
@@ -486,7 +663,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         if (current($annotationValue)) {
             $classAlias = current($annotationValue);
         } else {
-            $classAlias = Mage::getConfig()->getNode($configPath);
+            $classAlias = $this->app()->getConfig()->getNode($configPath);
         }
 
         return $classAlias;
@@ -554,6 +731,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         $annotations = $this->getAnnotations();
         $this->getFixture()->setOptions($annotations['method']);
         $this->getFixture()->apply();
+        $this->app()->resetDispatchedEvents();
         parent::setUp();
     }
 
@@ -586,11 +764,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     public function setCurrentStore($store)
     {
         if (!$this->_originalStore) {
-            $this->_originalStore = Mage::app()->getStore();
+            $this->_originalStore = $this->app()->getStore();
         }
 
-        Mage::app()->setCurrentStore(
-            Mage::app()->getStore($store)
+        $this->app()->setCurrentStore(
+            $this->app()->getStore($store)
         );
         return $this;
     }
@@ -603,7 +781,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         if ($this->_originalStore) { // Remove store scope, that was set in test
-            Mage::app()->setCurrentStore($this->_originalStore);
+            $this->app()->setCurrentStore($this->_originalStore);
             $this->_originalStore = null;
         }
 
@@ -611,12 +789,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $this->getExpectation()->discard();
         }
 
-        Mage::getConfig()->flushReplaceInstanceCreation();
-
-        Mage::app()->getLayout()->reset();
+        $this->app()->getConfig()->flushReplaceInstanceCreation();
+        $this->app()->getLayout()->flushReplaceBlockCreation();
 
         foreach ($this->_replacedRegistry as $registryPath => $originalValue) {
-            Mage::register($registryPath, $originalValue, true);
+            $this->app()->replaceRegistry($registryPath, $originalValue);
         }
 
         $this->getFixture()->discard(); // Clear applied fixture

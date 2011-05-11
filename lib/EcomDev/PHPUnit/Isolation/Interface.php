@@ -17,21 +17,17 @@
  */
 
 /**
- * Interface for assertions in layout configuration
+ * Isolation interface,
+ * should be implemented on resetable Magento entities,
+ * that should be isolated during the test
  *
  */
-interface EcomDev_PHPUnit_Constraint_Config_Layout_Design_Package_Interface
+interface EcomDev_PHPUnit_Isolation_Interface
 {
     /**
-     * Asserts layout file existance in design packages,
-     * and returns actual and expected filenames as result
+     * Unified method for reseting data
+     * in currently isolated object
      *
-     * @param string $fileName
-     * @param string $area
-     * @param string|null $designPackage if not specified any theme will be used
-     * @param string|null $theme if not specified any theme will be used
-     * @return array of 'expected' and 'actual' file names
      */
-    public function getLayoutFileAssertion($fileName, $area, $designPackage = null, $theme = null);
-
+    public function reset();
 }

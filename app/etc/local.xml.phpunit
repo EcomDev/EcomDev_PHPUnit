@@ -9,4 +9,17 @@
             </default_setup>
         </resources>
     </global>
+    <default>
+        <web>
+            <seo>
+                <use_rewrites>1</use_rewrites>
+            </seo>
+            <secure>
+                <base_url>[change me]</base_url>
+            </secure>
+            <unsecure>
+                <base_url>[change me]</base_url>
+            </unsecure> 
+        </web>
+    </default>
 </config>

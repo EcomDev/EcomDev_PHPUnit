@@ -29,7 +29,7 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
     // Configuration path constants
     const XML_PATH_UNIT_TEST_GROUPS = 'phpunit/suite/groups';
     const XML_PATH_UNIT_TEST_MODULES = 'phpunit/suite/modules';
-    const XML_PATH_UNIT_TEST_APP = 'phpunit/suite/app';
+    const XML_PATH_UNIT_TEST_APP = 'phpunit/suite/app/class';
     const XML_PATH_UNIT_TEST_SUITE = 'phpunit/suite/test_suite';
     const CACHE_TAG = 'ECOMDEV_PHPUNIT';
     const CACHE_TYPE = 'ecomdev_phpunit';

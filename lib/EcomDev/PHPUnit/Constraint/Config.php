@@ -44,16 +44,13 @@ class EcomDev_PHPUnit_Constraint_Config extends PHPUnit_Framework_Constraint
      */
     public function __construct($constraint)
     {
-        $this->config = $config;
         if (!$constraint instanceof EcomDev_PHPUnit_Constraint_Config_Interface) {
             throw PHPUnit_Util_InvalidArgumentHelper::factory(
                 1, 'EcomDev_PHPUnit_Constraint_Config_Interface'
             );
         }
-
         $this->constraint = $constraint;
     }
-
 
     /**
      *

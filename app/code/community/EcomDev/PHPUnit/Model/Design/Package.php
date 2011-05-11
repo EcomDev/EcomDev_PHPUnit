@@ -2,7 +2,9 @@
 
 class EcomDev_PHPUnit_Model_Design_Package
     extends Mage_Core_Model_Design_Package
-    implements EcomDev_PHPUnit_Constraint_Config_Layout_Design_Package_Interface
+    implements EcomDev_PHPUnit_Design_Package_Interface,
+               EcomDev_PHPUnit_Isolation_Interface
+
 {
     /**
      * Asserts layout file existance in design packages,

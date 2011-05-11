@@ -23,6 +23,10 @@
  */
 class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
 {
+    const XML_PATH_SECURE_BASE_URL = 'default/web/secure/base_url';
+    const XML_PATH_UNSECURE_BASE_URL = 'default/web/unsecure/base_url';
+
+    const CHANGE_ME = '[change me]';
     /**
      * Scope snapshot without applied configurations,
      * It is used for proper store/website/default loading on per store basis
@@ -212,6 +216,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
         $merge = clone $this->_prototype;
         if ($merge->loadFile($this->_getLocalXmlForTest())) {
             $this->_checkDbCredentialForDuplicate($this, $merge);
+            $this->_checkBaseUrl($this, $merge);
             $this->extend($merge);
         } else {
             throw new Exception('Unable to load local.xml.phpunit');
@@ -252,6 +257,30 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
             throw new RuntimeException('Test DB cannot be the same as the live one');
         }
         return $this;
+    }
+
+    /**
+     * Check base url settings, if not set it rises an exception
+     *
+     * @param Mage_Core_Model_Config_Base $original
+     * @param Mage_Core_Model_Config_Base $test
+     * @return EcomDev_PHPUnit_Model_Config
+     * @throws RuntimeException
+     */
+    protected function _checkBaseUrl($original, $test)
+    {
+        $baseUrlSecure = (string)$test->getNode(self::XML_PATH_SECURE_BASE_URL);
+        $baseUrlUnsecure = (string)$test->getNode(self::XML_PATH_UNSECURE_BASE_URL);
+
+        if (empty($baseUrlSecure) || empty($baseUrlUnsecure)
+            || $baseUrlSecure == self::CHANGE_ME || $baseUrlUnsecure == self::CHANGE_ME) {
+            echo sprintf(
+                'Please change values in %s file for nodes %s and %s. '
+                . 'It will help in setting up proper controller test cases',
+                'app/etc/local.phpunit', self::XML_PATH_SECURE_BASE_URL, self::XML_PATH_UNSECURE_BASE_URL
+            );
+            exit();
+        }
     }
 
     /**

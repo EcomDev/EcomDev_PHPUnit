@@ -51,12 +51,18 @@
                 <helpers>Helper</helpers>
                 <blocks>Block</blocks>
                 <config>Config</config>
+                <controllers>Controller</controllers>
             </groups>
             <!-- Test suite that will be used for creation of each of the tests -->
             <test_suite>EcomDev_PHPUnit_Test_Suite_Group</test_suite>
             <layout>
                 <model>ecomdev_phpunit/layout</model>
             </layout>
+            <design>
+                <package>
+                    <model>ecomdev_phpunit/design_package</model>
+                </package>
+            </design>
             <expectation>
                 <!-- Default model for loading of expectations -->
                 <model>ecomdev_phpunit/expectation</model>
@@ -73,8 +79,27 @@
                     <catalog_category>ecomdev_phpunit/fixture_eav_catalog_category</catalog_category>
                 </eav>
             </fixture>
-            <!-- Application model class name for running tests -->
-            <app>EcomDev_PHPUnit_Model_App</app>
+            <app>
+                <!-- Application class name for running tests -->
+                <class>EcomDev_PHPUnit_Model_App</class>
+                <area>
+                    <!-- Application area class name for tests -->
+                    <class>EcomDev_PHPUnit_Model_App_Area</class>
+                </area>
+            </app>
+            <!-- Configuration of controller for test cases -->
+            <controller>
+                <front>
+                    <class>EcomDev_PHPUnit_Controller_Front</class>
+                </front>
+                <request>
+                    <class>EcomDev_PHPUnit_Controller_Request_Http</class>
+                </request>
+                <response>
+                    <class>EcomDev_PHPUnit_Controller_Response_Http</class>
+                </response>
+            </controller>
+
             <modules>
                 <!-- Place your module name in your module config.xml 
                      For adding it to test suite -->
@@ -84,4 +109,17 @@
             </modules>
         </suite>
     </phpunit>
+    <test>
+        <!-- Definition of event observers that will be used only for test environment -->
+        <events>
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <ecomdev_phpunit>
+                        <class>core/layout</class>
+                        <method>recordBlockRender</method>
+                    </ecomdev_phpunit>
+                </observers>
+            </core_block_abstract_to_html_after>
+        </events>
+    </test>
 </config>
