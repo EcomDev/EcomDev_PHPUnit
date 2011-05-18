@@ -813,7 +813,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             self::configLayout(
                 $area, $expectedFileName,
                 EcomDev_PHPUnit_Constraint_Config_Layout::TYPE_LAYOUT_DEFINITION,
-                $layoutUpdateName
+                $layoutUpdate
             ),
             $message
         );
