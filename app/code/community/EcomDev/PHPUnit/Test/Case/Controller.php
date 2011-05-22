@@ -1913,7 +1913,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      *
      * @param string $route
-     * @param  $store
+     * @param array $params
      */
     public function dispatch($route = null, array $params = array())
     {
