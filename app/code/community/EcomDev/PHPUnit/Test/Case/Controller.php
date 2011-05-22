@@ -1963,6 +1963,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
             );
         }
 
+        if (!$this->getRequest()->getMethod()) {
+            $this->getRequest()->setMethod('GET');
+        }
+
         // Workaround for form key
         if ($this->getRequest()->isPost()) {
             $this->getRequest()->setPost('form_key', Mage::getSingleton('core/session')->getFromKey());
