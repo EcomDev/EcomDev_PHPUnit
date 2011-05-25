@@ -273,7 +273,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     public function getAnnotationByName($name, $sources = 'method')
     {
         if (is_string($sources)) {
-            $source = array($sources);
+            $sources = array($sources);
         }
 
         $allAnnotations = $this->getAnnotations();
