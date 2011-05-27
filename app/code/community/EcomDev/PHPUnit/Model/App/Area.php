@@ -27,6 +27,7 @@ class EcomDev_PHPUnit_Model_App_Area
     implements EcomDev_PHPUnit_Isolation_Interface
 {
     const AREA_TEST = 'test';
+    const AREA_ADMINHTML = 'adminhtml';
 
     /**
      * Reset all the data,
