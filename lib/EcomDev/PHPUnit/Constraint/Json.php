@@ -150,16 +150,6 @@ class EcomDev_PHPUnit_Constraint_Json extends EcomDev_PHPUnit_Constraint_Abstrac
     }
 
     /**
-     * Text representation of JSON string is valid assertion
-     *
-     * @return string
-     */
-    protected function textValid()
-    {
-        return 'is valid JSON';
-    }
-
-    /**
      * Custom failure description for showing json related errors
      * (non-PHPdoc)
      * @see PHPUnit_Framework_Constraint::customFailureDescription()
