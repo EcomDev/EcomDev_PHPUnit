@@ -354,8 +354,10 @@ class EcomDev_PHPUnit_Model_Fixture
             case 'websites':
                 $websiteCode = array_shift($pathArray);
                 $website = Mage::app()->getWebsite($websiteCode);
-                $website->setConfig(implode('/', $pathArray), $value);
-                break;
+                EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+                    $website, '_configCache', array()
+                );
+
 
             default:
                 Mage::getConfig()->setNode($path, $value);
