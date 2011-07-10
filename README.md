@@ -65,7 +65,7 @@ scripts that relay on your current database data so you should fix them.
 
 Issue Tracker
 -------------
-We don't use github issue tracker only for contributions management. If you want to post an issue please use our [Issue Tracker](http://project.ecomdev.org/projects/mage-unit)
+We use github issue tracker only for contributions management. If you want to post an issue please use our [Issue Tracker](http://project.ecomdev.org/projects/mage-unit)
 
 Contributions
 -------------
