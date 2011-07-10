@@ -26,6 +26,13 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
     const NO_GROUP_KEYWORD = '__nogroup__';
 
     /**
+     * Name of suite that will be printed in tap/testdox format
+     *
+     * @var string
+     */
+    protected $suiteName = null;
+
+    /**
      * Contructor adds test groups defined on global level
      * and adds additional logic for test names retrieval
      *
@@ -44,14 +51,12 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
             $theClass->getName()
         );
 
-        if (isset($annotation['name'])) {
-            $name = $annotations['name'];
-        } else {
-            $name = sprintf('Test suite for %s', $theClass->getName());
+        if (isset($annotations['name'])) {
+            $this->suiteName = $annotations['name'];
         }
 
         // Creates all test instances
-        parent::__construct($theClass, $name);
+        parent::__construct($theClass);
 
         // Just sort-out them by our internal groups
         foreach ($groups as $group) {
@@ -80,5 +85,16 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
         if (isset($this->groups[self::NO_GROUP_KEYWORD])) {
             unset($this->groups[self::NO_GROUP_KEYWORD]);
         }
+    }
+
+    /**
+     * Outputs test suite name from annotations
+     *
+     * (non-PHPdoc)
+     * @see PHPUnit_Framework_TestSuite::toString()
+     */
+    public function toString()
+    {
+        return $this->suiteName !== null ?  $this->suiteName : $this->name;
     }
 }
