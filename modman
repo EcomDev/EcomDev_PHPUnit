@@ -1,0 +1,8 @@
+# EcomDev_PHPUnit definition
+UnitTests.php                           UnitTests.php
+app/etc/modules/EcomDev_PHPUnit.xml     app/etc/modules/EcomDev_PHPUnit.xml
+app/etc/local.xml.phpunit               app/etc/local.xml.phpunit
+app/code/community/EcomDev/PHPUnit      app/code/community/EcomDev/PHPUnit
+lib/EcomDev/PHPUnit                     lib/EcomDev/PHPUnit
+lib/EcomDev/Utils                       lib/EcomDev/Utils
+lib/Spyc                                lib/Spyc
