@@ -25,7 +25,6 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
 {
     protected $_requiredIndexers = array(
         'cataloginventory_stock',
-        'catalog_product_flat',
         'catalog_product_attribute',
         'catalog_product_price'
     );

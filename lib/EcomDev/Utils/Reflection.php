@@ -45,6 +45,23 @@ class EcomDev_Utils_Reflection
     }
 
     /**
+     * Sets multiple restricted property values for an object
+     *
+     * @param string|object $object class name
+     * @param array $properties
+     */
+    public static function setRestrictedPropertyValues($object, array $properties)
+    {
+        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+            throw new RuntimeException('For setting of restricted properties via Reflection, PHP version should be 5.3.0 or later');
+        }
+
+        foreach ($properties as $property => $value) {
+            self::setRestrictedPropertyValue($object, $property, $value);
+        }
+    }
+
+    /**
      * Gets protected or private property value
      *
      * @param string|object $object class name

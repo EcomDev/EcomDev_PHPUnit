@@ -37,6 +37,13 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
     protected $_options = array();
 
     /**
+     * Fixture model
+     *
+     * @var EcomDev_PHPUnit_Model_Fixture_Interface
+     */
+    protected $_fixture = null;
+
+    /**
      * Retrieve required indexers for re-building
      *
      * @var array
@@ -44,6 +51,17 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
     public function getRequiredIndexers()
     {
         return $this->_requiredIndexers;
+    }
+
+    /**
+     * Sets fixture model to EAV loader
+     *
+     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     */
+    public function setFixture($fixture)
+    {
+        $this->_fixture = $fixture;
+        return $this;
     }
 
     /**
@@ -95,7 +113,18 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
      */
     public function loadEntity($entityType, $values)
     {
+        $originalRequiredIndexers = $this->_requiredIndexers;
+        if (!empty($this->_options['addRequiredIndex'])) {
+            foreach ($this->_options['addRequiredIndex'] as $data) {
+                if (preg_match('/^([a-z0-9_\\-])+\\s+([a-z0-9_\\-])\s*$/i', $data, $match)
+                    && $match[1] == $entityType) {
+                    $this->_requiredIndexers[] = $match[2];
+                }
+            }
+        }
+
         $entityTypeModel = Mage::getSingleton('eav/config')->getEntityType($entityType);
+
 
         $entityTableColumns = $this->_getWriteAdapter()->describeTable(
             $this->getTable($entityTypeModel->getEntityTable())
@@ -197,6 +226,8 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
             }
         }
 
+        // Restoring original required indexers for making tests isolated
+        $this->_requiredIndexers = $originalRequiredIndexers;
         return $this;
     }
 

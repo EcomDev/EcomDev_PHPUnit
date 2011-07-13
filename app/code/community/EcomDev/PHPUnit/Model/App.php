@@ -48,6 +48,8 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     const REGISTRY_PATH_LAYOUT_SINGLETON = '_singleton/core/layout';
     const REGISTRY_PATH_DESIGN_PACKAGE_SINGLETON = '_singleton/core/design_package';
 
+    const REGISTRY_PATH_SHARED_STORAGE = 'test_suite_shared_storage';
+
     const XML_PATH_LAYOUT_MODEL_FOR_TEST = 'phpunit/suite/layout/model';
     const XML_PATH_DESIGN_PACKAGE_MODEL_FOR_TEST = 'phpunit/suite/design/package/model';
 
@@ -221,6 +223,8 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
                                $designPackageModel);
 
         $this->loadAreaPart(self::AREA_TEST, self::AREA_PART_EVENTS);
+
+        $this->replaceRegistry(self::REGISTRY_PATH_SHARED_STORAGE, new Varien_Object());
         return $this;
     }
 

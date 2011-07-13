@@ -58,7 +58,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
             $records[] = $this->_getTableRecord($row, $tableColumns);
         }
 
-        $this->_getWriteAdapter()->insertMultiple(
+        $this->_getWriteAdapter()->insertOnDuplicate(
             $this->getTable($tableEntity),
             $records
         );
