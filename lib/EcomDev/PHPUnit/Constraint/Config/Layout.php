@@ -139,7 +139,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
      *
      * @return string
      */
-    protected function textLayoutDefition()
+    protected function textLayoutDefinition()
     {
         $text = sprintf('file "%s" is defined in configuration for %s area', $this->_expectedValue, $this->_area);
 
