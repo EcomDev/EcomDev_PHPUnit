@@ -164,7 +164,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
         $this->setActualValue($assertion['actual']);
         $this->_expectedValue = $assertion['expected'];
 
-        return $this->_actualValue !== $this->_expectedValue;
+        return $this->_actualValue === $this->_expectedValue;
     }
 
     /**
