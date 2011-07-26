@@ -356,6 +356,10 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
             $value = null;
         }
 
+        if ($attribute->usesSource() && $value !== null) {
+            $value = $attribute->getSource()->getOptionId($value);
+        }
+
         return $value;
     }
 
