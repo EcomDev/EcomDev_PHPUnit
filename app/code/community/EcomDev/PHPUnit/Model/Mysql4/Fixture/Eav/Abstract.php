@@ -357,10 +357,32 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
         }
 
         if ($attribute->usesSource() && $value !== null) {
-            $value = $attribute->getSource()->getOptionId($value);
+            if ($attribute->getSource() instanceof Mage_Eav_Model_Entity_Attribute_Source_Abstract) {
+                $value = $attribute->getSource()->getOptionId($value);
+            } else {
+                $value = $this->_getOptionIdNonAttributeSource($attribute->getSource()->getAllOptions(), $value);
+            }
         }
 
         return $value;
+    }
+
+    /**
+     * Get option id if attribute source model doesn't support eav attribute interface
+     *
+     *
+     * @param array $options
+     * @param mixed $value
+     */
+    protected function _getOptionIdNonAttributeSource($options, $value)
+    {
+        foreach ($options as $option) {
+            if (strcasecmp($option['label'], $value)==0 || $option['value'] == $value) {
+                return $option['value'];
+            }
+        }
+
+        return null;
     }
 
     /**
