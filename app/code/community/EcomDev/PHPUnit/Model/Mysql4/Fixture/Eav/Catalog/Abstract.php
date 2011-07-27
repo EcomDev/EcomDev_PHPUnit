@@ -120,7 +120,9 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Abstract extends
      */
     protected function _getGwsValue($row, $attribute, $scopeCode,  $scopeType = self::SCOPE_TYPE_STORE)
     {
-        if (!isset($row['/' . $scopeType][$scopeCode]) || !is_array($row['/' . $scopeType][$scopeCode])) {
+        if (!isset($row['/' . $scopeType][$scopeCode])
+            || !is_array($row['/' . $scopeType][$scopeCode])
+            || !isset($row['/' . $scopeType][$scopeCode][$attribute->getAttributeCode()])) {
             return null;
         }
 
