@@ -37,6 +37,7 @@ class EcomDev_PHPUnit_Model_App_Area
      */
     public function reset()
     {
+        $this->_loadedParts = array();
         $this->resetEvents();
         $this->resetDesign();
         $this->resetTranslate();

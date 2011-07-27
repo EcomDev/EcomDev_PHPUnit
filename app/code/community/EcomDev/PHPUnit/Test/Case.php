@@ -75,8 +75,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     public static function assertEventDispatched($eventName)
     {
         if (is_array($eventName)) {
-            foreach ($eventNames as $eventName) {
-                self::assertEventDispatched($eventName);
+            foreach ($eventName as $singleEventName) {
+                self::assertEventDispatched($singleEventName);
             }
             return;
         }
