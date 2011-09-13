@@ -691,6 +691,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @param string $type
      * @param string $configPath
+     * @return string
      */
     protected static function getLoadableClassAlias($type, $configPath)
     {

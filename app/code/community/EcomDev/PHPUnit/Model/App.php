@@ -154,7 +154,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', new self::$_eventCollectionClass);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', array());
 
-        // All unit tests will be runned in admin scope, to get rid of frontend restrictions
+        // All unit tests will be run in admin scope, to get rid of frontend restrictions
         Mage::app()->initTest();
     }
 
@@ -192,7 +192,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         // Clean cache before the whole suite is running
         $this->getCache()->clean();
 
-        // Init modules runs install proccess for table structures,
+        // Init modules runs install process for table structures,
         // It is required for setting up proper setup script
         $this->_initModules();
 
@@ -366,7 +366,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Returns class name from configuration path,
-     * If $interface is specified, then it additionaly checks it for implementation
+     * If $interface is specified, then it additionally checks it for implementation
      *
      *
      * @param string $configPath
@@ -508,7 +508,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Overriden for disabling events
-     * fire during fixutre loading
+     * fire during fixture loading
      *
      * (non-PHPdoc)
      * @see Mage_Core_Model_App::dispatchEvent()

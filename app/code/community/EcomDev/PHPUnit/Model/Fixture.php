@@ -308,7 +308,7 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Loads fixture files
      *
-     * @param string $fixtures
+     * @param array $fixtures
      * @param string|EcomDev_PHPUnit_Test_Case $classOrInstance
      * @return EcomDev_PHPUnit_Model_Fixture
      */
@@ -631,7 +631,7 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Applies fixture EAV values
      *
-     * @param array $configuration
+     * @param array $entities
      * @return EcomDev_PHPUnit_Model_Fixture
      */
     protected function _applyEav($entities)
@@ -761,7 +761,6 @@ class EcomDev_PHPUnit_Model_Fixture
      * Validate scope data
      *
      * @param array $types
-     * @param array $modelByType
      * @return EcomDev_PHPUnit_Model_Fixture
      */
     protected function _validateScope($types)
@@ -772,8 +771,6 @@ class EcomDev_PHPUnit_Model_Fixture
             }
 
             foreach ($rows as $rowNumber => $row) {
-                $scopeModel = Mage::getModel($modelByType[$type]);
-
                 if (!isset($row[$type . '_id'])) {
                     throw new RuntimeException(sprintf('Missing primary key for "%s" scope entity at #%d row', $type, $rowNumber + 1));
                 }
