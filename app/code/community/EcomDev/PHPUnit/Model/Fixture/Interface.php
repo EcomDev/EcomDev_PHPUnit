@@ -37,7 +37,7 @@ interface EcomDev_PHPUnit_Model_Fixture_Interface extends EcomDev_PHPUnit_Model_
     public function setOptions(array $options);
 
     /**
-     * Sets storage for fixutures
+     * Sets storage for fixtures
      *
      * @param Varien_Object $storage
      * @return EcomDev_PHPUnit_Model_Fixture_Interface

@@ -30,6 +30,11 @@ class EcomDev_PHPUnit_Model_Design_Package
         $this->setPackageName($designPackage);
         $this->setTheme($theme);
 
+        $params = array(
+            '_area' => $area,
+            '_package' => $designPackage,
+            '_theme' => $theme,
+        );
         $actualFileName = $this->getLayoutFilename($fileName, $params);
 
         if ($theme !== null || $designPackage !== null) {

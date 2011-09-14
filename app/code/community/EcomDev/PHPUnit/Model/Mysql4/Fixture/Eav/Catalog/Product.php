@@ -31,7 +31,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
 
 
     /**
-     * Ovveriden to fix issue with flat tables existance mark
+     * Overridden to fix issue with flat tables existance mark
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::loadEntity()
      */
@@ -48,7 +48,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
     }
 
     /**
-     * Overriden to add easy fixture loading for websites and categories associations
+     * Overridden to add easy fixture loading for websites and categories associations
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::_getCustomTableRecords()
      */

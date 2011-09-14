@@ -38,7 +38,6 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
      *
      * (non-PHPdoc)
      * @see PHPUnit_Framework_TestSuite::__construct()
-     * @param array $groups
      */
     public function __construct($theClass = '', $groups = array())
     {
