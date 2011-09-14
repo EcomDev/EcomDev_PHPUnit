@@ -743,7 +743,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Loads YAML file from directory inside of the unit test class
+     * Loads YAML file from directory inside of the unit test class or
+     * the directory inside the module directory if name is prefixed with ^
      *
      * @param string $className class name for looking fixture files
      * @param string $type type of YAML data (fixtures,expectations,dataproviders)
@@ -760,9 +761,18 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             EcomDev_Utils_Reflection::getRelflection($className)->getFileName()
         );
 
-        $filePath = $classFileObject->getPath() . DS
-                  . $classFileObject->getBasename('.php') . DS
-                  . $type . DS . $name;
+        // When prefixed with ^, load from the module's Test/<type> directory
+        if (strpos($name, '^') === 0) {
+            $name = substr($name, 1);
+            $moduleName = substr($className, 0, strpos($className, '_Test_'));;
+            $filePath = Mage::getModuleDir('', $moduleName) . DS . 'Test' . DS;
+        }
+        // Otherwise load from the Class/<type> directory
+        else {
+            $filePath = $classFileObject->getPath() . DS
+                      . $classFileObject->getBasename('.php') . DS;
+        }
+        $filePath .= $type . DS . $name;
 
         if (file_exists($filePath)) {
             return $filePath;
