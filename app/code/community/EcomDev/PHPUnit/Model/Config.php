@@ -279,7 +279,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
             echo sprintf(
                 'Please change values in %s file for nodes %s and %s. '
                 . 'It will help in setting up proper controller test cases',
-                'app/etc/local.phpunit', self::XML_PATH_SECURE_BASE_URL, self::XML_PATH_UNSECURE_BASE_URL
+                'app/etc/local.xml.phpunit', self::XML_PATH_SECURE_BASE_URL, self::XML_PATH_UNSECURE_BASE_URL
             );
             exit();
         }
