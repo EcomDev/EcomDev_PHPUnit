@@ -148,7 +148,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
                 throw new RuntimeException('Entity Id should be specified in EAV fixture');
             }
 
-            // Fullfil neccessary information
+            // Fulfill necessary information
             $row['entity_type_id'] = $entityTypeModel->getEntityTypeId();
             if (!isset($row['attribute_set_id'])) {
                 $row['attribute_set_id'] = $entityTypeModel->getDefaultAttributeSetId();

@@ -431,7 +431,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     {
         self::assertRequestNot(
             EcomDev_PHPUnit_Constraint_Controller_Request::TYPE_BEFORE_FORWARD_ROUTE,
-            $expectedActionName, $message
+            $expectedBeforeForwardedRoute, $message
         );
     }
 

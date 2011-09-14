@@ -40,6 +40,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $nodePath
      * @param string $type
      * @param mixed $expectedValue
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configNode($nodePath, $type, $expectedValue = null)
     {
@@ -54,6 +55,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $moduleName
      * @param string $type
      * @param string|null $expectedValue
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configModule($moduleName, $type, $expectedValue = null)
     {
@@ -65,9 +67,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     /**
      * A new constraint for checking module node
      *
-     * @param string $moduleName
+     * @param string $group
+     * @param string $classAlias
+     * @param string $expectedClassName
      * @param string $type
-     * @param string|null $expectedValue
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configClassAlias($group, $classAlias, $expectedClassName,
         $type = EcomDev_PHPUnit_Constraint_Config_ClassAlias::TYPE_CLASS_ALIAS)
@@ -86,6 +90,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string|null $layoutUpdate
      * @param string|null $theme
      * @param string|null $designPackage
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configLayout($area, $expectedFile, $type, $layoutUpdate = null, $theme = null, $designPackage = null)
     {
@@ -106,7 +111,9 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $eventName
      * @param string $observerClassAlias
      * @param string $observerMethod
+     * @param string $type
      * @param string|null $observerName
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configEventObserver($area, $eventName, $observerClassAlias, $observerMethod,
         $type = EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINDED, $observerName = null)
@@ -304,6 +311,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      *
      * @param string $nodePath
      * @param decimal $expectedValue
+     * @param string $message
      */
     public static function assertConfigNodeLessThanOrEquals($nodePath, $expectedValue, $message = '')
     {
@@ -344,6 +352,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      *
      * @param string $nodePath
      * @param decimal $expectedValue
+     * @param string $message
      */
     public static function assertConfigNodeGreaterThanOrEquals($nodePath, $expectedValue, $message = '')
     {
@@ -640,6 +649,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $group
      * @param string $classAlias
      * @param string $expectedClassName
+     * @param string $message
      */
     public static function assertGroupedClassAlias($group, $classAlias, $expectedClassName, $message = '')
     {
@@ -655,6 +665,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $group
      * @param string $classAlias
      * @param string $expectedClassName
+     * @param string $message
      */
     public static function assertGroupedClassAliasNot($group, $classAlias, $expectedClassName, $message = '')
     {
@@ -678,7 +689,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAlias(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_BLOCK,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -694,7 +706,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAliasNot(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_BLOCK,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -710,7 +723,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAlias(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -726,7 +740,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAliasNot(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -744,7 +759,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAlias(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -762,7 +778,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAliasNot(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -778,7 +795,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAlias(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_HELPER,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -794,7 +812,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAliasNot(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_HELPER,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
