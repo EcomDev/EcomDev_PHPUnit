@@ -37,8 +37,15 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
      */
     public function cleanTable($tableEntity)
     {
-        $this->_getWriteAdapter()
-            ->truncate($this->getTable($tableEntity));
+    	try {
+	        $this->_getWriteAdapter()
+	            ->delete($this->getTable($tableEntity));
+    	} catch (Exception $e) {
+    		throw new EcomDev_PHPUnit_Model_Mysql4_Fixture_Exception(
+    			sprintf('Unable to clear records for a table "%s"', $tableEntity),
+    			$e
+    		);
+    	}
         return $this;
     }
 
@@ -58,11 +65,18 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
             $records[] = $this->_getTableRecord($row, $tableColumns);
         }
 
-        $this->_getWriteAdapter()->insertOnDuplicate(
-            $this->getTable($tableEntity),
-            $records
-        );
-
+        try {
+	        $this->_getWriteAdapter()->insertOnDuplicate(
+	            $this->getTable($tableEntity),
+	            $records
+	        );
+        } catch (Exception $e) {
+        	throw new EcomDev_PHPUnit_Model_Mysql4_Fixture_Exception(
+    			sprintf('Unable to insert/update records for a table "%s"', $tableEntity), 
+    			$e
+    		);
+        }
+        
         return $this;
     }
 
