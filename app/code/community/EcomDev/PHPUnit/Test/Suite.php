@@ -141,11 +141,11 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
         $directoryIterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($searchPath)
         );
-
+        
         foreach ($directoryIterator as $fileObject) {
             /* @var $fileObject SplFileObject */
             // Skip entry if it is not a php file
-            if (!$fileObject->isFile() || $fileObject->getBasename('.php') === $fileObject->getBasename()) {
+            if ((!$fileObject->isFile() && !$fileObject->isLink()) || $fileObject->getBasename('.php') === $fileObject->getBasename()) {
                 continue;
             }
 
