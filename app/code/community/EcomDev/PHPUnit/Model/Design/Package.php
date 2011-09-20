@@ -46,7 +46,7 @@ class EcomDev_PHPUnit_Model_Design_Package
                 '_package' => $expectedDesignPackage
             );
 
-            $expectedFileName = Mage::getBaseDir('design') . DS . $this->_renderFilename($fileName, $params);
+            $expectedFileName = $this->_renderFilename($fileName, $params);
         } else {
             $expectedFileName = $actualFileName;
             if (!file_exists($actualFileName)) {
