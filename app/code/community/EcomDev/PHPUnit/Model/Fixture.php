@@ -525,6 +525,7 @@ class EcomDev_PHPUnit_Model_Fixture
             $ignoreCleanUp = array_keys($this->getStorageData(self::STORAGE_KEY_TABLES, self::SCOPE_SHARED));
         }
 
+        $this->getResource()->beginTransaction();
         foreach ($tables as $tableEntity => $data) {
             if (!in_array($tableEntity, $ignoreCleanUp)) {
                 $this->getResource()->cleanTable($tableEntity);
@@ -534,7 +535,7 @@ class EcomDev_PHPUnit_Model_Fixture
                 $this->getResource()->loadTableData($tableEntity, $data);
             }
         }
-
+        $this->getResource()->commit();
         $this->setStorageData(self::STORAGE_KEY_TABLES, $tables);
     }
 
@@ -558,6 +559,7 @@ class EcomDev_PHPUnit_Model_Fixture
         if ($this->isScopeLocal() && $this->getStorageData(self::STORAGE_KEY_TABLES, self::SCOPE_SHARED)) {
             $restoreTableData = $this->getStorageData(self::STORAGE_KEY_TABLES, self::SCOPE_SHARED);
         }
+        $this->getResource()->beginTransaction();
 
         foreach (array_keys($tables) as $tableEntity) {
             $this->getResource()->cleanTable($tableEntity);
@@ -567,6 +569,7 @@ class EcomDev_PHPUnit_Model_Fixture
             }
         }
 
+        $this->getResource()->commit();
         $this->setStorageData(self::STORAGE_KEY_TABLES, null);
     }
 
@@ -639,6 +642,8 @@ class EcomDev_PHPUnit_Model_Fixture
         if (!is_array($entities)) {
             throw new InvalidArgumentException('EAV part should be an associative list with rows as value and entity type as key');
         }
+        
+        $this->getResource()->beginTransaction();
 
         foreach ($entities as $entityType => $values) {
             $this->_getEavLoader($entityType)
@@ -646,6 +651,8 @@ class EcomDev_PHPUnit_Model_Fixture
                 ->setOptions($this->_options)
                 ->loadEntity($entityType, $values);
         }
+
+        $this->getResource()->commit();
 
         $this->setStorageData(self::STORAGE_KEY_ENTITIES, array_keys($entities));
 
@@ -667,6 +674,7 @@ class EcomDev_PHPUnit_Model_Fixture
             $ignoreCleanUp = $this->getStorageData(self::STORAGE_KEY_ENTITIES, self::SCOPE_SHARED);
         }
 
+        $this->getResource()->beginTransaction();
         foreach (array_keys($entities) as $entityType) {
             if (in_array($entityType, $ignoreCleanUp)) {
                 continue;
@@ -674,6 +682,8 @@ class EcomDev_PHPUnit_Model_Fixture
             $this->_getEavLoader($entityType)
                 ->cleanEntity($entityType);
         }
+        
+        $this->getResource()->commit();
 
         return $this;
     }
