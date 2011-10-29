@@ -179,15 +179,11 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
         // Set using cache
         // for things that shouldn't be reloaded each time
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue(
-            $this->_cache,
-            '_allowedCacheOptions',
-            array(
-                'eav' => 1,
-                'layout' => 1,
-                'translate' => 1
-            )
-        );
+        $this->setCacheOptions(array(
+            'eav' => 1,
+            'layout' => 1,
+            'translate' => 1
+        ));
 
         // Clean cache before the whole suite is running
         $this->getCache()->clean();
@@ -227,7 +223,35 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         $this->replaceRegistry(self::REGISTRY_PATH_SHARED_STORAGE, new Varien_Object());
         return $this;
     }
+    
+    /**
+     * Sets cache options for test case
+     * 
+     * @param array $options
+     * @return EcomDev_PHPUnit_Model_App
+     */
+    public function setCacheOptions(array $options)
+    {
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+            $this->_cache,
+            '_allowedCacheOptions',
+            $options
+        );
+    }
 
+    /**
+     * Retrieve cache options for test case
+     * 
+     * @return array
+     */
+    public function getCacheOptions()
+    {
+        return EcomDev_Utils_Reflection::getRestrictedPropertyValue(
+            $this->_cache,
+            '_allowedCacheOptions'
+        );
+    }
+    
     /**
      * Retrieves a model from config and checks it on interface implementation
      *

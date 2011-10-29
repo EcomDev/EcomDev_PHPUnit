@@ -51,6 +51,9 @@ class EcomDev_PHPUnit_Model_Fixture
     // Key for loaded entities by EAV loaders
     const STORAGE_KEY_ENTITIES = 'entities';
 
+    // Key for loaded cache options 
+    const STORAGE_KEY_CACHE_OPTIONS = 'cache_options';
+    
     // Key for created scope models
     const STORAGE_KEY_SCOPE = 'scope';
 
@@ -275,6 +278,11 @@ class EcomDev_PHPUnit_Model_Fixture
             'loadFixture',
             array('class', 'method')
         );
+        
+        
+        $cacheOptions = $testCase->getAnnotationByName('cache', 'method');
+        
+        $this->_parseCacheOptions($cacheOptions);
 
         $this->_loadFixtureFiles($fixtures, $testCase);
 
@@ -301,8 +309,41 @@ class EcomDev_PHPUnit_Model_Fixture
             null, array($className, 'loadSharedFixture', 'class')
         );
 
+        $cacheOptions = $method->invokeArgs(
+            null, array($className, 'cache', 'class')
+        );
+        
+        $this->_parseCacheOptions($cacheOptions);
+        
         $this->_loadFixtureFiles($fixtures, $className);
         return $this;
+    }
+    
+    /**
+     * Loads test case cache on off annotations
+     * 
+     * @param array $annotations
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _parseCacheOptions($annotations)
+    {
+        $cacheOptions = array();
+        foreach ($annotations as $annotation) {
+            list($action, $cacheType) = preg_split('/\s+/', trim($annotation));
+            $flag = ($action === 'off' ? 0 : 1);
+            if ($cacheType === 'all') {
+                foreach (Mage::app()->getCacheInstance()->getTypes() as $type) {
+                    $cacheOptions[$type->getId()] = $flag;
+                }
+            } else {
+                $cacheOptions[$cacheType] = $flag;
+            }
+            
+        }
+        
+        if ($cacheOptions) {
+            $this->_fixture['cache_options'] = $cacheOptions;
+        }
     }
 
     /**
@@ -410,6 +451,36 @@ class EcomDev_PHPUnit_Model_Fixture
         }
 
         $this->_fixture = array();
+    }
+    
+    /**
+     * Applies cache options for current test or test case
+     * 
+     * @param array $options
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _applyCacheOptions($options)
+    {
+        $originalOptions = Mage::app()->getCacheOptions();
+        $this->setStorageData(self::STORAGE_KEY_CACHE_OPTIONS, $originalOptions);
+        
+        $options += $originalOptions;
+        Mage::app()->setCacheOptions($options);
+
+        return $this;
+    }
+    
+    /**
+     * Discards changes that were made to Magento cache
+     * 
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _discardCacheOptions()
+    {
+        Mage::app()->setCacheOptions(
+            $this->getStorageData(self::STORAGE_KEY_CACHE_OPTIONS)
+        );
+        return $this;
     }
 
     /**
