@@ -375,4 +375,15 @@ class EcomDev_PHPUnit_Controller_Request_Http
 
         return $this;
     }
+
+    /**
+     * Added for Magento 1.3 compatiability
+     *
+     * @param string $name
+     * @return null
+     */
+    public function getBeforeForwardInfo($name = null)
+    {
+        return null;
+    }
 }
