@@ -143,16 +143,28 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     {
         // Save old environment variables
         self::$_oldApplication = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_app');
-        self::$_oldConfig = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config');
-        self::$_oldEventCollection = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events');
         self::$_oldRegistry = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry');
-
+        if (version_compare(Mage::getVersion(), '1.4.0.0', '>=')) {
+            self::$_oldConfig = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config');
+            self::$_oldEventCollection = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events');
+        } else {
+            self::$_oldConfig = Mage::registry('config');
+            self::$_oldEventCollection = Mage::registry('events');
+        }
 
         // Setting environment variables for unit tests
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', new self::$_configClass);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', new self);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', new self::$_eventCollectionClass);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', array());
+        if (version_compare(Mage::getVersion(), '1.4.0.0', '>=')) {
+            EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', new self::$_configClass);
+            EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', new self::$_eventCollectionClass);
+        } else {
+            Mage::setRoot();
+            Mage::unregister('config');
+            Mage::register('config', new self::$_configClass());
+            Mage::unregister('events');
+            Mage::register('events', new self::$_eventCollectionClass());
+        }
 
         // All unit tests will be run in admin scope, to get rid of frontend restrictions
         Mage::app()->initTest();
@@ -174,30 +186,35 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         }
 
         $this->_config = Mage::getConfig();
-        $this->_initBaseConfig();
-        $this->_initCache();
+        if (version_compare(Mage::getVersion(), '1.4.0.0', '>=')) {
+            $this->_initBaseConfig();
+            $this->_initCache();
 
-        // Set using cache
-        // for things that shouldn't be reloaded each time
-        $this->setCacheOptions(array(
-            'eav' => 1,
-            'layout' => 1,
-            'translate' => 1
-        ));
+            // Set using cache
+            // for things that shouldn't be reloaded each time
+            $this->setCacheOptions(array(
+                'eav'       => 1,
+                'layout'    => 1,
+                'translate' => 1,
+            ));
 
-        // Clean cache before the whole suite is running
-        $this->getCache()->clean();
+            // Clean cache before the whole suite is running
+            $this->getCache()->clean();
 
-        // Init modules runs install process for table structures,
-        // It is required for setting up proper setup script
-        $this->_initModules();
+            // Init modules runs install process for table structures,
+            // It is required for setting up proper setup script
+            $this->_initModules();
 
-        $this->loadAreaPart(self::AREA_GLOBAL, self::AREA_PART_EVENTS);
+            $this->loadAreaPart(self::AREA_GLOBAL, self::AREA_PART_EVENTS);
 
-        if ($this->_config->isLocalConfigLoaded()) {
-            $this->_initCurrentStore(self::ADMIN_STORE_CODE, self::RUN_TYPE_STORE);
-            $this->_initRequest();
-            Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
+            if ($this->_config->isLocalConfigLoaded()) {
+                $this->_initCurrentStore(self::ADMIN_STORE_CODE, self::RUN_TYPE_STORE);
+                $this->_initRequest();
+                Mage_Core_Model_Resource_Setup::applyAllDataUpdates();
+            }
+        } else {
+            $this->init('', 'store');
+            $this->loadAreaPart(self::AREA_GLOBAL, self::AREA_PART_EVENTS);
         }
 
         $layoutModel = $this->_getModelFromConfig(
@@ -205,28 +222,24 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
             self::INTERFACE_ISOLATION,
             'Layout model'
         );
-
-        $this->replaceRegistry(self::REGISTRY_PATH_LAYOUT_SINGLETON,
-                               $layoutModel);
+        $this->replaceRegistry(self::REGISTRY_PATH_LAYOUT_SINGLETON, $layoutModel);
 
         $designPackageModel = $this->_getModelFromConfig(
             self::XML_PATH_DESIGN_PACKAGE_MODEL_FOR_TEST,
             self::INTERFACE_ISOLATION,
             'Design package model'
         );
-
-        $this->replaceRegistry(self::REGISTRY_PATH_DESIGN_PACKAGE_SINGLETON,
-                               $designPackageModel);
+        $this->replaceRegistry(self::REGISTRY_PATH_DESIGN_PACKAGE_SINGLETON, $designPackageModel);
 
         $this->loadAreaPart(self::AREA_TEST, self::AREA_PART_EVENTS);
-
         $this->replaceRegistry(self::REGISTRY_PATH_SHARED_STORAGE, new Varien_Object());
+
         return $this;
     }
-    
+
     /**
      * Sets cache options for test case
-     * 
+     *
      * @param array $options
      * @return EcomDev_PHPUnit_Model_App
      */
@@ -241,7 +254,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Retrieve cache options for test case
-     * 
+     *
      * @return array
      */
     public function getCacheOptions()
@@ -251,7 +264,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
             '_allowedCacheOptions'
         );
     }
-    
+
     /**
      * Retrieves a model from config and checks it on interface implementation
      *
@@ -431,9 +444,16 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     {
         // Setting environment variables for unit tests
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', self::$_oldApplication);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', self::$_oldConfig);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', self::$_oldEventCollection);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', self::$_oldRegistry);
+        if (version_compare(Mage::getVersion(), '1.4.0.0', '>=')) {
+            EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', self::$_oldConfig);
+            EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', self::$_oldEventCollection);
+        } else {
+            Mage::unregister('config');
+            Mage::register('config', self::$_oldConfig);
+            Mage::unregister('events');
+            Mage::register('events', self::$_oldEventCollection);
+        }
     }
 
     /**

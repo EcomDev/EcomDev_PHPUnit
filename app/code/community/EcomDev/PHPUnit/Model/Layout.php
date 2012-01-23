@@ -304,7 +304,7 @@ class EcomDev_PHPUnit_Model_Layout
      * (non-PHPdoc)
      * @see Mage_Core_Model_Layout::_translateLayoutNode()
      */
-    protected function _translateLayoutNode($node, $args)
+    protected function _translateLayoutNode($node, &$args)
     {
         parent::_translateLayoutNode($node, $args);
         if ($this->_collectedArgs === null) {
