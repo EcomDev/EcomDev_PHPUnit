@@ -82,7 +82,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     
 
     /**
-     * A new constraint for checking module node
+     * A new constraint for checking class alias nodes
      *
      * @param string $group
      * @param string $classAlias
@@ -95,6 +95,22 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     {
         return self::config(
             new EcomDev_PHPUnit_Constraint_Config_ClassAlias($group, $classAlias, $expectedClassName, $type)
+        );
+    }
+    
+    /**
+     * A new constraint for checking table alias nodes
+     *
+     * @param string $tableAlias
+     * @param string $expectedTableName
+     * @param string $type
+     * @return EcomDev_PHPUnit_Constraint_Config
+     */
+    public static function configTableAlias($tableAlias, $expectedTableName,
+        $type = EcomDev_PHPUnit_Constraint_Config_TableAlias::TYPE_TABLE_ALIAS)
+    {
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_TableAlias($tableAlias, $expectedTableName, $type)
         );
     }
 
@@ -884,6 +900,38 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
             $classAlias,
             $expectedClassName,
+            $message
+        );
+    }
+    
+    /**
+     * Assert that table alias is mapped to expected table name
+     *
+     * @param string $tableAlias
+     * @param string $expectedTableName
+     * @param string $message
+     */
+    public static function assertTableAlias($tableAlias, $expectedTableName, $message = '')
+    {
+        self::assertThatConfig(
+            self::configTableAlias($tableAlias, $expectedTableName),
+            $message
+        );
+    }
+
+    /**
+     * Assert that table alias is NOT mapped to expected table name
+     *
+     * @param string $tableAlias
+     * @param string $expectedTableName
+     * @param string $message
+     */
+    public static function assertTableAliasNot($tableAlias, $expectedTableName, $message = '')
+    {
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configTableAlias($tableAlias, $expectedTableName)
+            ),
             $message
         );
     }
