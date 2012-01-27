@@ -109,6 +109,7 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
 
             // Type check
             if (isset($this->_expectedValueValidation[$type][1])
+                && $expectedValue !== null
                 && !$this->_expectedValueValidation[$type][1]($expectedValue)) {
                 throw PHPUnit_Util_InvalidArgumentHelper::factory(2, $expectedValueType, $expectedValue);
             }

@@ -63,6 +63,23 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             new EcomDev_PHPUnit_Constraint_Config_Module($moduleName, $type, $expectedValue)
         );
     }
+    
+    /**
+     * A new constraint for checking resources node
+     *
+     * @param string $moduleName
+     * @param string $type
+     * @param string|null $expectedValue
+     * @return EcomDev_PHPUnit_Constraint_Config
+     */
+    public static function configResource($moduleName, $type = EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, $expectedValue = null)
+    {
+        
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_Resource($moduleName, $type, self::app()->getConfig()->getModuleDir('', $moduleName), $expectedValue)
+        );
+    }
+    
 
     /**
      * A new constraint for checking module node
@@ -134,6 +151,94 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertThat(Mage::getConfig(), $constraint, $message);
     }
 
+    /**
+     * Asserts that config resource for module is defined
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupResourceDefined($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::configResource($moduleName, 
+                                 EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, 
+                                 $expectedResourceName),
+            $message
+        );
+    }
+    
+    /**
+     * Asserts that config resource for module is NOT defined
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupResourceNotDefined($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configResource($moduleName, 
+                                     EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, 
+                                     $expectedResourceName)
+            ),
+            $message
+        );
+    }
+    
+    /**
+     * Asserts that config resource for module is defined and directory with the same name exists in module
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupResourceExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::configResource($moduleName, 
+                                 EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_EXISTS, 
+                                 $expectedResourceName),
+            $message
+        );
+    }
+    
+    /**
+     * Asserts that config resource for module is defined and directory with the same name exists in module
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupResourceNotExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configResource($moduleName, 
+                                     EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_EXISTS, 
+                                     $expectedResourceName)
+            ),
+            $message
+        );
+    }
+    
     /**
      * Asserts that config node value is equal to the expected value.
      *
