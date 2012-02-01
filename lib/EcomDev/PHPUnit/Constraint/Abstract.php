@@ -149,12 +149,29 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
 
     /**
      * Evaluates value by type.
-     * (non-PHPdoc)
+     *
      * @see PHPUnit_Framework_Constraint::evaluate()
+     *
+     * @param  mixed $other Value or object to evaluate.
+     * @param  string $description Additional information about the test
+     * @param  bool $returnResult Whether to return a result or throw an exception
+     * @return mixed
      */
-    public function evaluate($other)
+    public function evaluate($other, $description = '', $returnResult = false)
     {
-        return $this->callProtectedByType('evaluate', $other);
+        $success = false;
+
+        if ($this->callProtectedByType('evaluate', $other)) {
+            $success = true;
+        }
+
+        if ($returnResult) {
+            return $success;
+        }
+
+        if (!$success) {
+            $this->fail($other, $description);
+        }
     }
 
     /**
