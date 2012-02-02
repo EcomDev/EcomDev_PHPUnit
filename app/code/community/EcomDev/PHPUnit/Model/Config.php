@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -28,12 +28,18 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
 
     const CHANGE_ME = '[change me]';
     /**
-     * Scope snapshot without applied configurations,
-     * It is used for proper store/website/default loading on per store basis
+     * Scope snapshot with different levels of saving configuration
      *
      * @var Mage_Core_Model_Config_Base
      */
-    protected $_scopeSnapshot = null;
+    protected $_scopeSnapshot = array();
+
+    /**
+     * Scope snapshot for a particular test case
+     *
+     * @var Mage_Core_Model_Config_Base
+     */
+    protected $_localScopeSnapshot = null;
 
     /**
      * List of replaced instance creation
@@ -51,7 +57,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     {
         if ($this->_isLocalConfigLoaded
             && Mage::isInstalled()
-            && $this->_scopeSnapshot === null) {
+            && empty($this->_scopeSnapshot)) {
             $this->saveScopeSnapshot();
         }
         parent::loadDb();
@@ -141,19 +147,27 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
      */
     public function loadScopeSnapshot()
     {
-        if ($this->_scopeSnapshot === null) {
+        if (empty($this->_scopeSnapshot)) {
             throw new RuntimeException('Cannot load scope snapshot, because it was not saved before');
         }
 
-        $scopeNode = $this->_scopeSnapshot->getNode();
-        foreach ($scopeNode->children() as $nodeName => $values) {
-            // Remove somehow modified before xml node
-            unset($this->getNode()->$nodeName);
-            // Add saved snapshot of configuration node
-            $this->getNode()->addChild($nodeName);
-            $this->getNode()->$nodeName->extend($values);
-        }
+        $scope = clone end($this->_scopeSnapshot);
 
+        $this->_xml = $scope;
+        return $this;
+    }
+
+    /**
+     * Flushes current scope snapshot level if it is not the last one
+     *
+     * @return EcomDev_PHPUnit_Model_Config
+     */
+    public function flushScopeSnapshot()
+    {
+        if (count($this->_scopeSnapshot) > 1) {
+            array_pop($this->_scopeSnapshot);
+            memory_get_usage(); // Memory GC
+        }
         return $this;
     }
 
@@ -161,23 +175,11 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
      * Saves current configuration snapshot,
      * for pussible restoring in feature
      *
-     * @param array $nodesToSave list of nodes for saving data, by default it is 'default', 'webistes', 'stores'
      * @return EcomDev_PHPUnit_Model_Config
      */
-    public function saveScopeSnapshot($nodesToSave = array('default', 'websites', 'stores'))
+    public function saveScopeSnapshot()
     {
-        $this->_scopeSnapshot = clone $this->_prototype;
-        $this->_scopeSnapshot->loadString('<config />');
-        $scopeNode = $this->_scopeSnapshot->getNode();
-
-        foreach ($nodesToSave as $node) {
-            $scopeNode->addChild($node);
-            $scopeNode->{$node}->extend(
-                $this->getNode($node),
-                true
-            );
-        }
-
+        $this->_scopeSnapshot[] = clone $this->_xml;
         return $this;
     }
 
@@ -277,7 +279,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
             echo sprintf(
                 'Please change values in %s file for nodes %s and %s. '
                 . 'It will help in setting up proper controller test cases',
-                'app/etc/local.phpunit', self::XML_PATH_SECURE_BASE_URL, self::XML_PATH_UNSECURE_BASE_URL
+                'app/etc/local.xml.phpunit', self::XML_PATH_SECURE_BASE_URL, self::XML_PATH_UNSECURE_BASE_URL
             );
             exit();
         }

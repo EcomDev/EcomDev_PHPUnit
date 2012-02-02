@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -431,7 +431,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     {
         self::assertRequestNot(
             EcomDev_PHPUnit_Constraint_Controller_Request::TYPE_BEFORE_FORWARD_ROUTE,
-            $expectedActionName, $message
+            $expectedBeforeForwardedRoute, $message
         );
     }
 
@@ -1969,7 +1969,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
 
         // Workaround for form key
         if ($this->getRequest()->isPost()) {
-            $this->getRequest()->setPost('form_key', Mage::getSingleton('core/session')->getFromKey());
+            $this->getRequest()->setPost('form_key', Mage::getSingleton('core/session')->getFormKey());
         }
 
         $this->getLayout()->reset();

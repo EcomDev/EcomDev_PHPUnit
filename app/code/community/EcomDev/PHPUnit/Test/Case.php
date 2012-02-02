@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -75,8 +75,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     public static function assertEventDispatched($eventName)
     {
         if (is_array($eventName)) {
-            foreach ($eventNames as $eventName) {
-                self::assertEventDispatched($eventName);
+            foreach ($eventName as $singleEventName) {
+                self::assertEventDispatched($singleEventName);
             }
             return;
         }
@@ -95,8 +95,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     public static function assertEventNotDispatched($eventName)
     {
         if (is_array($eventName)) {
-            foreach ($eventNames as $eventName) {
-                self::assertEventNotDispatched($eventName);
+            foreach ($eventName as $singleEventName) {
+                self::assertEventNotDispatched($singleEventName);
             }
             return;
         }
@@ -272,11 +272,27 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public function getAnnotationByName($name, $sources = 'method')
     {
+        return self::getAnnotationByNameFromClass(get_class($this), $name, $sources, $this->getName(false));
+    }
+
+    /**
+     * Retrieves annotation by its name from different sources (class, method) based on meta information
+     *
+     * @param string $className
+     * @param string $name annotation name
+     * @param array|string $sources
+     * @param string $testName test method name
+     */
+    public static function getAnnotationByNameFromClass($className, $name, $sources = 'class', $testName = '')
+    {
         if (is_string($sources)) {
             $sources = array($sources);
         }
 
-        $allAnnotations = $this->getAnnotations();
+        $allAnnotations =  PHPUnit_Util_Test::parseTestMethodAnnotations(
+          $className, $testName
+        );
+
         $annotation = array();
 
         // Walkthrough sources for annotation retrieval
@@ -627,12 +643,30 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @return EcomDev_PHPUnit_Model_Fixture
      */
-    protected function getFixture()
+    protected static function getFixture()
     {
-        return Mage::getSingleton($this->getLoadableClassAlias(
-            'fixture',
-            self::XML_PATH_DEFAULT_FIXTURE_MODEL
-        ));;
+        $fixture = Mage::getSingleton(
+            self::getLoadableClassAlias(
+                'fixture',
+                self::XML_PATH_DEFAULT_FIXTURE_MODEL
+            )
+        );
+
+        if (!$fixture instanceof EcomDev_PHPUnit_Model_Fixture_Interface) {
+            throw new RuntimeException('Fixture model should implement EcomDev_PHPUnit_Model_Fixture_Interface interface');
+        }
+
+        $storage = Mage::registry(EcomDev_PHPUnit_Model_App::REGISTRY_PATH_SHARED_STORAGE);
+
+        if (!$storage instanceof Varien_Object) {
+            throw new RuntimeException('Fixture storage object was not initialized during test application setup');
+        }
+
+        $fixture->setStorage(
+            Mage::registry(EcomDev_PHPUnit_Model_App::REGISTRY_PATH_SHARED_STORAGE)
+        );
+
+        return $fixture;
     }
 
     /**
@@ -642,10 +676,12 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected function getExpectation()
     {
-        return Mage::getSingleton($this->getLoadableClassAlias(
-            'expectation',
-            self::XML_PATH_DEFAULT_EXPECTATION_MODEL
-        ));
+        return Mage::getSingleton(
+            self::getLoadableClassAlias(
+                'expectation',
+                self::XML_PATH_DEFAULT_EXPECTATION_MODEL
+            )
+        );
     }
 
 
@@ -655,15 +691,19 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @param string $type
      * @param string $configPath
+     * @return string
      */
-    protected function getLoadableClassAlias($type, $configPath)
+    protected static function getLoadableClassAlias($type, $configPath)
     {
-        $annotationValue = $this->getAnnotationByName($type .'Model' , 'class');
+        $annotationValue = self::getAnnotationByNameFromClass(
+            get_called_class(),
+            $type .'Model'
+        );
 
         if (current($annotationValue)) {
             $classAlias = current($annotationValue);
         } else {
-            $classAlias = $this->app()->getConfig()->getNode($configPath);
+            $classAlias = self::app()->getConfig()->getNode($configPath);
         }
 
         return $classAlias;
@@ -699,17 +739,45 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $name = $this->getName(false);
         }
 
+        return self::getYamlFilePathByClass(get_called_class(), $type, $name);
+    }
+
+    /**
+     * Loads YAML file from directory inside of the unit test class or
+     * the directory inside the module directory if name is prefixed with ~/
+     * or from another module if name is prefixed with ~My_Module/
+     *
+     * @param string $className class name for looking fixture files
+     * @param string $type type of YAML data (fixtures,expectations,dataproviders)
+     * @param string $name the file name for loading
+     * @return string|boolean
+     */
+    public static function getYamlFilePathByClass($className, $type, $name)
+    {
         if (strrpos($name, '.yaml') !== strlen($name) - 5) {
             $name .= '.yaml';
         }
 
         $classFileObject = new SplFileInfo(
-            EcomDev_Utils_Reflection::getRelflection($this)->getFileName()
+            EcomDev_Utils_Reflection::getRelflection($className)->getFileName()
         );
 
-        $filePath = $classFileObject->getPath() . DS
-                  . $classFileObject->getBasename('.php') . DS
-                  . $type . DS . $name;
+        // When prefixed with ~/ or ~My_Module/, load from the module's Test/<type> directory
+        if (preg_match('#^~(?<module>[^/]*)/(?<path>.*)$#', $name, $matches)) {
+            $name = $matches['path'];
+            if( ! empty($matches['module'])) {
+              $moduleName = $matches['module'];
+            } else {
+              $moduleName = substr($className, 0, strpos($className, '_Test_'));;
+            }
+            $filePath = Mage::getModuleDir('', $moduleName) . DS . 'Test' . DS;
+        }
+        // Otherwise load from the Class/<type> directory
+        else {
+            $filePath = $classFileObject->getPath() . DS
+                      . $classFileObject->getBasename('.php') . DS;
+        }
+        $filePath .= $type . DS . $name;
 
         if (file_exists($filePath)) {
             return $filePath;
@@ -726,13 +794,36 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->getFixture()->loadByTestCase($this);
-
+        self::getFixture()
+            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
+            ->loadByTestCase($this);
         $annotations = $this->getAnnotations();
-        $this->getFixture()->setOptions($annotations['method']);
-        $this->getFixture()->apply();
+        self::getFixture()
+            ->setOptions($annotations['method'])
+            ->apply();
         $this->app()->resetDispatchedEvents();
         parent::setUp();
+    }
+
+    /**
+     * Initializes test environment for subset of tests
+     *
+     */
+    public static function setUpBeforeClass()
+    {
+        self::getFixture()
+            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
+            ->loadForClass(get_called_class());
+
+        $annotations = PHPUnit_Util_Test::parseTestMethodAnnotations(
+            get_called_class()
+        );
+
+        self::getFixture()
+            ->setOptions($annotations['class'])
+            ->apply();
+
+        parent::setUpBeforeClass();
     }
 
     /**
@@ -796,9 +887,24 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $this->app()->replaceRegistry($registryPath, $originalValue);
         }
 
-        $this->getFixture()->discard(); // Clear applied fixture
+        self::getFixture()
+            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
+            ->discard(); // Clear applied fixture
         parent::tearDown();
     }
 
+    /**
+     * Clean up all the shared fixture data
+     *
+     * @return void
+     */
+    public static function tearDownAfterClass()
+    {
+        self::getFixture()
+            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
+            ->discard();
+
+        parent::tearDownAfterClass();
+    }
 
 }

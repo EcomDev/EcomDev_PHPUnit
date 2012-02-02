@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -37,6 +37,13 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
     protected $_options = array();
 
     /**
+     * Fixture model
+     *
+     * @var EcomDev_PHPUnit_Model_Fixture_Interface
+     */
+    protected $_fixture = null;
+
+    /**
      * Retrieve required indexers for re-building
      *
      * @var array
@@ -44,6 +51,17 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
     public function getRequiredIndexers()
     {
         return $this->_requiredIndexers;
+    }
+
+    /**
+     * Sets fixture model to EAV loader
+     *
+     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     */
+    public function setFixture($fixture)
+    {
+        $this->_fixture = $fixture;
+        return $this;
     }
 
     /**
@@ -95,7 +113,18 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
      */
     public function loadEntity($entityType, $values)
     {
+        $originalRequiredIndexers = $this->_requiredIndexers;
+        if (!empty($this->_options['addRequiredIndex'])) {
+            foreach ($this->_options['addRequiredIndex'] as $data) {
+                if (preg_match('/^([a-z0-9_\\-])+\\s+([a-z0-9_\\-])\s*$/i', $data, $match)
+                    && $match[1] == $entityType) {
+                    $this->_requiredIndexers[] = $match[2];
+                }
+            }
+        }
+
         $entityTypeModel = Mage::getSingleton('eav/config')->getEntityType($entityType);
+
 
         $entityTableColumns = $this->_getWriteAdapter()->describeTable(
             $this->getTable($entityTypeModel->getEntityTable())
@@ -119,7 +148,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
                 throw new RuntimeException('Entity Id should be specified in EAV fixture');
             }
 
-            // Fullfil neccessary information
+            // Fulfill necessary information
             $row['entity_type_id'] = $entityTypeModel->getEntityTypeId();
             if (!isset($row['attribute_set_id'])) {
                 $row['attribute_set_id'] = $entityTypeModel->getDefaultAttributeSetId();
@@ -197,6 +226,8 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
             }
         }
 
+        // Restoring original required indexers for making tests isolated
+        $this->_requiredIndexers = $originalRequiredIndexers;
         return $this;
     }
 
@@ -325,7 +356,33 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
             $value = null;
         }
 
+        if ($attribute->usesSource() && $value !== null) {
+            if ($attribute->getSource() instanceof Mage_Eav_Model_Entity_Attribute_Source_Abstract) {
+                $value = $attribute->getSource()->getOptionId($value);
+            } else {
+                $value = $this->_getOptionIdNonAttributeSource($attribute->getSource()->getAllOptions(), $value);
+            }
+        }
+
         return $value;
+    }
+
+    /**
+     * Get option id if attribute source model doesn't support eav attribute interface
+     *
+     *
+     * @param array $options
+     * @param mixed $value
+     */
+    protected function _getOptionIdNonAttributeSource($options, $value)
+    {
+        foreach ($options as $option) {
+            if (strcasecmp($option['label'], $value)==0 || $option['value'] == $value) {
+                return $option['value'];
+            }
+        }
+
+        return null;
     }
 
     /**

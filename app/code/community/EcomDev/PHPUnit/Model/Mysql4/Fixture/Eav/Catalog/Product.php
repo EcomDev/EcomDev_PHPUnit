@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -25,14 +25,13 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
 {
     protected $_requiredIndexers = array(
         'cataloginventory_stock',
-        'catalog_product_flat',
         'catalog_product_attribute',
         'catalog_product_price'
     );
 
 
     /**
-     * Ovveriden to fix issue with flat tables existance mark
+     * Overridden to fix issue with flat tables existance mark
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::loadEntity()
      */
@@ -49,7 +48,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
     }
 
     /**
-     * Overriden to add easy fixture loading for websites and categories associations
+     * Overridden to add easy fixture loading for websites and categories associations
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::_getCustomTableRecords()
      */

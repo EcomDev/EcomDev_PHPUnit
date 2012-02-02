@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -47,6 +47,8 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     const REGISTRY_PATH_LAYOUT_SINGLETON = '_singleton/core/layout';
     const REGISTRY_PATH_DESIGN_PACKAGE_SINGLETON = '_singleton/core/design_package';
+
+    const REGISTRY_PATH_SHARED_STORAGE = 'test_suite_shared_storage';
 
     const XML_PATH_LAYOUT_MODEL_FOR_TEST = 'phpunit/suite/layout/model';
     const XML_PATH_DESIGN_PACKAGE_MODEL_FOR_TEST = 'phpunit/suite/design/package/model';
@@ -152,7 +154,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', new self::$_eventCollectionClass);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', array());
 
-        // All unit tests will be runned in admin scope, to get rid of frontend restrictions
+        // All unit tests will be run in admin scope, to get rid of frontend restrictions
         Mage::app()->initTest();
     }
 
@@ -177,20 +179,16 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
         // Set using cache
         // for things that shouldn't be reloaded each time
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue(
-            $this->_cache,
-            '_allowedCacheOptions',
-            array(
-                'eav' => 1,
-                'layout' => 1,
-                'translate' => 1
-            )
-        );
+        $this->setCacheOptions(array(
+            'eav' => 1,
+            'layout' => 1,
+            'translate' => 1
+        ));
 
         // Clean cache before the whole suite is running
         $this->getCache()->clean();
 
-        // Init modules runs install proccess for table structures,
+        // Init modules runs install process for table structures,
         // It is required for setting up proper setup script
         $this->_initModules();
 
@@ -221,9 +219,39 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
                                $designPackageModel);
 
         $this->loadAreaPart(self::AREA_TEST, self::AREA_PART_EVENTS);
+
+        $this->replaceRegistry(self::REGISTRY_PATH_SHARED_STORAGE, new Varien_Object());
         return $this;
     }
+    
+    /**
+     * Sets cache options for test case
+     * 
+     * @param array $options
+     * @return EcomDev_PHPUnit_Model_App
+     */
+    public function setCacheOptions(array $options)
+    {
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+            $this->_cache,
+            '_allowedCacheOptions',
+            $options
+        );
+    }
 
+    /**
+     * Retrieve cache options for test case
+     * 
+     * @return array
+     */
+    public function getCacheOptions()
+    {
+        return EcomDev_Utils_Reflection::getRestrictedPropertyValue(
+            $this->_cache,
+            '_allowedCacheOptions'
+        );
+    }
+    
     /**
      * Retrieves a model from config and checks it on interface implementation
      *
@@ -362,7 +390,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Returns class name from configuration path,
-     * If $interface is specified, then it additionaly checks it for implementation
+     * If $interface is specified, then it additionally checks it for implementation
      *
      *
      * @param string $configPath
@@ -504,7 +532,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Overriden for disabling events
-     * fire during fixutre loading
+     * fire during fixture loading
      *
      * (non-PHPdoc)
      * @see Mage_Core_Model_App::dispatchEvent()

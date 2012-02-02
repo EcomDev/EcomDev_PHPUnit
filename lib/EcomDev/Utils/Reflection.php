@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -42,6 +42,23 @@ class EcomDev_Utils_Reflection
         $reflectionProperty = $reflectionObject->getProperty($property);
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue((is_string($object) ? null : $object), $value);
+    }
+
+    /**
+     * Sets multiple restricted property values for an object
+     *
+     * @param string|object $object class name
+     * @param array $properties
+     */
+    public static function setRestrictedPropertyValues($object, array $properties)
+    {
+        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+            throw new RuntimeException('For setting of restricted properties via Reflection, PHP version should be 5.3.0 or later');
+        }
+
+        foreach ($properties as $property => $value) {
+            self::setRestrictedPropertyValue($object, $property, $value);
+        }
     }
 
     /**

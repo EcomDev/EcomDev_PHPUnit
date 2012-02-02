@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -65,14 +65,14 @@ abstract class EcomDev_PHPUnit_Constraint_Config_Abstract
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Constraint_Abstract::evaluate()
      */
-    public function evaluate($other)
+    public function evaluate($other, $description = '', $returnResult = false)
     {
         if ($other === false) {
             // If node was not found, than evaluation fails
             return false;
         }
 
-        return parent::evaluate($other);
+        return parent::evaluate($other, $description, $returnResult);
     }
 
 

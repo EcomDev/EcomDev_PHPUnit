@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -139,7 +139,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
      *
      * @return string
      */
-    protected function textLayoutDefition()
+    protected function textLayoutDefinition()
     {
         $text = sprintf('file "%s" is defined in configuration for %s area', $this->_expectedValue, $this->_area);
 
@@ -164,7 +164,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
         $this->setActualValue($assertion['actual']);
         $this->_expectedValue = $assertion['expected'];
 
-        return $this->_actualValue !== $this->_expectedValue;
+        return $this->_actualValue === $this->_expectedValue;
     }
 
     /**

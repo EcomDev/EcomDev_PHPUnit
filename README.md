@@ -8,7 +8,7 @@ This extension was created especially for resolving this problem and promoting t
 System Requirements
 -------------------
 * PHP 5.3 or higher
-* PHPUnit 3.5
+* PHPUnit 3.6.x
 * Magento CE1.4.x-1.5.x/PE1.9.x-PE1.10.x/EE1.9.x-1.10.x
 
 Documentation
@@ -40,6 +40,8 @@ required for proper controller tests.
 
 4. Run the unit tests first time for installing test database. It will take about 3 minutes.
 
+        $ phpunit UnitTests.php
+
 5. If it shows that there was no tests found, it means that extension was successfully
 installed. If it shows some errors than it means that your customizations has install
 scripts that relay on your current database data so you should fix them.
@@ -57,6 +59,8 @@ scripts that relay on your current database data so you should fix them.
 required for proper controller tests.
 
 3. Run the unit tests first time for installing test database. It will take about 3 minutes.
+
+        $ phpunit UnitTests.php
 
 4. If it shows that there was no tests found, it means that extension was successfully
 installed. If it shows some errors than it means that your customizations has install

@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -278,8 +278,6 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
         return sprintf('block "%s" is an instance of %s', $this->_blockName, $this->_expectedValue);
     }
 
-
-
     /**
      * Evaluates that layout block is a root level block
      *
@@ -304,5 +302,30 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     protected function textRootLevel()
     {
         return sprintf('block "%s" is a root level one', $this->_blockName);
+    }
+
+    /**
+     * Evaluates that layout block is a child block of expected one
+     *
+     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @return boolean
+     */
+    protected function evaluateParentName($other)
+    {
+        $this->setActualValue(
+            $other->getBlockParent($this->_blockName)
+        );
+
+        return $this->_actualValue === $this->_expectedValue;
+    }
+
+    /**
+     * Text representation of a root level block assertion
+     *
+     * @return string
+     */
+    protected function textParentName()
+    {
+        return sprintf('block "%s" is a child of expected block', $this->_blockName);
     }
 }

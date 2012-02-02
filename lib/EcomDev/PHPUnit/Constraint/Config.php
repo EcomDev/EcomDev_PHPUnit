@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -92,11 +92,11 @@ class EcomDev_PHPUnit_Constraint_Config extends PHPUnit_Framework_Constraint
      * @param Varien_Simplexml_Config $config
      * @see PHPUnit_Framework_Constraint::evaluate()
      */
-    public function evaluate($config)
+    public function evaluate($config, $description = '', $returnResult = false)
     {
         $nodeValue = $this->getNodeValue($config);
 
-        return $this->constraint->evaluate($nodeValue);
+        return $this->constraint->evaluate($nodeValue, $description, $returnResult);
     }
 
     /**

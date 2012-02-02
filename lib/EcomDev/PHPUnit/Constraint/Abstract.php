@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -20,6 +20,7 @@
  * Abstract constraint for EcomDev_PHPUnit constraints
  * Contains flexible constaint types implementation
  *
+ *  @todo refactor failures for being 100% compatible with PHPUnit 3.6
  */
 abstract class EcomDev_PHPUnit_Constraint_Abstract
     extends PHPUnit_Framework_Constraint
@@ -109,6 +110,7 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
 
             // Type check
             if (isset($this->_expectedValueValidation[$type][1])
+                && $expectedValue !== null
                 && !$this->_expectedValueValidation[$type][1]($expectedValue)) {
                 throw PHPUnit_Util_InvalidArgumentHelper::factory(2, $expectedValueType, $expectedValue);
             }
@@ -148,12 +150,29 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
 
     /**
      * Evaluates value by type.
-     * (non-PHPdoc)
+     *
      * @see PHPUnit_Framework_Constraint::evaluate()
+     *
+     * @param  mixed $other Value or object to evaluate.
+     * @param  string $description Additional information about the test
+     * @param  bool $returnResult Whether to return a result or throw an exception
+     * @return mixed
      */
-    public function evaluate($other)
+    public function evaluate($other, $description = '', $returnResult = false)
     {
-        return $this->callProtectedByType('evaluate', $other);
+        $success = false;
+
+        if ($this->callProtectedByType('evaluate', $other)) {
+            $success = true;
+        }
+
+        if ($returnResult) {
+            return $success;
+        }
+
+        if (!$success) {
+            $this->fail($other, $description);
+        }
     }
 
     /**
@@ -169,7 +188,12 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
         if (in_array($this->_type, $this->_typesWithDiff)) {
             throw new EcomDev_PHPUnit_Constraint_Exception(
                 $failureDescription,
-                PHPUnit_Util_Diff::diff($this->getExpectedValue(), $this->getActualValue($other)),
+                new PHPUnit_Framework_ComparisonFailure(
+                     $this->getExpectedValue(),
+                     $this->getActualValue($other),
+                     $this->getExpectedValue(),
+                     $this->getActualValue($other)
+                ),
                 $description
             );
         } else {
@@ -177,6 +201,23 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
                 $failureDescription, $this->getActualValue($other), $description
             );
         }
+    }
+
+    /**
+     * Adds compatibility to PHPUnit 3.6
+     *
+     * @param mixed $other
+     * @param mixed $description (custom description)
+     * @param boolean $not
+     * @return string
+     */
+    protected function failureDescription($other, $description, $not)
+    {
+        if (method_exists($this, 'customFailureDescription')) {
+            return $this->customFailureDescription($other, $description, $not);
+        }
+
+        return parent::failureDescription($other, $description, $not);
     }
 
     /**
@@ -198,7 +239,7 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
     /**
      * Returns a scalar representation of expected value
      *
-     * @return string
+     * @return scalar
      */
     protected function getExpectedValue()
     {

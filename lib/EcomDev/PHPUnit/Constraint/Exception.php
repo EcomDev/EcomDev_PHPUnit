@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -27,12 +27,16 @@ class EcomDev_PHPUnit_Constraint_Exception extends PHPUnit_Framework_Expectation
 
     public function __construct($description, $diff = '', $message = '')
     {
-        if (!is_scalar($diff)) {
-            $diff = print_r($diff, true);
+        if (!$diff instanceof PHPUnit_Framework_ComparisonFailure) {
+            if (!is_scalar($diff)) {
+                $diff = print_r($diff, true);
+            }
+
+            $this->diff = $diff;
+            $diff = null;
         }
 
-        $this->diff = $diff;
-        parent::__construct($description, null, $message);
+        parent::__construct($description, $diff);
     }
 
     public function toString()

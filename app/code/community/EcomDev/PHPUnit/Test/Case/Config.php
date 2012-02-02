@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2011 Ecommerce Developers (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -40,6 +40,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $nodePath
      * @param string $type
      * @param mixed $expectedValue
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configNode($nodePath, $type, $expectedValue = null)
     {
@@ -54,6 +55,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $moduleName
      * @param string $type
      * @param string|null $expectedValue
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configModule($moduleName, $type, $expectedValue = null)
     {
@@ -61,19 +63,78 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             new EcomDev_PHPUnit_Constraint_Config_Module($moduleName, $type, $expectedValue)
         );
     }
-
+    
     /**
-     * A new constraint for checking module node
+     * A new constraint for checking resources node
      *
      * @param string $moduleName
      * @param string $type
      * @param string|null $expectedValue
+     * @return EcomDev_PHPUnit_Constraint_Config
+     */
+    public static function configResource($moduleName,
+                                          $type = EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED,
+                                          $expectedValue = null)
+    {
+        
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_Resource($moduleName, $type,
+                                                           self::app()->getConfig()->getModuleDir('', $moduleName),
+                                                           $expectedValue)
+        );
+    }
+
+    /**
+     * A new constraint for checking resource setup scripts consistency
+     *
+     * @param string $moduleName
+     * @param string $type
+     * @param array|null $expectedValue
+     * @param string $resourceName
+     * @return EcomDev_PHPUnit_Constraint_Config
+     */
+    public static function configResourceScript($moduleName,
+                                                $type = EcomDev_PHPUnit_Constraint_Config_Resource_Script::TYPE_SCRIPT_SCHEME,
+                                                array $expectedValue = null, $resourceName = null)
+    {
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_Resource_Script($moduleName, $type,
+                                                                  self::app()->getConfig()->getModuleDir('', $moduleName),
+                                                                  $resourceName, $expectedValue)
+        );
+    }
+    
+
+    /**
+     * A new constraint for checking class alias nodes
+     *
+     * @param string $group
+     * @param string $classAlias
+     * @param string $expectedClassName
+     * @param string $type
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configClassAlias($group, $classAlias, $expectedClassName,
         $type = EcomDev_PHPUnit_Constraint_Config_ClassAlias::TYPE_CLASS_ALIAS)
     {
         return self::config(
             new EcomDev_PHPUnit_Constraint_Config_ClassAlias($group, $classAlias, $expectedClassName, $type)
+        );
+    }
+    
+    /**
+     * A new constraint for checking table alias nodes
+     *
+     * @param string $tableAlias
+     * @param string $expectedTableName
+     * @param string $type
+     * @return EcomDev_PHPUnit_Constraint_Config
+     */
+    public static function configTableAlias($tableAlias, $expectedTableName,
+        $type = EcomDev_PHPUnit_Constraint_Config_TableAlias::TYPE_TABLE_ALIAS)
+    {
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_TableAlias($tableAlias, $expectedTableName, $type)
         );
     }
 
@@ -86,6 +147,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string|null $layoutUpdate
      * @param string|null $theme
      * @param string|null $designPackage
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configLayout($area, $expectedFile, $type, $layoutUpdate = null, $theme = null, $designPackage = null)
     {
@@ -106,7 +168,9 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $eventName
      * @param string $observerClassAlias
      * @param string $observerMethod
+     * @param string $type
      * @param string|null $observerName
+     * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configEventObserver($area, $eventName, $observerClassAlias, $observerMethod,
         $type = EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINDED, $observerName = null)
@@ -127,6 +191,235 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertThat(Mage::getConfig(), $constraint, $message);
     }
 
+    /**
+     * Asserts that config resource for module is defined
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupResourceDefined($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::configResource($moduleName, 
+                                 EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, 
+                                 $expectedResourceName),
+            $message
+        );
+    }
+    
+    /**
+     * Asserts that config resource for module is NOT defined
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupResourceNotDefined($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configResource($moduleName, 
+                                     EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, 
+                                     $expectedResourceName)
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that config resource for module is defined and directory with the same name exists in module
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSchemeSetupExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::configResource($moduleName,
+                EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_SCHEME_EXISTS,
+                $expectedResourceName),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that config resource for module is defined and directory with the same name exists in module
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSchemeSetupNotExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configResource($moduleName,
+                    EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_SCHEME_EXISTS,
+                    $expectedResourceName)
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that config resource for module is defined and directory with the same name exists in module directory
+     * for data setup scripts
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertDataSetupExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::configResource($moduleName,
+                EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DATA_EXISTS,
+                $expectedResourceName),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that config resource for module is defined and directory with the same name exists in module
+     * directory for data setup scripts
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertDataSetupNotExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configResource($moduleName,
+                    EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DATA_EXISTS,
+                    $expectedResourceName)
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that there is defined properly list of data/scheme upgrade scripts
+     *
+     * @param string $type
+     * @param string|null $from
+     * @param string|null $to
+     * @param string|null $moduleName
+     * @param string|null $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupScriptVersions(
+        $type = EcomDev_PHPUnit_Constraint_Config_Resource_Script::TYPE_SCRIPT_SCHEME, $from = null, $to = null,
+        $moduleName = null, $resourceName = null,$message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+
+        if ($to === null) {
+            $moduleConfig = self::app()->getConfig()->getModuleConfig($moduleName);
+            if (isset($moduleConfig->version)) {
+                $to = (string)$moduleConfig->version;
+            }
+        }
+
+        self::assertThatConfig(
+            self::configResourceScript($moduleName,
+                $type,
+                array($from, $to),
+                $resourceName
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that there is defined properly list of scheme upgrade scripts
+     *
+     * @param string|null $from
+     * @param string|null $to
+     * @param string|null $moduleName
+     * @param string|null $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSchemeSetupScriptVersions($from = null, $to = null,
+        $moduleName = null, $resourceName = null,$message = '')
+    {
+        self::assertSetupScriptVersions(EcomDev_PHPUnit_Constraint_Config_Resource_Script::TYPE_SCRIPT_SCHEME, $from,
+                                        $to, $moduleName, $resourceName, $message);
+    }
+
+    /**
+     * Asserts that there is defined properly list of data upgrade scripts
+     *
+     * @param string|null $from
+     * @param string|null $to
+     * @param string|null $moduleName
+     * @param string|null $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertDataSetupScriptVersions($from = null, $to = null,
+                                                           $moduleName = null, $resourceName = null,$message = '')
+    {
+        self::assertSetupScriptVersions(EcomDev_PHPUnit_Constraint_Config_Resource_Script::TYPE_SCRIPT_DATA, $from,
+            $to, $moduleName, $resourceName, $message);
+    }
+
+    /**
+     * Alias of assertSchemeSetupExists() model
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupResourceExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        self::assertSchemeSetupExists($moduleName, $expectedResourceName, $message);
+    }
+
+    /**
+     * Alias of assertSchemeSetupNotExists() model
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupResourceNotExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        self::assertSchemeSetupNotExists($moduleName, $expectedResourceName, $message);
+    }
+    
     /**
      * Asserts that config node value is equal to the expected value.
      *
@@ -304,6 +597,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      *
      * @param string $nodePath
      * @param decimal $expectedValue
+     * @param string $message
      */
     public static function assertConfigNodeLessThanOrEquals($nodePath, $expectedValue, $message = '')
     {
@@ -344,6 +638,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      *
      * @param string $nodePath
      * @param decimal $expectedValue
+     * @param string $message
      */
     public static function assertConfigNodeGreaterThanOrEquals($nodePath, $expectedValue, $message = '')
     {
@@ -640,6 +935,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $group
      * @param string $classAlias
      * @param string $expectedClassName
+     * @param string $message
      */
     public static function assertGroupedClassAlias($group, $classAlias, $expectedClassName, $message = '')
     {
@@ -655,6 +951,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string $group
      * @param string $classAlias
      * @param string $expectedClassName
+     * @param string $message
      */
     public static function assertGroupedClassAliasNot($group, $classAlias, $expectedClassName, $message = '')
     {
@@ -678,7 +975,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAlias(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_BLOCK,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -694,7 +992,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAliasNot(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_BLOCK,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -710,7 +1009,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAlias(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -726,7 +1026,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAliasNot(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -744,7 +1045,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAlias(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -762,7 +1064,40 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAliasNot(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_MODEL,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
+        );
+    }
+    
+    /**
+     * Assert that table alias is mapped to expected table name
+     *
+     * @param string $tableAlias
+     * @param string $expectedTableName
+     * @param string $message
+     */
+    public static function assertTableAlias($tableAlias, $expectedTableName, $message = '')
+    {
+        self::assertThatConfig(
+            self::configTableAlias($tableAlias, $expectedTableName),
+            $message
+        );
+    }
+
+    /**
+     * Assert that table alias is NOT mapped to expected table name
+     *
+     * @param string $tableAlias
+     * @param string $expectedTableName
+     * @param string $message
+     */
+    public static function assertTableAliasNot($tableAlias, $expectedTableName, $message = '')
+    {
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configTableAlias($tableAlias, $expectedTableName)
+            ),
+            $message
         );
     }
 
@@ -778,7 +1113,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAlias(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_HELPER,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
@@ -794,7 +1130,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertGroupedClassAliasNot(
             EcomDev_PHPUnit_Constraint_Config_ClassAlias::GROUP_HELPER,
             $classAlias,
-            $expectedClassName
+            $expectedClassName,
+            $message
         );
     }
 
