@@ -36,7 +36,7 @@ class EcomDev_PHPUnit_Constraint_Exception extends PHPUnit_Framework_Expectation
             $diff = null;
         }
 
-        parent::__construct($message, $diff);
+        parent::__construct($description, $diff);
     }
 
     public function toString()
