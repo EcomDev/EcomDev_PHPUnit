@@ -17,7 +17,7 @@
  */
 
 // Loading Spyc yaml parser,
-// becuase Symfony component is not working propertly with nested
+// because Symfony component is not working properly with nested structures
 require_once 'Spyc/spyc.php';
 
 /**
@@ -140,7 +140,7 @@ class EcomDev_PHPUnit_Model_Fixture
 
 
     /**
-     * Model constuctor, just defines wich resource model to use
+     * Model constructor, just defines which resource model to use
      * (non-PHPdoc)
      * @see Varien_Object::_construct()
      */
@@ -162,7 +162,7 @@ class EcomDev_PHPUnit_Model_Fixture
     }
 
     /**
-     * Sets storage for fixutures
+     * Sets storage for fixtures
      *
      * @param Varien_Object $storage
      * @return EcomDev_PHPUnit_Model_Fixture

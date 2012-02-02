@@ -20,6 +20,7 @@
  * Abstract constraint for EcomDev_PHPUnit constraints
  * Contains flexible constaint types implementation
  *
+ *  @todo refactor failures for being 100% compatible with PHPUnit 3.6
  */
 abstract class EcomDev_PHPUnit_Constraint_Abstract
     extends PHPUnit_Framework_Constraint
@@ -187,7 +188,12 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
         if (in_array($this->_type, $this->_typesWithDiff)) {
             throw new EcomDev_PHPUnit_Constraint_Exception(
                 $failureDescription,
-                PHPUnit_Util_Diff::diff($this->getExpectedValue(), $this->getActualValue($other)),
+                new PHPUnit_Framework_ComparisonFailure(
+                     $this->getExpectedValue(),
+                     $this->getActualValue($other),
+                     $this->getExpectedValue(),
+                     $this->getActualValue($other)
+                ),
                 $description
             );
         } else {
@@ -195,6 +201,23 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
                 $failureDescription, $this->getActualValue($other), $description
             );
         }
+    }
+
+    /**
+     * Adds compatibility to PHPUnit 3.6
+     *
+     * @param mixed $other
+     * @param mixed $description (custom description)
+     * @param boolean $not
+     * @return string
+     */
+    protected function failureDescription($other, $description, $not)
+    {
+        if (method_exists($this, 'customFailureDescription')) {
+            return $this->customFailureDescription($other, $description, $not);
+        }
+
+        return parent::failureDescription($other, $description, $not);
     }
 
     /**
@@ -216,7 +239,7 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
     /**
      * Returns a scalar representation of expected value
      *
-     * @return string
+     * @return scalar
      */
     protected function getExpectedValue()
     {

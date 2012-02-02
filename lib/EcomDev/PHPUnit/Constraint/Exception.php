@@ -27,12 +27,16 @@ class EcomDev_PHPUnit_Constraint_Exception extends PHPUnit_Framework_Expectation
 
     public function __construct($description, $diff = '', $message = '')
     {
-        if (!is_scalar($diff)) {
-            $diff = print_r($diff, true);
+        if (!$diff instanceof PHPUnit_Framework_ComparisonFailure) {
+            if (!is_scalar($diff)) {
+                $diff = print_r($diff, true);
+            }
+
+            $this->diff = $diff;
+            $diff = null;
         }
 
-        $this->diff = $diff;
-        parent::__construct($description, null, $message);
+        parent::__construct($message, $diff);
     }
 
     public function toString()

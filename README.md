@@ -8,7 +8,7 @@ This extension was created especially for resolving this problem and promoting t
 System Requirements
 -------------------
 * PHP 5.3 or higher
-* PHPUnit 3.5
+* PHPUnit 3.6.x
 * Magento CE1.4.x-1.5.x/PE1.9.x-PE1.10.x/EE1.9.x-1.10.x
 
 Documentation

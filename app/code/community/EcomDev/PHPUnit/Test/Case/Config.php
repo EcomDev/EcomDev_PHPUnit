@@ -72,11 +72,35 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string|null $expectedValue
      * @return EcomDev_PHPUnit_Constraint_Config
      */
-    public static function configResource($moduleName, $type = EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, $expectedValue = null)
+    public static function configResource($moduleName,
+                                          $type = EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED,
+                                          $expectedValue = null)
     {
         
         return self::config(
-            new EcomDev_PHPUnit_Constraint_Config_Resource($moduleName, $type, self::app()->getConfig()->getModuleDir('', $moduleName), $expectedValue)
+            new EcomDev_PHPUnit_Constraint_Config_Resource($moduleName, $type,
+                                                           self::app()->getConfig()->getModuleDir('', $moduleName),
+                                                           $expectedValue)
+        );
+    }
+
+    /**
+     * A new constraint for checking resource setup scripts consistency
+     *
+     * @param string $moduleName
+     * @param string $type
+     * @param array|null $expectedValue
+     * @param string $resourceName
+     * @return EcomDev_PHPUnit_Constraint_Config
+     */
+    public static function configResourceScript($moduleName,
+                                                $type = EcomDev_PHPUnit_Constraint_Config_Resource_Script::TYPE_SCRIPT_SCHEME,
+                                                array $expectedValue = null, $resourceName = null)
+    {
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_Resource_Script($moduleName, $type,
+                                                                  self::app()->getConfig()->getModuleDir('', $moduleName),
+                                                                  $resourceName, $expectedValue)
         );
     }
     
@@ -210,9 +234,168 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             $message
         );
     }
-    
+
     /**
      * Asserts that config resource for module is defined and directory with the same name exists in module
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSchemeSetupExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::configResource($moduleName,
+                EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_SCHEME_EXISTS,
+                $expectedResourceName),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that config resource for module is defined and directory with the same name exists in module
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSchemeSetupNotExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configResource($moduleName,
+                    EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_SCHEME_EXISTS,
+                    $expectedResourceName)
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that config resource for module is defined and directory with the same name exists in module directory
+     * for data setup scripts
+     *
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertDataSetupExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::configResource($moduleName,
+                EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DATA_EXISTS,
+                $expectedResourceName),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that config resource for module is defined and directory with the same name exists in module
+     * directory for data setup scripts
+     *
+     * @param string $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertDataSetupNotExists($moduleName = null, $expectedResourceName = null, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configResource($moduleName,
+                    EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DATA_EXISTS,
+                    $expectedResourceName)
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that there is defined properly list of data/scheme upgrade scripts
+     *
+     * @param string $type
+     * @param string|null $from
+     * @param string|null $to
+     * @param string|null $moduleName
+     * @param string|null $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSetupScriptVersions(
+        $type = EcomDev_PHPUnit_Constraint_Config_Resource_Script::TYPE_SCRIPT_SCHEME, $from = null, $to = null,
+        $moduleName = null, $resourceName = null,$message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+
+        if ($to === null) {
+            $moduleConfig = self::app()->getConfig()->getModuleConfig($moduleName);
+            if (isset($moduleConfig->version)) {
+                $to = (string)$moduleConfig->version;
+            }
+        }
+
+        self::assertThatConfig(
+            self::configResourceScript($moduleName,
+                $type,
+                array($from, $to),
+                $resourceName
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that there is defined properly list of scheme upgrade scripts
+     *
+     * @param string|null $from
+     * @param string|null $to
+     * @param string|null $moduleName
+     * @param string|null $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertSchemeSetupScriptVersions($from = null, $to = null,
+        $moduleName = null, $resourceName = null,$message = '')
+    {
+        self::assertSetupScriptVersions(EcomDev_PHPUnit_Constraint_Config_Resource_Script::TYPE_SCRIPT_SCHEME, $from,
+                                        $to, $moduleName, $resourceName, $message);
+    }
+
+    /**
+     * Asserts that there is defined properly list of data upgrade scripts
+     *
+     * @param string|null $from
+     * @param string|null $to
+     * @param string|null $moduleName
+     * @param string|null $moduleName
+     * @param mixed $expectedResourceName
+     * @param string $message
+     */
+    public static function assertDataSetupScriptVersions($from = null, $to = null,
+                                                           $moduleName = null, $resourceName = null,$message = '')
+    {
+        self::assertSetupScriptVersions(EcomDev_PHPUnit_Constraint_Config_Resource_Script::TYPE_SCRIPT_DATA, $from,
+            $to, $moduleName, $resourceName, $message);
+    }
+
+    /**
+     * Alias of assertSchemeSetupExists() model
      *
      *
      * @param string $moduleName
@@ -221,19 +404,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      */
     public static function assertSetupResourceExists($moduleName = null, $expectedResourceName = null, $message = '')
     {
-        if ($moduleName === null) {
-            $moduleName = self::getModuleNameFromCallStack();
-        }
-        self::assertThatConfig(
-            self::configResource($moduleName, 
-                                 EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_EXISTS, 
-                                 $expectedResourceName),
-            $message
-        );
+        self::assertSchemeSetupExists($moduleName, $expectedResourceName, $message);
     }
-    
+
     /**
-     * Asserts that config resource for module is defined and directory with the same name exists in module
+     * Alias of assertSchemeSetupNotExists() model
      *
      *
      * @param string $moduleName
@@ -242,17 +417,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      */
     public static function assertSetupResourceNotExists($moduleName = null, $expectedResourceName = null, $message = '')
     {
-        if ($moduleName === null) {
-            $moduleName = self::getModuleNameFromCallStack();
-        }
-        self::assertThatConfig(
-            self::logicalNot(
-                self::configResource($moduleName, 
-                                     EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_EXISTS, 
-                                     $expectedResourceName)
-            ),
-            $message
-        );
+        self::assertSchemeSetupNotExists($moduleName, $expectedResourceName, $message);
     }
     
     /**

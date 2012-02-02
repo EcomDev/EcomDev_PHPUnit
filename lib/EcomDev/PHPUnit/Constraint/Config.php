@@ -92,11 +92,11 @@ class EcomDev_PHPUnit_Constraint_Config extends PHPUnit_Framework_Constraint
      * @param Varien_Simplexml_Config $config
      * @see PHPUnit_Framework_Constraint::evaluate()
      */
-    public function evaluate($config)
+    public function evaluate($config, $description = '', $returnResult = false)
     {
         $nodeValue = $this->getNodeValue($config);
 
-        return $this->constraint->evaluate($nodeValue);
+        return $this->constraint->evaluate($nodeValue, $description, $returnResult);
     }
 
     /**
