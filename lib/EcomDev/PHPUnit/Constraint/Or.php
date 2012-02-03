@@ -17,22 +17,22 @@
  */
 
 /**
- * Abstract constraint for controller response assetions
- *
+ * Fix of comparison type for Or constraint
  */
-abstract class EcomDev_PHPUnit_Constraint_Controller_Response_Abstract
-    extends EcomDev_PHPUnit_Constraint_Abstract
+class EcomDev_PHPUnit_Constraint_Or extends PHPUnit_Framework_Constraint_Or
 {
-    /**
-     * Custom failure description for showing response related errors
-     * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
-     */
-    protected function customFailureDescription($other, $description, $not)
+    protected function failureDescription($other)
     {
-        return sprintf(
-            'request %s.',
-            $this->toString()
-        );
+        $text = '';
+
+        foreach ($this->constraints as $key => $constraint) {
+            if ($key > 0) {
+                $text .= ' or ';
+            }
+
+            $text .= $constraint->failureDescription($other);
+        }
+
+        return $text;
     }
 }

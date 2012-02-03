@@ -30,7 +30,7 @@ abstract class EcomDev_PHPUnit_Constraint_Layout_Abstract extends EcomDev_PHPUni
     protected function customFailureDescription($other, $description, $not)
     {
         return sprintf(
-            'Failed asserting that layout %s.',
+            'layout %s.',
             $this->toString()
         );
     }

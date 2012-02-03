@@ -300,7 +300,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
     protected function customFailureDescription($other, $description, $not)
     {
         return sprintf(
-          'Failed asserting that configuration node "%s" %s.', $this->_nodePath, $this->toString()
+          'configuration node "%s" %s.', $this->_nodePath, $this->toString()
         );
     }
 }

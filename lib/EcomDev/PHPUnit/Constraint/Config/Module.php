@@ -222,7 +222,7 @@ class EcomDev_PHPUnit_Constraint_Config_Module
     protected function customFailureDescription($other, $description, $not)
     {
         return sprintf(
-          'Failed asserting that %s module %s.', $this->_moduleName, $this->toString()
+          '%s module %s.', $this->_moduleName, $this->toString()
         );
     }
 }

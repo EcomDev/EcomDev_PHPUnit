@@ -358,7 +358,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
     protected function customFailureDescription($other, $description, $not)
     {
         return sprintf(
-            'Failed asserting that setup resources %s.',
+            'setup resources %s.',
             $this->toString()
         );
     }

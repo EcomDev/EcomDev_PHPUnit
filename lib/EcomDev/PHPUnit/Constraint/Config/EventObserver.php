@@ -169,7 +169,7 @@ class EcomDev_PHPUnit_Constraint_Config_EventObserver
     protected function customFailureDescription($other, $description, $not)
     {
         return sprintf(
-            'Failed asserting that %s "%s" event observer %s.',
+            '%s "%s" event observer %s.',
             $this->_area,
             $this->_expectedValue,
             $this->toString()

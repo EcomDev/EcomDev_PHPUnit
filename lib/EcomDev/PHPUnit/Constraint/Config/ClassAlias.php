@@ -131,7 +131,7 @@ class EcomDev_PHPUnit_Constraint_Config_ClassAlias
     protected function customFailureDescription($other, $description, $not)
     {
         return sprintf(
-            'Failed asserting that %s "%s/%s" %s.',
+            '%s "%s/%s" %s.',
             $this->_textByGroup[$this->_group],
             $this->_classAliasPrefix, $this->_classAliasName,
             $this->toString()

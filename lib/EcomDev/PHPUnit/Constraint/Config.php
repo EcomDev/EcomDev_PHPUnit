@@ -123,6 +123,7 @@ class EcomDev_PHPUnit_Constraint_Config extends PHPUnit_Framework_Constraint
      */
     protected function failureDescription($other)
     {
-        return $this->constraint->failureDescription($other);
+        $nodeValue = $this->getNodeValue($other);
+        return $this->constraint->failureDescription($nodeValue);
     }
 }

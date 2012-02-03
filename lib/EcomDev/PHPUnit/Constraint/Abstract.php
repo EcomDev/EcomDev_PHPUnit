@@ -183,7 +183,7 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
      */
     public function fail($other, $description, $not = FALSE)
     {
-        $failureDescription = $this->failureDescription($other, $description, $not);
+        $failureDescription = sprintf('Failed asserting that %s', $this->failureDescription($other, $description, $not));
 
         if (in_array($this->_type, $this->_typesWithDiff)) {
             throw new EcomDev_PHPUnit_Constraint_Exception(

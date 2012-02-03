@@ -185,7 +185,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
     protected function customFailureDescription($other, $description, $not)
     {
         return sprintf(
-            'Failed asserting that layout %s.',
+            'layout %s.',
             $this->toString()
         );
     }

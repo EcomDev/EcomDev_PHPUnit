@@ -97,7 +97,7 @@ class EcomDev_PHPUnit_Constraint_Config_TableAlias
     protected function customFailureDescription($other, $description, $not)
     {
         return sprintf(
-            'Failed asserting that table alias "%s/%s" %s.',
+            'table alias "%s/%s" %s.',
             $this->_tableAliasPrefix, $this->_tableAliasName,
             $this->toString()
         );

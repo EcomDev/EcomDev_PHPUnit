@@ -301,7 +301,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Cons
     protected function customFailureDescription($other, $description, $not)
     {
         return sprintf(
-            'Failed asserting that request %s.',
+            'request %s.',
             $this->toString()
         );
     }

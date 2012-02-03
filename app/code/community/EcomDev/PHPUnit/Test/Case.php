@@ -67,6 +67,21 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Returns a EcomDev_PHPUnit_Constraint_Or matcher object.
+     *
+     * @return EcomDev_PHPUnit_Constraint_Or
+     */
+    public static function logicalOr()
+    {
+        $constraints = func_get_args();
+
+        $constraint = new EcomDev_PHPUnit_Constraint_Or;
+        $constraint->setConstraints($constraints);
+
+        return $constraint;
+    }
+
+    /**
      * Asserts that event was dispatched at least once
      *
      * @param string|array $event

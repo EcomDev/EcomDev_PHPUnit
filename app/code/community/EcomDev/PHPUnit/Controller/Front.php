@@ -29,6 +29,7 @@ class EcomDev_PHPUnit_Controller_Front extends Mage_Core_Controller_Varien_Front
      * (non-PHPdoc)
      * @see Mage_Core_Controller_Varien_Front::_checkBaseUrl()
      */
+
     protected function _checkBaseUrl()
     {
         // Does nothing
