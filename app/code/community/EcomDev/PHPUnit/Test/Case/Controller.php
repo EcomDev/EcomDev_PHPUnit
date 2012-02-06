@@ -645,7 +645,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         );
     }
 
-   /**
+    /**
      * Assert that response header doesn't match specified PCRE pattern
      *
      * @param string $headerName
@@ -1980,6 +1980,78 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         // Unset changed cookies
         $this->getRequest()->resetCookies();
         $this->getRequest()->setCookies($customCookies);
+        return $this;
+    }
+
+    /**
+     * Creates admin user session stub for testing adminhtml controllers
+     *
+     * @param array $aclResources list of allowed ACL resources for user,
+     *                            if null then it is super admin
+     * @param int $userId fake id of the admin user, you can use different one if it is required for your tests
+     * @return EcomDev_PHPUnit_Test_Case_Controller
+     */
+    protected function mockAdminUserSession(array $aclResources = null, $userId = 1)
+    {
+        $adminSessionMock = $this->getModelMock(
+            'admin/session',
+            array(
+                  'init',
+                  'getUser',
+                  'isLoggedIn',
+                  'isAllowed')
+        );
+
+        $adminUserMock = $this->getModelMock(
+            'admin/user',
+            array('login', 'getId', 'save', 'authenticate', 'getRole')
+        );
+
+        $adminRoleMock = $this->getModelMock('admin/roles', array('getGwsIsAll'));
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsIsAll')
+            ->will($this->returnValue(true));
+
+        $adminUserMock->expects($this->any())
+            ->method('getRole')
+            ->will($this->returnValue($adminRoleMock));
+
+        $adminUserMock->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue($userId));
+
+        $adminSessionMock->expects($this->any())
+            ->method('getUser')
+            ->will($this->returnValue($adminUserMock));
+
+        $adminSessionMock->expects($this->any())
+            ->method('isLoggedIn')
+            ->will($this->returnValue(true));
+
+        // Simple isAllowed implementation
+        $adminSessionMock->expects($this->any())
+            ->method('isAllowed')
+            ->will($this->returnCallback(
+                function($resource) use ($aclResources) {
+                    if ($aclResources === null) {
+                        return true;
+                    }
+                    if (strpos($resource, 'admin/') === 0) {
+                        $resource = substr($resource, strlen('admin/'));
+                    }
+                    return in_array($resource, $aclResources);
+                }));
+
+
+
+        $this->replaceByMock('model', 'admin/session', $adminSessionMock);
+
+        $this->getRequest()->setParam(
+            Mage_Adminhtml_Model_Url::SECRET_KEY_PARAM_NAME,
+            Mage::getSingleton('adminhtml/url')->getSecretKey()
+        );
+
         return $this;
     }
 }
