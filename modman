@@ -12,3 +12,10 @@ LOCALXML=app/etc/local.xml.phpunit; \
 if [ ! -f $PROJECT/$LOCALXML ]; then \
   cp $MODULE/$LOCALXML $PROJECT/$LOCALXML; \
 fi
+
+# Copy phpunit.xml if it doesn't already exist
+@shell \
+PHPUNITXML=phpunit.xml; \
+if [ ! -f $PROJECT/$LOCALXML ]; then \
+  cp $MODULE/$PHPUNITXML $PROJECT/$PHPUNITXML; \
+fi
