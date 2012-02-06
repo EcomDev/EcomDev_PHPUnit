@@ -1846,7 +1846,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
             $path = $cookieStub->getPath();
         }
 
-        if ($domain !== null) {
+        if ($domain === null) {
             $domain = $cookieStub->getDomain();
         }
 
