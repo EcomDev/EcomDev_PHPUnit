@@ -28,10 +28,12 @@
        </blacklist>  
    </filter>
    <logging>
+      <!-- Uncomment this line if you want to have coverage report generated every test run
       <log type="coverage-html" target="var/phpunit/coverage" charset="UTF-8"
             yui="true" highlight="false"
             lowUpperBound="35" highLowerBound="70"/>
       <log type="coverage-clover" target="var/phpunit/coverage.xml"/>
+      -->
       <log type="junit" target="var/phpunit/junit.xml" logIncompleteSkipped="false"/>
    </logging>
 </phpunit>
