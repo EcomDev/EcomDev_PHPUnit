@@ -63,7 +63,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             new EcomDev_PHPUnit_Constraint_Config_Module($moduleName, $type, $expectedValue)
         );
     }
-    
+
     /**
      * A new constraint for checking resources node
      *
@@ -76,7 +76,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
                                           $type = EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED,
                                           $expectedValue = null)
     {
-        
+
         return self::config(
             new EcomDev_PHPUnit_Constraint_Config_Resource($moduleName, $type,
                                                            self::app()->getConfig()->getModuleDir('', $moduleName),
@@ -103,7 +103,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
                                                                   $resourceName, $expectedValue)
         );
     }
-    
+
 
     /**
      * A new constraint for checking class alias nodes
@@ -121,7 +121,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             new EcomDev_PHPUnit_Constraint_Config_ClassAlias($group, $classAlias, $expectedClassName, $type)
         );
     }
-    
+
     /**
      * A new constraint for checking table alias nodes
      *
@@ -205,13 +205,13 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             $moduleName = self::getModuleNameFromCallStack();
         }
         self::assertThatConfig(
-            self::configResource($moduleName, 
-                                 EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, 
+            self::configResource($moduleName,
+                                 EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED,
                                  $expectedResourceName),
             $message
         );
     }
-    
+
     /**
      * Asserts that config resource for module is NOT defined
      *
@@ -227,8 +227,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         }
         self::assertThatConfig(
             self::logicalNot(
-                self::configResource($moduleName, 
-                                     EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, 
+                self::configResource($moduleName,
+                                     EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED,
                                      $expectedResourceName)
             ),
             $message
@@ -419,7 +419,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     {
         self::assertSchemeSetupNotExists($moduleName, $expectedResourceName, $message);
     }
-    
+
     /**
      * Asserts that config node value is equal to the expected value.
      *
@@ -432,7 +432,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     public static function assertConfigNodeValue($nodePath, $expectedValue, $message = '',
         $type = EcomDev_PHPUnit_Constraint_Config_Node::TYPE_EQUALS_STRING)
     {
-        self::assertThatConfig(
+        static::assertThatConfig(
             self::configNode($nodePath, $type, $expectedValue),
             $message
         );
@@ -1068,7 +1068,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             $message
         );
     }
-    
+
     /**
      * Assert that table alias is mapped to expected table name
      *
