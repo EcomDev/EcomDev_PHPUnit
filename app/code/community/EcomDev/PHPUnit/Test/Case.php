@@ -341,11 +341,6 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             );
         }
 
-
-        if ($type == 'helper' && strpos($classAlias, '/') === false) {
-            $classAlias .= '/data';
-        }
-
         if (in_array($type, array('model', 'resource_model'))) {
             $this->app()->getConfig()->replaceInstanceCreation($type, $classAlias, $mock);
             $type = str_replace('model', 'singleton', $type);
