@@ -339,9 +339,12 @@ class EcomDev_PHPUnit_Controller_Request_Http
         $baseUrl = $this->getBaseUrl();
 
         $parts = parse_url($baseUrl);
-        $httpHost = $parts['host'];
-        if (!$trimPort && isset($parts['port'])) {
-            $httpHost .= ':' . $parts['port'];
+        $httpHost = '';
+        if (isset($parts['host'])) {
+            $httpHost = $parts['host'];
+            if (!$trimPort && isset($parts['port'])) {
+                $httpHost .= ':' . $parts['port'];
+            }
         }
 
         return $httpHost;
