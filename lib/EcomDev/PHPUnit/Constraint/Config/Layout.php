@@ -182,7 +182,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
      * (non-PHPdoc)
      * @see PHPUnit_Framework_Constraint::customFailureDescription()
      */
-    protected function customFailureDescription($other, $description, $not)
+    protected function customFailureDescription($other)
     {
         return sprintf(
             'layout %s.',

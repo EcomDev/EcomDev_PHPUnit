@@ -225,7 +225,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource
      * (non-PHPdoc)
      * @see PHPUnit_Framework_Constraint::customFailureDescription()
      */
-    protected function customFailureDescription($other, $description, $not)
+    protected function customFailureDescription($other)
     {
         return sprintf(
             'setup resources %s.',
