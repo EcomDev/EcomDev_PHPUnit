@@ -20,6 +20,12 @@
        <blacklist>
             <!-- Exclude Magento Core files from code coverage -->
             <directory suffix=".php">app/code/core</directory>
+            <!-- Exclude EcomDev_PHPUnit classes from code coverage -->
+            <directory suffix=".php">app/code/community/EcomDev/PHPUnit</directory>
+            <directory suffix=".php">lib/EcomDev/Utils</directory>
+            <directory suffix=".php">lib/EcomDev/PHPUnit</directory>
+            <!-- Exclude Mage.php file from code coverage -->
+            <file>app/Mage.php</file>
             <!-- Exclude template files -->
             <directory suffix=".phtml">app/code/design</directory>
             <!-- Exclude Varien & Zend libraries -->
