@@ -16,7 +16,6 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
-
 /**
  * Base for controller test case
  *
@@ -81,7 +80,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $type
      * @return EcomDev_PHPUnit_Constraint_Layout
      */
-    public static function layout($type)
+    public static function layout($type = EcomDev_PHPUnit_Constraint_Layout::TYPE_LOADED)
     {
         return new EcomDev_PHPUnit_Constraint_Layout($type);
     }
@@ -1902,20 +1901,29 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     protected function reset()
     {
         $_SESSION = array();
+
+        // Init request for any url that using sessions
+        $initialUrlParams = array();
+        $urlModel = $this->getUrlModel(null, $initialUrlParams);
+        $baseUrl = $urlModel->getBaseUrl($initialUrlParams);
+
         $this->getRequest()->reset();
+        $this->getRequest()->setBaseUrl($baseUrl);
+
         $this->getResponse()->reset();
         $this->getLayout()->reset();
         return $this;
     }
 
     /**
-     * Dispatches controller action
+     * Returns URL model for request
      *
      *
-     * @param string $route
+     * @param string|null $route
      * @param array $params
+     * @return Mage_Core_Model_Url
      */
-    public function dispatch($route = null, array $params = array())
+    protected function getUrlModel($route = null, array &$params)
     {
         if (!isset($params['_store'])) {
             if (strpos($route, EcomDev_PHPUnit_Model_App::AREA_ADMINHTML) !== false) {
@@ -1931,6 +1939,20 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         } else {
             $urlModel = Mage::getModel('adminhtml/url');
         }
+
+        return $urlModel;
+    }
+
+    /**
+     * Dispatches controller action
+     *
+     *
+     * @param string $route
+     * @param array $params
+     */
+    public function dispatch($route = null, array $params = array())
+    {
+        $urlModel = $this->getUrlModel($route, $params);
 
         $this->app()->resetAreas();
 

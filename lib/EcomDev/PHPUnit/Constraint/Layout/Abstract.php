@@ -27,7 +27,7 @@ abstract class EcomDev_PHPUnit_Constraint_Layout_Abstract extends EcomDev_PHPUni
      * (non-PHPdoc)
      * @see PHPUnit_Framework_Constraint::customFailureDescription()
      */
-    protected function customFailureDescription($other, $description, $not)
+    protected function customFailureDescription($other)
     {
         return sprintf(
             'layout %s.',
