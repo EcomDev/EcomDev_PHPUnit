@@ -173,6 +173,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
             }
         }
 
+        Mage::setIsDeveloperMode(true);
         $this->_config = Mage::getConfig();
         $this->_initBaseConfig();
         $this->_initCache();

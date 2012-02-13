@@ -23,19 +23,6 @@
 class EcomDev_PHPUnit_Controller_Front extends Mage_Core_Controller_Varien_Front
 {
     /**
-     * Overriden for getting rid of unusual behavior in the test case,
-     * because test should be isolated
-     *
-     * (non-PHPdoc)
-     * @see Mage_Core_Controller_Varien_Front::_checkBaseUrl()
-     */
-
-    protected function _checkBaseUrl()
-    {
-        // Does nothing
-    }
-
-    /**
      * Overriden for getting rid
      * of initialization of routers for each test case
      *
