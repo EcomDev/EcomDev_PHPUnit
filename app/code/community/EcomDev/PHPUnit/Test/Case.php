@@ -356,8 +356,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             );
         }
 
-
-        if ($type == 'helper' && strpos($classAlias, '/') === false) {
+        // Remove addition of /data suffix if version is more than 1.6.x
+        if (version_compare(Mage::getVersion(), '1.6.0.0', '<') && $type == 'helper' && strpos($classAlias, '/') === false) {
             $classAlias .= '/data';
         }
 

@@ -278,12 +278,14 @@ class EcomDev_PHPUnit_Model_Layout
 
     /**
      * Records action call
+     * 
      * (non-PHPdoc)
      * @see Mage_Core_Model_Layout::_generateAction()
      */
     protected function _generateAction($node, $parent)
     {
-        $this->_collectedArgs = null;
+        $this->_collectedArgs = $this->_collectActionArguments($node);
+        $this->_translateLayoutNode($node, $this->_collectedArgs);
         parent::_generateAction($node, $parent);
         if ($this->_collectedArgs !== null) {
             $method = (string)$node['method'];
@@ -299,17 +301,51 @@ class EcomDev_PHPUnit_Model_Layout
         return $this;
     }
 
+
+
     /**
-     * Collects arguments if was not collected before
-     * (non-PHPdoc)
-     * @see Mage_Core_Model_Layout::_translateLayoutNode()
+     * Collects action arguments
+     *
+     * @param Varien_SimpleXml_Element $node
+     * @return array
      */
-    protected function _translateLayoutNode($node, $args)
+    protected function _collectActionArguments($node)
     {
-        parent::_translateLayoutNode($node, $args);
-        if ($this->_collectedArgs === null) {
-            $this->_collectedArgs = $args;
+        $args = (array)$node->children();
+        unset($args['@attributes']);
+
+        foreach ($args as $key => $arg) {
+            if (($arg instanceof Mage_Core_Model_Layout_Element)) {
+                if (isset($arg['helper'])) {
+                    $helperName = explode('/', (string)$arg['helper']);
+                    $helperMethod = array_pop($helperName);
+                    $helperName = implode('/', $helperName);
+                    $arg = $arg->asArray();
+                    unset($arg['@']);
+                    $args[$key] = call_user_func_array(array(Mage::helper($helperName), $helperMethod), $arg);
+                } else {
+                    /**
+                     * if there is no helper we hope that this is assoc array
+                     */
+                    $arr = array();
+                    foreach($arg as $subkey => $value) {
+                        $arr[(string)$subkey] = $value->asArray();
+                    }
+                    if (!empty($arr)) {
+                        $args[$key] = $arr;
+                    }
+                }
+            }
         }
+
+        if (isset($node['json'])) {
+            $json = explode(' ', (string)$node['json']);
+            foreach ($json as $arg) {
+                $args[$arg] = Mage::helper('core')->jsonDecode($args[$arg]);
+            }
+        }
+
+        return $args;
     }
 
     /**
