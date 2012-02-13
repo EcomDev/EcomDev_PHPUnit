@@ -183,7 +183,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
                 throw new RuntimeException(sprintf(
                     'Expected value is not an xml string for node %s, passed expected value: %s, parsing error: %s',
                     $this->_nodePath,
-                    PHPUnit_Util_Type::toString($this->_expectedValue),
+                    PHPUnit_Util_Type::export($this->_expectedValue),
                     $e->getMessage()
                 ));
             }
@@ -268,7 +268,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
             throw new RuntimeException(sprintf(
                 'Config node "%s" is not a string of comma separated values, passed expected value: %s',
                 $this->_nodePath,
-                PHPUnit_Util_Type::toString($this->_expectedValue)
+                PHPUnit_Util_Type::export($this->_expectedValue)
             ));
         }
 
@@ -289,7 +289,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
     protected function textContainValue()
     {
         return sprintf('contains "%s" in comma separated value list',
-                       PHPUnit_Util_Type::toString($this->_expectedValue));
+                       PHPUnit_Util_Type::export($this->_expectedValue));
     }
 
     /**
