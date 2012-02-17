@@ -85,7 +85,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Response_Header
     protected function evaluateConstraint($other)
     {
         $this->setActualValue($other->getSentHeader($this->_headerName));
-        return $this->_expectedValue->evaluate($this->_actualValue);
+        return $this->_expectedValue->evaluate($this->_actualValue, '', true);
     }
 
     /**

@@ -133,7 +133,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
         }
 
         $this->setActualValue($renderInfo['content']);
-        return $this->_expectedValue->evaluate($renderInfo['content']);
+        return $this->_expectedValue->evaluate($renderInfo['content'], '', true);
     }
 
     /**

@@ -40,7 +40,7 @@ abstract class EcomDev_PHPUnit_Constraint_Layout_Abstract extends EcomDev_PHPUni
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Constraint_Abstract::getActualValue()
      */
-    protected function getActualValue($other)
+    protected function getActualValue($other = null)
     {
         if ($this->_useActualValue) {
             return parent::getActualValue($other);

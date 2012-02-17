@@ -718,7 +718,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         if (current($annotationValue)) {
             $classAlias = current($annotationValue);
         } else {
-            $classAlias = self::app()->getConfig()->getNode($configPath);
+            $classAlias = (string) self::app()->getConfig()->getNode($configPath);
         }
 
         return $classAlias;

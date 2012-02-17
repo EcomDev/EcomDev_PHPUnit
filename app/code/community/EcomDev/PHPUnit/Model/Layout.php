@@ -112,9 +112,10 @@ class EcomDev_PHPUnit_Model_Layout
         $this->_records = array();
 
         foreach ($this->_blocks as $block) {
+            /* @var $block Mage_Core_Block_Abstract */
             // Remove references between blocks
-            $block->setParentBlock(null);
-            $block->setMessageBlock(null);
+            EcomDev_Utils_Reflection::setRestrictedPropertyValue($block, '_parentBlock', null);
+            $block->unsMessageBlock();
             $block->unsetChildren();
         }
 
@@ -285,9 +286,9 @@ class EcomDev_PHPUnit_Model_Layout
     protected function _generateAction($node, $parent)
     {
         $this->_collectedArgs = $this->_collectActionArguments($node);
-        $this->_translateLayoutNode($node, $this->_collectedArgs);
         parent::_generateAction($node, $parent);
         if ($this->_collectedArgs !== null) {
+            $this->_translateLayoutNode($node, $this->_collectedArgs);
             $method = (string)$node['method'];
             if (!empty($node['block'])) {
                 $parentName = (string)$node['block'];
@@ -307,10 +308,14 @@ class EcomDev_PHPUnit_Model_Layout
      * Collects action arguments
      *
      * @param Varien_SimpleXml_Element $node
-     * @return array
+     * @return array|null
      */
     protected function _collectActionArguments($node)
     {
+        if (isset($node['ifconfig']) && !Mage::getStoreConfigFlag((string)$node['ifconfig'])) {
+            return null;
+        }
+
         $args = (array)$node->children();
         unset($args['@attributes']);
 

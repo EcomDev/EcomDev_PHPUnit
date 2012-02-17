@@ -59,7 +59,7 @@ class EcomDev_PHPUnit_Constraint_Config_TableAlias
     protected function evaluateTableAlias($other)
     {
         if (!isset($other->{$this->_tableAliasPrefix})) {
-            $this->setActualValue(false);
+            $this->setActualValue('');
             return false;
         }
         
@@ -72,7 +72,7 @@ class EcomDev_PHPUnit_Constraint_Config_TableAlias
         if (isset($modelNode->entities->{$this->_tableAliasName}->table)) {
             $tableName = (string)$modelNode->entities->{$this->_tableAliasName}->table;
         } else {
-            $tableName = false;
+            $tableName = '';
         }
 
         $this->setActualValue($tableName);

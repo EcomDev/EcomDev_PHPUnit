@@ -65,6 +65,18 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     }
 
     /**
+     * Get events configuration
+     *
+     * @param   string $area event area
+     * @param   string $eventName event name
+     * @return  Mage_Core_Model_Config_Element
+     */
+    public function getEventConfig($area, $eventName)
+    {
+        return $this->getNode($area)->events->{$eventName};
+    }
+
+    /**
      * Replaces creation of some instance by mock object
      *
      *

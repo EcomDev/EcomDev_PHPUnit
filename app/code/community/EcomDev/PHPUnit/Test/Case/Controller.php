@@ -80,7 +80,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $type
      * @return EcomDev_PHPUnit_Constraint_Layout
      */
-    public static function layout($type = EcomDev_PHPUnit_Constraint_Layout::TYPE_LOADED)
+    public static function layout($type)
     {
         return new EcomDev_PHPUnit_Constraint_Layout($type);
     }
@@ -437,10 +437,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert shortcut for response assertions
      *
-     * @param EcomDev_PHPUnit_Constraint_Controller_Response_Header $constraint
+     * @param EcomDev_PHPUnit_Constraint_Controller_Response_Abstract $constraint
      * @param string $message
      */
-    public static function assertThatResponse(EcomDev_PHPUnit_Constraint_Controller_Response_Header $constraint, $message)
+    public static function assertThatResponse(PHPUnit_Framework_Constraint $constraint, $message)
     {
         self::assertThat(self::getResponse(), $constraint, $message);
     }
