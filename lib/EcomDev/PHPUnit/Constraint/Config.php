@@ -58,7 +58,7 @@ class EcomDev_PHPUnit_Constraint_Config extends PHPUnit_Framework_Constraint
      * @param string  $description
      * @param boolean $not
      */
-    public function fail($other, $description, $not)
+    public function fail($other, $description, PHPUnit_Framework_ComparisonFailure $not = null)
     {
         $nodeValue = $this->getNodeValue($other);
 
