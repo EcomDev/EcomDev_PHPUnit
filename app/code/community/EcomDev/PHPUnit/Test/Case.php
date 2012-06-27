@@ -597,7 +597,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @param  string  $type
      * @param  string  $classAlias
-     * @param  array   $methods
+     * @param  array|null  $methods
      * @param  boolean $isAbstract
      * @param  array   $constructorArguments
      * @param  string  $mockClassAlias
@@ -606,7 +606,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callAutoload
      * @return PHPUnit_Framework_MockObject_MockObject
      */
-    public function getGroupedClassMock($type, $classAlias, array $methods = array(), $isAbstract = false,
+    public function getGroupedClassMock($type, $classAlias, $methods = array(), $isAbstract = false,
                                         array $constructorArguments = array(),
                                         $mockClassAlias = '',  $callOriginalConstructor = true,
                                         $callOriginalClone = true, $callAutoload = true)

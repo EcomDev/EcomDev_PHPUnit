@@ -24,6 +24,7 @@
             <directory suffix=".php">app/code/community/EcomDev/PHPUnit</directory>
             <directory suffix=".php">lib/EcomDev/Utils</directory>
             <directory suffix=".php">lib/EcomDev/PHPUnit</directory>
+            <directory suffix=".php">lib/Spyc</directory>
             <!-- Exclude Mage.php file from code coverage -->
             <file>app/Mage.php</file>
             <!-- Exclude template files -->

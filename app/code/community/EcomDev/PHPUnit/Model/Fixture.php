@@ -803,11 +803,11 @@ class EcomDev_PHPUnit_Model_Fixture
 
         $scopeModel = Mage::getModel(self::$_scopeModelByType[$type]);
         $scopeModel->setData($row);
+
         // Change property for saving new objects with specified ids
         EcomDev_Utils_Reflection::setRestrictedPropertyValues(
             $scopeModel->getResource(),
             array(
-                '_useIsObjectNew' => true,
                 '_isPkAutoIncrement' => false
             )
         );
@@ -818,7 +818,6 @@ class EcomDev_PHPUnit_Model_Fixture
         EcomDev_Utils_Reflection::setRestrictedPropertyValues(
             $scopeModel->getResource(),
             array(
-                '_useIsObjectNew' => false,
                 '_isPkAutoIncrement' => true
             )
         );
@@ -884,4 +883,5 @@ class EcomDev_PHPUnit_Model_Fixture
         Mage::app()->reinitStores();
         return $this;
     }
+
 }
