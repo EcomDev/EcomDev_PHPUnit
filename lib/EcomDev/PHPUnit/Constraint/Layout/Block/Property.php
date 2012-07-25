@@ -86,7 +86,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Property
                 $value = $this->_actualValue;
             }
 
-            return PHPUnit_Util_Type::toString($value);
+            return $value;
         }
 
         return '';

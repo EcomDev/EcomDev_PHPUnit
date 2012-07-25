@@ -17,24 +17,22 @@
  */
 
 /**
- * Front controller for test suite
- *
+ * Fix of comparison type for Or constraint
  */
-class EcomDev_PHPUnit_Controller_Front extends Mage_Core_Controller_Varien_Front
+class EcomDev_PHPUnit_Constraint_Or extends PHPUnit_Framework_Constraint_Or
 {
-    /**
-     * Overriden for getting rid
-     * of initialization of routers for each test case
-     *
-     * (non-PHPdoc)
-     * @see Mage_Core_Controller_Varien_Front::init()
-     */
-    public function init()
+    protected function failureDescription($other)
     {
-        if (!$this->_routers) {
-            parent::init();
+        $text = '';
+
+        foreach ($this->constraints as $key => $constraint) {
+            if ($key > 0) {
+                $text .= ' or ';
+            }
+
+            $text .= $constraint->failureDescription($other);
         }
 
-        return $this;
+        return $text;
     }
 }

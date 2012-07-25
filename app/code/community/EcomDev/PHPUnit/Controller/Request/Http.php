@@ -337,8 +337,12 @@ class EcomDev_PHPUnit_Controller_Request_Http
     public function getHttpHost($trimPort = false)
     {
         $baseUrl = $this->getBaseUrl();
-
         $parts = parse_url($baseUrl);
+
+        if (!isset($parts['host'])) {
+            throw new RuntimeException('Cannot run controller test, because the host is not set for base url.');
+        }
+
         $httpHost = $parts['host'];
         if (!$trimPort && isset($parts['port'])) {
             $httpHost .= ':' . $parts['port'];
