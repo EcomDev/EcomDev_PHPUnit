@@ -641,8 +641,6 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
 
         return $mockBuilder->getMock();
     }
-
-
     
     /**
      * Returns mocked magento class
@@ -748,7 +746,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         $methodsExpectsWills = array(
             $method => array($expects,  $will)
         );
-        $this->_tinyMultipleMockMaker($type, $name, $methodsExpectsWills);
+        $this->tinyMultipleMockMaker($type, $name, $methodsExpectsWills);
     }
 
 	/**
