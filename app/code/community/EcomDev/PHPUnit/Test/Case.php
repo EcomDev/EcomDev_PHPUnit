@@ -642,6 +642,115 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         return $mockBuilder->getMock();
     }
 
+
+    
+    /**
+     * Returns mocked magento class
+     * 
+     * @param  String $type model|singleton|resource_model|resource_singleton
+     *         |helper|block
+     * @param  String $name The name of mocked object e.g. 'customer/session'
+     * @param  String|array $methods Methods to mock e.g. 'someMethod' or
+     *         array('firstMethod', 'secondMethod'). If empty array, then all
+     *         methods are mocked.
+     * @throws Exception If $type not found or wrong variable $methods passed
+     * @return Object Mocked class
+     */
+    private function _getMockObject($type, $name, $methods)
+    {
+        if ("string" === gettype($methods)) {
+            $methods = array($methods);
+        } else if (false === is_array($methods)) {
+            throw new Exception('Wrong methods. Should be an array or string');
+        }
+        
+        switch (strtolower($type)) {
+            case 'model':
+            case 'singleton': // singleton uses the same method as model
+                return $this->getModelMock($name, $methods);
+                
+            case 'resource_model':
+            case 'resource_singleton': //singleton uses the same method as model
+                return $this->getResourceModelMock($name, $methods);
+            
+            case 'helper':
+                return $this->getHelperMock($name, $methods);
+            
+            case 'block':
+                return $this->getBlockMock($name, $methods);
+                
+            default:
+                throw new Exception('Wrong mock type');
+        }
+    }
+    
+    /**
+     * Multiple-method mock creater
+     * 
+     * Creates one mock object with multiple mocked|stubbed methods. 
+     * 
+     * @param  String $type model|singleton|resource_model|resource_singleton
+     *         |helper|block
+     * @param  String $name The name of mocked object e.g. 'customer/session'
+     * @param  array $methodsExpectsWills Associated array where key is a method
+     *         name and value is a array of PHPUnit Matcher and Stub: the 
+     *         'expects()' and the 'will()' params e.g. 
+     *         array(
+     *             'getId' => array(
+     *                  $this->once(),  $this->returnValue(1)
+     *              ), 
+     *             'setUsername' => array(
+     *                  $this->any(), 
+     *                  $this->returnCallback(array($this, 'someMethod'))
+     *              ),
+     *             etc...
+     *         );
+     * @throws Exception If $type not found or $methodsExpectsWills is not
+     *         an array
+     * @return void
+     */
+    public function tinyMultipleMockMaker($type, $name, $methodsExpectsWills)
+    {
+        if (false === is_array($methodsExpectsWills)) {
+            throw new Exception(
+                "Third parameter should be an associative array of: 
+                'methodName' => array(PHPUnit expects, PHPUnit will)"
+            );
+        }
+        // mock
+        $mock = $this->_getMockObject($type, $name, array_keys($methodsExpectsWills));
+        // expects and wills
+        foreach ($methodsExpectsWills as $method => $expectAndWill) {
+            $mock->expects($expectAndWill[0])
+                ->method($method)
+                ->will($expectAndWill[1]);
+        }
+        // register
+        $this->replaceByMock(strtolower($type), $name, $mock);
+    }
+    
+    /**
+     * Single-method mock creater
+     * 
+     * Creates one mock object with one mocked|stubbed method. 
+     * 
+     * @param  String $type model|singleton|resource_model|resource_singleton
+     *         |helper|block
+     * @param  String $name The name of mocked object e.g. 'customer/session'
+     * @param  String $method Method name to mock|stub
+     * @param  mixed $expects PHPUnit expects object e.g. $this->once()
+     * @param  mixed $will PHPUnit will object e.g. $this->returnValue(true)
+     * @throws Exception If $type not found or wrong variable $methods passed
+     * @return void
+     */
+    public function tinySingleMockMaker($type, $name, $method, $expects, $will)
+    {
+        $methodsExpectsWills = array(
+            $method => array($expects,  $will)
+        );
+        $this->_tinyMultipleMockMaker($type, $name, $methodsExpectsWills);
+    }
+
 	/**
      * Retrieves fixture model singleton
      *
