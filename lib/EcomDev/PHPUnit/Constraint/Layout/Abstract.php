@@ -44,7 +44,7 @@ abstract class EcomDev_PHPUnit_Constraint_Layout_Abstract extends EcomDev_PHPUni
     {
         if ($this->_useActualValue) {
             if (is_array($this->_actualValue)) {
-                return PHPUnit_Util_Type::toString($this->_actualValue);
+                return PHPUnit_Util_Type::export($this->_actualValue);
             }
 
             return parent::getActualValue($other);
