@@ -262,7 +262,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      * @param Varien_Simplexml_Element $other
      * @return boolean
      */
-    protected function evaluateContainValue($other)
+    protected function evaluateContainValues($other)
     {
         if ($other->hasChildren()) {
             throw new RuntimeException(sprintf(
@@ -274,7 +274,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
 
         $values = explode(',', (string)$other);
 
-        if (!in_array($this->_expectedValue, $values)) {
+        if (in_array($this->_expectedValue, $values)) {
             return true;
         }
 
