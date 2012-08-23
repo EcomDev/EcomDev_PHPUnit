@@ -321,7 +321,7 @@ class EcomDev_PHPUnit_Model_Layout
     {
         $this->_collectedBlock = null;
         parent::_generateBlock($node, $parent);
-        if (!empty($this->_collectedBlock)) {
+        if ($this->_collectedBlock) {
             $target = $this->_collectedBlock->getNameInLayout();
             $params = array();
             if (isset($node['as'])) {
