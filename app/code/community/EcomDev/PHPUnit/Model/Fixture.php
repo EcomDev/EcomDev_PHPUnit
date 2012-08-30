@@ -276,7 +276,7 @@ class EcomDev_PHPUnit_Model_Fixture
     {
         $fixtures = $testCase->getAnnotationByName(
             'loadFixture',
-            array('class', 'method')
+            array('method', 'class')
         );
         
         
