@@ -801,26 +801,29 @@ class EcomDev_PHPUnit_Model_Fixture
             return false;
         }
 
-        $scopeModel = Mage::getModel(self::$_scopeModelByType[$type]);
+        $scopeModel = Mage::getModel(self::$_scopeModelByType[$type])->load($row[$type . '_id']);
+        $isNew = !$scopeModel->getId();
+        if ($isNew) {
+            // Change property for saving new objects with specified ids
+            EcomDev_Utils_Reflection::setRestrictedPropertyValues(
+                $scopeModel->getResource(),
+                array(
+                    '_isPkAutoIncrement' => false
+                )
+            );
+            $scopeModel->isObjectNew(true);
+        }
         $scopeModel->setData($row);
-
-        // Change property for saving new objects with specified ids
-        EcomDev_Utils_Reflection::setRestrictedPropertyValues(
-            $scopeModel->getResource(),
-            array(
-                '_isPkAutoIncrement' => false
-            )
-        );
-
-        $scopeModel->isObjectNew(true);
         $scopeModel->save();
-        // Revert changed property
-        EcomDev_Utils_Reflection::setRestrictedPropertyValues(
-            $scopeModel->getResource(),
-            array(
-                '_isPkAutoIncrement' => true
-            )
-        );
+        if ($isNew) {
+            // Revert changed property
+            EcomDev_Utils_Reflection::setRestrictedPropertyValues(
+                $scopeModel->getResource(),
+                array(
+                    '_isPkAutoIncrement' => true
+                )
+            );
+        }
 
         return $scopeModel;
     }
