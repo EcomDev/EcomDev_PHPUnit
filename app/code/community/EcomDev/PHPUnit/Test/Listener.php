@@ -43,7 +43,17 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
         }
 
         if (EcomDev_Utils_Reflection::getRestrictedPropertyValue($suite, 'testCase')) {
+            EcomDev_PHPUnit_Test_Case_Util::getFixture($suite->getName())
+                ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
+                ->loadForClass($suite->getName());
 
+            $annotations = PHPUnit_Util_Test::parseTestMethodAnnotations(
+                $suite->getName()
+            );
+
+            EcomDev_PHPUnit_Test_Case_Util::getFixture($suite->getName())
+                ->setOptions($annotations['class'])
+                ->apply();
         }
     }
 
@@ -61,6 +71,12 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
                 $this->getAppReflection()->getMethod('discardTestScope')->invoke(null);
             }
         }
+
+        if (EcomDev_Utils_Reflection::getRestrictedPropertyValue($suite, 'testCase')) {
+            EcomDev_PHPUnit_Test_Case_Util::getFixture($suite->getName())
+                ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
+                ->discard();
+        }
     }
 
     /**
@@ -70,7 +86,15 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
      */
     public function startTest(PHPUnit_Framework_Test $test)
     {
-        // No action is required for now
+        if ($test instanceof PHPUnit_Framework_TestCase) {
+            EcomDev_PHPUnit_Test_Case_Util::getFixture($test->getName())
+                ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
+                ->loadByTestCase($test);
+            $annotations = $this->getAnnotations();
+            self::getFixture()
+                ->setOptions($annotations['method'])
+                ->apply();
+        }
     }
 
     /**
@@ -81,7 +105,15 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
      */
     public function endTest(PHPUnit_Framework_Test $test, $time)
     {
-        // No action is required for now
+        if ($test instanceof PHPUnit_Framework_TestCase) {
+            EcomDev_PHPUnit_Test_Case_Util::getFixture($test->getName())
+                ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
+                ->discard(); // Clear applied fixture
+
+            if (EcomDev_PHPUnit_Test_Case_Util::getExpectation($test->getName())->isLoaded()) {
+                EcomDev_PHPUnit_Test_Case_Util::getExpectation($test->getName())->discard();
+            }
+        }
     }
 
     /**

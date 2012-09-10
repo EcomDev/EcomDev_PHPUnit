@@ -25,10 +25,10 @@ interface EcomDev_PHPUnit_Model_Test_Loadable_Interface
     /**
      * Loads external data by test case instance
      *
-     * @param EcomDev_PHPUnit_Test_Case $testCase
+     * @param PHPUnit_Framework_TestCase $testCase
      * @return EcomDev_PHPUnit_Model_Test_Loadable_Interface
      */
-    public function loadByTestCase(EcomDev_PHPUnit_Test_Case $testCase);
+    public function loadByTestCase(PHPUnit_Framework_TestCase $testCase);
 
     /**
      * Applies external data

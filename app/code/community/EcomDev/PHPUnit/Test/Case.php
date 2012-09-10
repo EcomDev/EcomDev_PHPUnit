@@ -643,28 +643,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected static function getFixture()
     {
-        $fixture = Mage::getSingleton(
-            self::getLoadableClassAlias(
-                'fixture',
-                self::XML_PATH_DEFAULT_FIXTURE_MODEL
-            )
-        );
-
-        if (!$fixture instanceof EcomDev_PHPUnit_Model_Fixture_Interface) {
-            throw new RuntimeException('Fixture model should implement EcomDev_PHPUnit_Model_Fixture_Interface interface');
-        }
-
-        $storage = Mage::registry(EcomDev_PHPUnit_Model_App::REGISTRY_PATH_SHARED_STORAGE);
-
-        if (!$storage instanceof Varien_Object) {
-            throw new RuntimeException('Fixture storage object was not initialized during test application setup');
-        }
-
-        $fixture->setStorage(
-            Mage::registry(EcomDev_PHPUnit_Model_App::REGISTRY_PATH_SHARED_STORAGE)
-        );
-
-        return $fixture;
+        return EcomDev_PHPUnit_Test_Case_Util::getFixture(get_called_class());
     }
 
     /**
@@ -722,7 +701,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $name = $this->getName(false);
         }
 
-        return self::getYamlFilePathByClass(get_called_class(), $type, $name);
+        return EcomDev_PHPUnit_Test_Case_Util::getYamlFilePath(get_called_class(), $type, $name);
     }
 
     /**
@@ -734,39 +713,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $type type of YAML data (fixtures,expectations,dataproviders)
      * @param string $name the file name for loading
      * @return string|boolean
+     * @depracated since 0.3.0
      */
     public static function getYamlFilePathByClass($className, $type, $name)
     {
-        if (strrpos($name, '.yaml') !== strlen($name) - 5) {
-            $name .= '.yaml';
-        }
-
-        $classFileObject = new SplFileInfo(
-            EcomDev_Utils_Reflection::getRelflection($className)->getFileName()
-        );
-
-        // When prefixed with ~/ or ~My_Module/, load from the module's Test/<type> directory
-        if (preg_match('#^~(?<module>[^/]*)/(?<path>.*)$#', $name, $matches)) {
-            $name = $matches['path'];
-            if( ! empty($matches['module'])) {
-              $moduleName = $matches['module'];
-            } else {
-              $moduleName = substr($className, 0, strpos($className, '_Test_'));;
-            }
-            $filePath = Mage::getModuleDir('', $moduleName) . DS . 'Test' . DS;
-        }
-        // Otherwise load from the Class/<type> directory
-        else {
-            $filePath = $classFileObject->getPath() . DS
-                      . $classFileObject->getBasename('.php') . DS;
-        }
-        $filePath .= $type . DS . $name;
-
-        if (file_exists($filePath)) {
-            return $filePath;
-        }
-
-        return false;
+        return EcomDev_PHPUnit_Test_Case_Util::getYamlFilePath($className, $type, $name);
     }
 
     /**
@@ -777,36 +728,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        self::getFixture()
-            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
-            ->loadByTestCase($this);
-        $annotations = $this->getAnnotations();
-        self::getFixture()
-            ->setOptions($annotations['method'])
-            ->apply();
         $this->app()->resetDispatchedEvents();
         parent::setUp();
-    }
-
-    /**
-     * Initializes test environment for subset of tests
-     *
-     */
-    public static function setUpBeforeClass()
-    {
-        self::getFixture()
-            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
-            ->loadForClass(get_called_class());
-
-        $annotations = PHPUnit_Util_Test::parseTestMethodAnnotations(
-            get_called_class()
-        );
-
-        self::getFixture()
-            ->setOptions($annotations['class'])
-            ->apply();
-
-        parent::setUpBeforeClass();
     }
 
     /**
@@ -859,35 +782,13 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $this->_originalStore = null;
         }
 
-        if ($this->getExpectation()->isLoaded()) {
-            $this->getExpectation()->discard();
-        }
-
         $this->app()->getConfig()->flushReplaceInstanceCreation();
         $this->app()->getLayout()->flushReplaceBlockCreation();
 
         foreach ($this->_replacedRegistry as $registryPath => $originalValue) {
             $this->app()->replaceRegistry($registryPath, $originalValue);
-        }
 
-        self::getFixture()
-            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
-            ->discard(); // Clear applied fixture
         parent::tearDown();
-    }
-
-    /**
-     * Clean up all the shared fixture data
-     *
-     * @return void
-     */
-    public static function tearDownAfterClass()
-    {
-        self::getFixture()
-            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
-            ->discard();
-
-        parent::tearDownAfterClass();
     }
 
 }

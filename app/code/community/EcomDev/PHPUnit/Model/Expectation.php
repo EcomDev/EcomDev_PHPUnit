@@ -122,7 +122,7 @@ class EcomDev_PHPUnit_Model_Expectation
      *
      * @see EcomDev_PHPUnit_Model_Test_Loadable_Interface::loadByTestCase()
      */
-    public function loadByTestCase(EcomDev_PHPUnit_Test_Case $testCase)
+    public function loadByTestCase(PHPUnit_Framework_TestCase $testCase)
     {
         $expectations = $testCase->getAnnotationByName('loadExpectation');
 

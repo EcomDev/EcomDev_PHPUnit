@@ -278,23 +278,22 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Loads fixture files from test case annotations
      *
-     * @param EcomDev_PHPUnit_Test_Case $testCase
-     * @return EcomDev_PHPUnit_Model_Fixture
+     * @param PHPUnit_Framework_TestCase $testCase
+     * @return PHPUnit_Framework_TestCase
      */
-    public function loadByTestCase(EcomDev_PHPUnit_Test_Case $testCase)
+    public function loadByTestCase(PHPUnit_Framework_TestCase $testCase)
     {
-        $fixtures = $testCase->getAnnotationByName(
-            'loadFixture',
-            array('class', 'method')
+        $cacheOptions = EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(
+            get_class($testCase), 'cache', 'method', $testCase->getName(false)
         );
-        
-        
-        $cacheOptions = $testCase->getAnnotationByName('cache', 'method');
-        
+
         $this->_parseCacheOptions($cacheOptions);
 
-        $this->_loadFixtureFiles($fixtures, $testCase);
+        $fixtures = EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(
+            get_class($testCase), 'loadFixture', array('class', 'method'), $testCase->getName(false)
+        );
 
+        $this->_loadFixtureFiles($fixtures, $testCase);
         return $this;
     }
 
@@ -306,24 +305,16 @@ class EcomDev_PHPUnit_Model_Fixture
      */
     public function loadForClass($className)
     {
-        $reflection = EcomDev_Utils_Reflection::getRelflection($className);
-
-        $method = $reflection->getMethod('getAnnotationByNameFromClass');
-
-        if (!$method instanceof ReflectionMethod) {
-            throw new RuntimeException('Unable to read class annotations, because it is not extended from EcomDev_PHPUnit_Test_Case');
-        }
-
-        $fixtures = $method->invokeArgs(
-            null, array($className, 'loadSharedFixture', 'class')
+        $cacheOptions = EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(
+            $className, 'cache', 'class'
         );
 
-        $cacheOptions = $method->invokeArgs(
-            null, array($className, 'cache', 'class')
-        );
-        
         $this->_parseCacheOptions($cacheOptions);
-        
+
+        $fixtures = EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(
+            $className, 'loadSharedFixture', 'class'
+        );
+
         $this->_loadFixtureFiles($fixtures, $className);
         return $this;
     }
@@ -364,25 +355,16 @@ class EcomDev_PHPUnit_Model_Fixture
      */
     protected function _loadFixtureFiles(array $fixtures, $classOrInstance)
     {
-        $isShared = ($this->isScopeShared() || !$classOrInstance instanceof EcomDev_PHPUnit_Test_Case);
+        $isShared = ($this->isScopeShared() || !$classOrInstance instanceof PHPUnit_Framework_TestCase);
         foreach ($fixtures as $fixture) {
             if (empty($fixture) && $isShared) {
                 $fixture = self::DEFAULT_SHARED_FIXTURE_NAME;
             } elseif (empty($fixture)) {
-                $fixture = null;
+                $fixture = $classOrInstance->getName(false);
             }
 
-            $filePath = false;
-
-            if ($isShared) {
-                $reflection = EcomDev_Utils_Reflection::getRelflection($classOrInstance);
-                $method = $reflection->getMethod('getYamlFilePathByClass');
-                if ($method instanceof ReflectionMethod) {
-                    $filePath = $method->invokeArgs(null, array($classOrInstance, 'fixtures', $fixture));
-                }
-            } else {
-                $filePath = $classOrInstance->getYamlFilePath('fixtures', $fixture);
-            }
+            $className = (is_string($classOrInstance) ? $classOrInstance : get_class($classOrInstance));
+            $filePath = EcomDev_PHPUnit_Test_Case_Util::getYamlFilePath($className, 'fixtures', $fixture);
 
             if (!$filePath) {
                 throw new RuntimeException('Unable to load fixture for test');
