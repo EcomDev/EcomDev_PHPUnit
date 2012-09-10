@@ -1,6 +1,6 @@
 <?php
 
-require 'app/Mage.php';
+require_once 'app/Mage.php';
 
 if (version_compare(PHP_VERSION, '5.3', '<')) {
     exit('Magento Unit Tests can be runned only on PHP version over 5.3');
