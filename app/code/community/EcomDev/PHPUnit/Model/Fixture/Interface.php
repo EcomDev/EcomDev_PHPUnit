@@ -105,4 +105,11 @@ interface EcomDev_PHPUnit_Model_Fixture_Interface extends EcomDev_PHPUnit_Model_
      * @return EcomDev_PHPUnit_Model_Fixture_Interface
      */
     public function loadForClass($className);
+
+    /**
+     * Returns VFS wrapper instance
+     *
+     * @return EcomDev_PHPUnit_Model_Fixture_Vfs
+     */
+    public function getVfs();
 }

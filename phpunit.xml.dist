@@ -10,12 +10,10 @@
          stopOnIncomplete="false"
          stopOnSkipped="false"
          strict="false"
-         verbose="false">
-   <testsuites>
-       <testsuite name="Magento Unit Tests">
-           <file>UnitTests.php</file>
-       </testsuite>
-   </testsuites>
+         verbose="false"
+         bootstrap="app/code/community/EcomDev/PHPUnit/Test/bootstrap.php"
+         loader=""
+         >
    <filter>
        <blacklist>
             <!-- Exclude Magento Core files from code coverage -->

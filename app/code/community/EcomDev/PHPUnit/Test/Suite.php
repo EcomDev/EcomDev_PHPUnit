@@ -38,15 +38,11 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
      * Setting up test scope for Magento
      * (non-PHPdoc)
      * @see PHPUnit_Framework_TestSuite::setUp()
+     * @deprecated since 0.3.0
      */
     protected function setUp()
     {
-        $appClass = (string) Mage::getConfig()->getNode(self::XML_PATH_UNIT_TEST_APP);
-        $reflectionClass = EcomDev_Utils_Reflection::getRelflection($appClass);
 
-        if ($reflectionClass->hasMethod('applyTestScope')) {
-            $reflectionClass->getMethod('applyTestScope')->invoke(null);
-        }
     }
 
     /**
@@ -56,12 +52,7 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
      */
     protected function tearDown()
     {
-        $appClass = (string) Mage::getConfig()->getNode(self::XML_PATH_UNIT_TEST_APP);
-        $reflectionClass = EcomDev_Utils_Reflection::getRelflection($appClass);
 
-        if ($reflectionClass->hasMethod('discardTestScope')) {
-            $reflectionClass->getMethod('discardTestScope')->invoke(null);
-        }
     }
 
     /**

@@ -28,8 +28,14 @@ require_once 'Spyc/spyc.php';
 abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
 {
 
-    const XML_PATH_DEFAULT_FIXTURE_MODEL = 'phpunit/suite/fixture/model';
-    const XML_PATH_DEFAULT_EXPECTATION_MODEL = 'phpunit/suite/expectation/model';
+    /**
+     * @deprecated since 0.3.0
+     **/
+    const XML_PATH_DEFAULT_FIXTURE_MODEL = EcomDev_PHPUnit_Test_Case_Util::XML_PATH_DEFAULT_FIXTURE_MODEL;
+    /**
+     * @deprecated since 0.3.0
+     **/
+    const XML_PATH_DEFAULT_EXPECTATION_MODEL = EcomDev_PHPUnit_Test_Case_Util::XML_PATH_DEFAULT_EXPECTATION_MODEL;
 
 
     /**
@@ -63,7 +69,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public static function app()
     {
-        return Mage::app();
+        return EcomDev_PHPUnit_Test_Case_Util::app();
     }
 
     /**
@@ -252,10 +258,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @return string
      * @throws RuntimeException if module name was not found for the passed class name
+     * @deprecated since 0.3.0
      */
     public function getModuleName()
     {
-        return $this->app()->getModuleNameByClassName($this);
+        return EcomDev_PHPUnit_Test_Case_Util::getModuleName($this);
     }
 
     /**
@@ -266,14 +273,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected static function getModuleNameFromCallStack()
     {
-        $backTrace = debug_backtrace(true);
-        foreach ($backTrace as $call) {
-            if (isset($call['object']) && $call['object'] instanceof EcomDev_PHPUnit_Test_Case) {
-                return $call['object']->getModuleName();
-            }
-        }
-
-        throw new RuntimeException('Unable to retrieve module name from call stack, because assertion is not called from EcomDev_PHPUnit_Test_Case based class method');
+        return EcomDev_PHPUnit_Test_Case_Util::getModuleNameFromCallStack();
     }
 
 
@@ -284,10 +284,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $name
      * @param array|string $sources
      * @return array
+     * @deprecated since 0.3.0
      */
     public function getAnnotationByName($name, $sources = 'method')
     {
-        return self::getAnnotationByNameFromClass(get_class($this), $name, $sources, $this->getName(false));
+        return EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(get_class($this), $name, $sources, $this->getName(false));
     }
 
     /**
@@ -297,30 +298,12 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $name annotation name
      * @param array|string $sources
      * @param string $testName test method name
+     * @return array
+     * @deprecated since 0.3.0
      */
     public static function getAnnotationByNameFromClass($className, $name, $sources = 'class', $testName = '')
     {
-        if (is_string($sources)) {
-            $sources = array($sources);
-        }
-
-        $allAnnotations =  PHPUnit_Util_Test::parseTestMethodAnnotations(
-          $className, $testName
-        );
-
-        $annotation = array();
-
-        // Walkthrough sources for annotation retrieval
-        foreach ($sources as $source) {
-            if (isset($allAnnotations[$source][$name])) {
-                $annotation = array_merge(
-                    $allAnnotations[$source][$name],
-                    $annotation
-                );
-            }
-        }
-
-        return $annotation;
+        return EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass($className, $name, $sources, $testName);
     }
 
     /**
@@ -691,12 +674,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected function getExpectation()
     {
-        return Mage::getSingleton(
-            self::getLoadableClassAlias(
-                'expectation',
-                self::XML_PATH_DEFAULT_EXPECTATION_MODEL
-            )
-        );
+        return EcomDev_PHPUnit_Test_Case_Util::getExpectation(get_class($this));
     }
 
 
@@ -707,21 +685,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $type
      * @param string $configPath
      * @return string
+     * @deprecated since 0.3.0
      */
     protected static function getLoadableClassAlias($type, $configPath)
     {
-        $annotationValue = self::getAnnotationByNameFromClass(
-            get_called_class(),
-            $type .'Model'
-        );
-
-        if (current($annotationValue)) {
-            $classAlias = current($annotationValue);
-        } else {
-            $classAlias = (string) self::app()->getConfig()->getNode($configPath);
-        }
-
-        return $classAlias;
+        return EcomDev_PHPUnit_Test_Case::getLoadableClassAlias(get_called_class(), $type, $configPath);
     }
 
     /**

@@ -111,6 +111,13 @@ class EcomDev_PHPUnit_Model_Fixture
     protected $_options = array();
 
     /**
+     * vfsStream wrapper instance
+     *
+     * @var EcomDev_PHPUnit_Model_Fixture_Vfs
+     */
+    protected $_vfs = null;
+
+    /**
      * List of scope model aliases by scope type
      *
      * @var array
@@ -147,6 +154,8 @@ class EcomDev_PHPUnit_Model_Fixture
     protected function _construct()
     {
         $this->_init('ecomdev_phpunit/fixture');
+        // Additional property for test data fixture
+        $this->setTestData(new Varien_Object());
     }
 
     /**
@@ -582,7 +591,7 @@ class EcomDev_PHPUnit_Model_Fixture
     protected function _discardConfigXml()
     {
         if (!isset($this->_fixture['config'])) {
-            $this->_resetConfig();
+            $this->_restoreConfig();
         }
         return $this;
     }
@@ -884,4 +893,69 @@ class EcomDev_PHPUnit_Model_Fixture
         return $this;
     }
 
+    /**
+     * Returns VFS wrapper instance
+     *
+     * @return EcomDev_PHPUnit_Model_Fixture_Vfs
+     * @throws PHPUnit_Framework_SkippedTestError
+     */
+    public function getVfs()
+    {
+        if ($this->_vfs !== null) {
+            return $this->_vfs;
+        }
+
+        if (is_dir(Mage::getBaseDir('lib') . DS . 'vfsStream' . DS . 'main')) {
+            spl_autoload_register(array($this, 'vfsAutoload'), true, true);
+            $this->_vfs = Mage::getModel('ecomdev_phpunit/fixture_vfs');
+            return $this->_vfs;
+        }
+
+        throw new PHPUnit_Framework_SkippedTestError(
+            'The test was skipped, since vfsStream component is not installed. '
+            . 'Try install submodules required for this functionality'
+        );
+    }
+
+    /**
+     * Autoloader for vfs
+     *
+     * @param string $className
+     * @return bool
+     */
+    public function vfsAutoload($className)
+    {
+        if (strpos($className, 'org\\bovigo\\vfs') !== 0) {
+            return false;
+        }
+
+        $fileName = 'vfsStream' . DS . 'src'
+            . DS . 'main' . DS . 'php' . DS
+            . strtr(trim($className, '\\'), '\\', DS) . '.php';
+
+        return include $fileName;
+    }
+
+    /**
+     * Applies VFS structure fixture
+     *
+     * @param array $data
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _applyVfs($data)
+    {
+        $this->getVfs()->apply($data, $this->isScopeLocal());
+        return $this;
+    }
+
+    /**
+     * Discards VFS structure fixture
+     *
+     * @return EcomDev_PHPUnit_Model_Fixture
+     */
+    protected function _discardVfs()
+    {
+        $this->getVfs()->discard();
+        return $this;
+    }
 }
