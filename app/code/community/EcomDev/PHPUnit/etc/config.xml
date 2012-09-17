@@ -70,9 +70,15 @@
             <fixture>
                 <!-- Default model for loading of fixtures -->
                 <model>ecomdev_phpunit/fixture</model>
+	            <attribute>
+		            <!-- Fixture loaders for EAV attributes
+		                 Default can be used but does not support extra attribute table configuration -->
+		            <default>ecomdev_phpunit/fixture_attribute_default</default>
+		            <!--<catalog_product>ecomdev_phpunit/fixture_attribute_catalog_product</catalog_product>-->
+	            </attribute>
                 <eav>
                     <!-- Here goes the list of fixture loaders for EAV
-                         If no fixture loader is specified for entity, then default will be used 
+                         If no fixture loader is specified for entity, then default will be used
                     -->
                     <default>ecomdev_phpunit/fixture_eav_default</default>
                     <catalog_product>ecomdev_phpunit/fixture_eav_catalog_product</catalog_product>
@@ -101,9 +107,9 @@
             </controller>
 
             <modules>
-                <!-- Place your module name in your module config.xml 
+                <!-- Place your module name in your module config.xml
                      For adding it to test suite -->
-                <!-- Example: 
+                <!-- Example:
                 <Namespace_MyModule />
                 -->
             </modules>

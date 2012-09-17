@@ -25,8 +25,12 @@
  */
 interface EcomDev_PHPUnit_Model_Fixture_Interface extends EcomDev_PHPUnit_Model_Test_Loadable_Interface
 {
+	/** Local scope - used for fixtures that apply only to the current test */
     const SCOPE_LOCAL = 'local';
+	/** Shared scope - used for fixtures that apply to the current test class */
     const SCOPE_SHARED = 'shared';
+	/** Default scope - used for storing data that exists in database before tests are run */
+	const SCOPE_DEFAULT = 'default';
 
     /**
      * Sets fixture options
@@ -83,6 +87,14 @@ interface EcomDev_PHPUnit_Model_Fixture_Interface extends EcomDev_PHPUnit_Model_
      * @param string $scope EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL|EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED
      */
     public function setScope($scope);
+
+	/**
+	 * Check that current fixture scope is equal to SCOPE_DEFAULT
+	 *
+	 * @abstract
+	 * @return boolean
+	 */
+	public function isScopeDefault();
 
     /**
      * Check that current fixture scope is equal to SCOPE_SHARED

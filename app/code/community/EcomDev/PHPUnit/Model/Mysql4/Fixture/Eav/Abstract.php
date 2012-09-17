@@ -20,7 +20,8 @@
  * Base implementation of EAV fixtures loader
  *
  */
-abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev_PHPUnit_Model_Mysql4_Fixture
+abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
+	extends EcomDev_PHPUnit_Model_Mysql4_Fixture_Complex_Abstract
 {
     /**
      * List of indexers required to build
@@ -30,20 +31,6 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
     protected $_requiredIndexers = array();
 
     /**
-     * Fixture options
-     *
-     * @var array
-     */
-    protected $_options = array();
-
-    /**
-     * Fixture model
-     *
-     * @var EcomDev_PHPUnit_Model_Fixture_Interface
-     */
-    protected $_fixture = null;
-
-    /**
      * Retrieve required indexers for re-building
      *
      * @var array
@@ -51,29 +38,6 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
     public function getRequiredIndexers()
     {
         return $this->_requiredIndexers;
-    }
-
-    /**
-     * Sets fixture model to EAV loader
-     *
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
-     */
-    public function setFixture($fixture)
-    {
-        $this->_fixture = $fixture;
-        return $this;
-    }
-
-    /**
-     * Set fixture options
-     *
-     * @param array $options
-     * @return EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
-     */
-    public function setOptions(array $options)
-    {
-        $this->_options = $options;
-        return $this;
     }
 
     /**
@@ -98,6 +62,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
      */
     public function cleanEntity($entityType)
     {
+	    /** @var $entityTypeModel Mage_Eav_Model_Entity_Type */
         $entityTypeModel = Mage::getSingleton('eav/config')->getEntityType($entityType);
         $this->cleanTable($entityTypeModel->getEntityTable());
         return $this;
@@ -123,6 +88,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
             }
         }
 
+	    /** @var $entityTypeModel Mage_Eav_Model_Entity_Type */
         $entityTypeModel = Mage::getSingleton('eav/config')->getEntityType($entityType);
 
 
@@ -160,12 +126,13 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract extends EcomDev
 
             // Preparing simple attributes records
             foreach ($entityTypeModel->getAttributeCollection() as $attribute) {
+	            /** @var $attribute Mage_Eav_Model_Entity_Attribute */
                 $attributeBackendTable = $attribute->getBackendTable();
                 if (!$attribute->isStatic()
                     && $attributeBackendTable
                     && isset($attributeTableColumns[$attributeBackendTable])) {
 
-                    // Prepearing data for insert per attribute table
+                    // Preparing data for insert per attribute table
                     $attributeRecords = $this->_getAttributeRecords(
                         $row,
                         $attribute,

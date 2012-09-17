@@ -33,6 +33,9 @@ class EcomDev_PHPUnit_Model_Fixture
     // Configuration path for eav loaders
     const XML_PATH_FIXTURE_EAV_LOADERS = 'phpunit/suite/fixture/eav';
 
+	// Configuration path for attribute loaders
+    const XML_PATH_FIXTURE_ATTRIBUTE_LOADERS = 'phpunit/suite/fixture/attribute';
+
     // Default eav loader class node in loaders configuration
     const DEFAULT_EAV_LOADER_NODE = 'default';
 
@@ -41,6 +44,9 @@ class EcomDev_PHPUnit_Model_Fixture
 
     // Default eav loader class alias
     const DEFAULT_EAV_LOADER_CLASS = 'ecomdev_phpunit/fixture_eav_default';
+
+    // Default attribute loader class alias
+    const DEFAULT_ATTRIBUTE_LOADER_CLASS = 'ecomdev_phpunit/fixture_attribute_default';
 
     // Key for storing fixture data into storage
     const STORAGE_KEY_FIXTURE = 'fixture';
@@ -51,9 +57,12 @@ class EcomDev_PHPUnit_Model_Fixture
     // Key for loaded entities by EAV loaders
     const STORAGE_KEY_ENTITIES = 'entities';
 
-    // Key for loaded cache options 
+    // Key for loaded attributes by attribute loaders
+    const STORAGE_KEY_ATTRIBUTES = 'attributes';
+
+    // Key for loaded cache options
     const STORAGE_KEY_CACHE_OPTIONS = 'cache_options';
-    
+
     // Key for created scope models
     const STORAGE_KEY_SCOPE = 'scope';
 
@@ -267,6 +276,16 @@ class EcomDev_PHPUnit_Model_Fixture
     }
 
     /**
+	 * Check that current fixture scope is equal to SCOPE_DEFAULT
+	 *
+	 * @return boolean
+	 */
+	public function isScopeDefault()
+	{
+		return $this->getScope() === self::SCOPE_DEFAULT;
+	}
+
+    /**
      * Loads fixture files from test case annotations
      *
      * @param EcomDev_PHPUnit_Test_Case $testCase
@@ -278,10 +297,10 @@ class EcomDev_PHPUnit_Model_Fixture
             'loadFixture',
             array('class', 'method')
         );
-        
-        
+
+
         $cacheOptions = $testCase->getAnnotationByName('cache', 'method');
-        
+
         $this->_parseCacheOptions($cacheOptions);
 
         $this->_loadFixtureFiles($fixtures, $testCase);
@@ -312,16 +331,16 @@ class EcomDev_PHPUnit_Model_Fixture
         $cacheOptions = $method->invokeArgs(
             null, array($className, 'cache', 'class')
         );
-        
+
         $this->_parseCacheOptions($cacheOptions);
-        
+
         $this->_loadFixtureFiles($fixtures, $className);
         return $this;
     }
-    
+
     /**
      * Loads test case cache on off annotations
-     * 
+     *
      * @param array $annotations
      * @return EcomDev_PHPUnit_Model_Fixture
      */
@@ -338,9 +357,9 @@ class EcomDev_PHPUnit_Model_Fixture
             } else {
                 $cacheOptions[$cacheType] = $flag;
             }
-            
+
         }
-        
+
         if ($cacheOptions) {
             $this->_fixture['cache_options'] = $cacheOptions;
         }
@@ -422,7 +441,7 @@ class EcomDev_PHPUnit_Model_Fixture
             }
         }
 
-        // Clear fixture for getting rid of duoble processing
+        // Clear fixture for getting rid of double processing
         $this->_fixture = array();
         return $this;
     }
@@ -452,10 +471,10 @@ class EcomDev_PHPUnit_Model_Fixture
 
         $this->_fixture = array();
     }
-    
+
     /**
      * Applies cache options for current test or test case
-     * 
+     *
      * @param array $options
      * @return EcomDev_PHPUnit_Model_Fixture
      */
@@ -463,16 +482,16 @@ class EcomDev_PHPUnit_Model_Fixture
     {
         $originalOptions = Mage::app()->getCacheOptions();
         $this->setStorageData(self::STORAGE_KEY_CACHE_OPTIONS, $originalOptions);
-        
+
         $options += $originalOptions;
         Mage::app()->setCacheOptions($options);
 
         return $this;
     }
-    
+
     /**
      * Discards changes that were made to Magento cache
-     * 
+     *
      * @return EcomDev_PHPUnit_Model_Fixture
      */
     protected function _discardCacheOptions()
@@ -677,7 +696,26 @@ class EcomDev_PHPUnit_Model_Fixture
      */
     protected function _getEavLoader($entityType)
     {
-        $loaders = Mage::getConfig()->getNode(self::XML_PATH_FIXTURE_EAV_LOADERS);
+		return $this->_getComplexLoader($entityType, 'EAV');
+	}
+
+    /**
+     * Retrieves the loader for a particular entity type and data type
+     *
+     * @throws InvalidArgumentException
+     * @param string $entityType
+     * @param string $dataType
+     * @return EcomDev_PHPUnit_Model_Mysql4_Fixture
+     */
+    protected function _getComplexLoader($entityType, $dataType)
+    {
+	    if(!$dataType) {
+		    throw new InvalidArgumentException('Must specify a data type for the loader');
+	    }
+
+	    $reflection = EcomDev_Utils_Reflection::getRelflection($this);
+
+        $loaders = Mage::getConfig()->getNode($reflection->getConstant("XML_PATH_FIXTURE_{$dataType}_LOADERS"));
 
         if (isset($loaders->$entityType)) {
             $classAlias = (string)$loaders->$entityType;
@@ -701,7 +739,7 @@ class EcomDev_PHPUnit_Model_Fixture
         if (!is_array($entities)) {
             throw new InvalidArgumentException('EAV part should be an associative list with rows as value and entity type as key');
         }
-        
+
         $this->getResource()->beginTransaction();
 
         foreach ($entities as $entityType => $values) {
@@ -741,7 +779,7 @@ class EcomDev_PHPUnit_Model_Fixture
             $this->_getEavLoader($entityType)
                 ->cleanEntity($entityType);
         }
-        
+
         $this->getResource()->commit();
 
         return $this;
@@ -887,4 +925,102 @@ class EcomDev_PHPUnit_Model_Fixture
         return $this;
     }
 
+	/**
+	 * Retrieves attribute loader for a particular entity type
+	 *
+	 * @param string $entityType
+	 * @return EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
+	 */
+	protected function _getAttributeLoader($entityType)
+	{
+		return $this->_getComplexLoader($entityType, 'ATTRIBUTE');
+	}
+
+	/**
+	 * Applies fixture EAV attribute values
+	 */
+	protected function _applyAttributes($attributes)
+	{
+		if (!is_array($attributes)) {
+			throw new InvalidArgumentException(
+				'Attributes part should be an associative list with rows as value and attribute code as key'
+			);
+		}
+
+		if (!$this->getStorageData(self::STORAGE_KEY_ATTRIBUTES, self::SCOPE_DEFAULT)) {
+			// since attributes are being used, we need to load all previously-existing
+			// attributes into default scope
+			$ignoreCleanup = array();
+
+			foreach(array_keys($attributes) as $entityType) {
+				$ignoreCleanup[$entityType] = $this->_getAttributeLoader(self::DEFAULT_SHARED_FIXTURE_NAME)
+					->setFixture($this)
+					->setOptions($this->_options)
+					->loadDefaultAttributes($entityType);
+			}
+
+			$this->setStorageData(self::STORAGE_KEY_ATTRIBUTES, $ignoreCleanup, self::SCOPE_DEFAULT);
+		}
+
+		$this->getResource()->beginTransaction();
+
+		foreach ($attributes as $entityType => $values) {
+			$this->_getAttributeLoader($entityType)
+				->setFixture($this)
+				->setOptions($this->_options)
+				->loadAttribute($entityType, $values);
+		}
+
+		$this->getResource()->commit();
+
+		$this->setStorageData(self::STORAGE_KEY_ATTRIBUTES, array_keys($attributes));
+
+		return $this;
+	}
+
+	/**
+	 * Clean applied attribute data
+	 *
+	 * @param array $attributes
+	 * @return EcomDev_PHPUnit_Model_Fixture
+	 */
+	protected function _discardAttributes($attributes)
+	{
+		// Ignore cleaning of attributes if they existed before fixtures were loaded
+		$ignoreCleanUp = $this->getStorageData(self::STORAGE_KEY_ATTRIBUTES, self::SCOPE_DEFAULT);
+		if($ignoreCleanUp === null) $ignoreCleanUp = array();
+
+		// Ignore cleaning of attributes if shared fixture loaded something for them
+		if ($this->isScopeLocal() && $this->getStorageData(self::STORAGE_KEY_ATTRIBUTES, self::SCOPE_SHARED)) {
+			$ignoreCleanUp = array_merge_recursive(
+				$ignoreCleanUp,
+				$this->getStorageData(self::STORAGE_KEY_ENTITIES, self::SCOPE_SHARED)
+			);
+		}
+
+		$this->getResource()->beginTransaction();
+
+		foreach ($attributes as $entityType => $values) {
+			$attributeCodes = array();
+			foreach ($values as $value) {
+				if (isset($value['attribute_code'])
+					&& !in_array($value['attribute_code'], $ignoreCleanUp[$entityType])) {
+					$attributeCodes[] = $value['attribute_code'];
+				}
+			}
+			if (!empty($attributeCodes)) {
+				$this->_getAttributeLoader(self::DEFAULT_SHARED_FIXTURE_NAME)
+					->cleanAttributes($entityType, $attributeCodes);
+			}
+		}
+
+		$this->getResource()->commit();
+
+		foreach (array_keys($attributes) as $entityType) {
+			$this->_getAttributeLoader(self::DEFAULT_SHARED_FIXTURE_NAME)->resetAttributesAutoIncrement($entityType);
+		}
+		$this->_getAttributeLoader(self::DEFAULT_SHARED_FIXTURE_NAME)->resetAttributesAutoIncrement();
+
+		return $this;
+	}
 }
