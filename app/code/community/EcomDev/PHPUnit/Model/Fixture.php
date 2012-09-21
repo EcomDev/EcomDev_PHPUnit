@@ -413,14 +413,7 @@ class EcomDev_PHPUnit_Model_Fixture
      */
     public function loadYaml($filePath)
     {
-        $data = Spyc::YAMLLoad($filePath);
-
-        if (empty($this->_fixture)) {
-            $this->_fixture = $data;
-        } else {
-            $this->_fixture = array_merge_recursive($this->_fixture, $data);
-        }
-
+        $this->_fixture[] = Spyc::YAMLLoad($filePath);
         return $this;
     }
 
@@ -434,10 +427,12 @@ class EcomDev_PHPUnit_Model_Fixture
         $this->setStorageData(self::STORAGE_KEY_FIXTURE, $this->_fixture);
         $reflection = EcomDev_Utils_Reflection::getRelflection($this);
 
-        foreach ($this->_fixture as $part => $data) {
-            $method = '_apply' . uc_words($part, '', '_');
-            if ($reflection->hasMethod($method)) {
-                $this->$method($data);
+        foreach ($this->_fixture as $fixture){
+            foreach ($fixture as $part => $data) {
+                $method = '_apply' . uc_words($part, '', '_');
+                if ($reflection->hasMethod($method)) {
+                    $this->$method($data);
+                }
             }
         }
 
