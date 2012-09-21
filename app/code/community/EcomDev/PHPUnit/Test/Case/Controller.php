@@ -16,7 +16,6 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
-
 /**
  * Base for controller test case
  *
@@ -438,10 +437,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert shortcut for response assertions
      *
-     * @param EcomDev_PHPUnit_Constraint_Controller_Response_Header $constraint
+     * @param EcomDev_PHPUnit_Constraint_Controller_Response_Abstract $constraint
      * @param string $message
      */
-    public static function assertThatResponse(EcomDev_PHPUnit_Constraint_Controller_Response_Header $constraint, $message)
+    public static function assertThatResponse(PHPUnit_Framework_Constraint $constraint, $message)
     {
         self::assertThat(self::getResponse(), $constraint, $message);
     }
@@ -645,7 +644,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         );
     }
 
-   /**
+    /**
      * Assert that response header doesn't match specified PCRE pattern
      *
      * @param string $headerName
@@ -1846,7 +1845,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
             $path = $cookieStub->getPath();
         }
 
-        if ($domain !== null) {
+        if ($domain === null) {
             $domain = $cookieStub->getDomain();
         }
 
@@ -1902,20 +1901,29 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     protected function reset()
     {
         $_SESSION = array();
+
+        // Init request for any url that using sessions
+        $initialUrlParams = array();
+        $urlModel = $this->getUrlModel(null, $initialUrlParams);
+        $baseUrl = $urlModel->getBaseUrl($initialUrlParams);
+
         $this->getRequest()->reset();
+        $this->getRequest()->setBaseUrl($baseUrl);
+
         $this->getResponse()->reset();
         $this->getLayout()->reset();
         return $this;
     }
 
     /**
-     * Dispatches controller action
+     * Returns URL model for request
      *
      *
-     * @param string $route
+     * @param string|null $route
      * @param array $params
+     * @return Mage_Core_Model_Url
      */
-    public function dispatch($route = null, array $params = array())
+    protected function getUrlModel($route = null, array &$params)
     {
         if (!isset($params['_store'])) {
             if (strpos($route, EcomDev_PHPUnit_Model_App::AREA_ADMINHTML) !== false) {
@@ -1931,6 +1939,20 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         } else {
             $urlModel = Mage::getModel('adminhtml/url');
         }
+
+        return $urlModel;
+    }
+
+    /**
+     * Dispatches controller action
+     *
+     *
+     * @param string $route
+     * @param array $params
+     */
+    public function dispatch($route = null, array $params = array())
+    {
+        $urlModel = $this->getUrlModel($route, $params);
 
         $this->app()->resetAreas();
 
@@ -1980,6 +2002,78 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         // Unset changed cookies
         $this->getRequest()->resetCookies();
         $this->getRequest()->setCookies($customCookies);
+        return $this;
+    }
+
+    /**
+     * Creates admin user session stub for testing adminhtml controllers
+     *
+     * @param array $aclResources list of allowed ACL resources for user,
+     *                            if null then it is super admin
+     * @param int $userId fake id of the admin user, you can use different one if it is required for your tests
+     * @return EcomDev_PHPUnit_Test_Case_Controller
+     */
+    protected function mockAdminUserSession(array $aclResources = null, $userId = 1)
+    {
+        $adminSessionMock = $this->getModelMock(
+            'admin/session',
+            array(
+                  'init',
+                  'getUser',
+                  'isLoggedIn',
+                  'isAllowed')
+        );
+
+        $adminUserMock = $this->getModelMock(
+            'admin/user',
+            array('login', 'getId', 'save', 'authenticate', 'getRole')
+        );
+
+        $adminRoleMock = $this->getModelMock('admin/roles', array('getGwsIsAll'));
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsIsAll')
+            ->will($this->returnValue(true));
+
+        $adminUserMock->expects($this->any())
+            ->method('getRole')
+            ->will($this->returnValue($adminRoleMock));
+
+        $adminUserMock->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue($userId));
+
+        $adminSessionMock->expects($this->any())
+            ->method('getUser')
+            ->will($this->returnValue($adminUserMock));
+
+        $adminSessionMock->expects($this->any())
+            ->method('isLoggedIn')
+            ->will($this->returnValue(true));
+
+        // Simple isAllowed implementation
+        $adminSessionMock->expects($this->any())
+            ->method('isAllowed')
+            ->will($this->returnCallback(
+                function($resource) use ($aclResources) {
+                    if ($aclResources === null) {
+                        return true;
+                    }
+                    if (strpos($resource, 'admin/') === 0) {
+                        $resource = substr($resource, strlen('admin/'));
+                    }
+                    return in_array($resource, $aclResources);
+                }));
+
+
+
+        $this->replaceByMock('model', 'admin/session', $adminSessionMock);
+
+        $this->getRequest()->setParam(
+            Mage_Adminhtml_Model_Url::SECRET_KEY_PARAM_NAME,
+            Mage::getSingleton('adminhtml/url')->getSecretKey()
+        );
+
         return $this;
     }
 }

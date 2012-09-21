@@ -120,9 +120,11 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
             }
 
             // Sort install scripts by version
-            usort($result['install'], array($this, 'compareVersions'));
+            usort($result['scheme']['install'], array($this, 'compareVersions'));
+            usort($result['data']['install'], array($this, 'compareVersions'));
             // Sort upgrade scripts by version
-            usort($result['upgrade'], array($this, 'compareVersions'));
+            usort($result['scheme']['upgrade'], array($this, 'compareVersions'));
+            usort($result['data']['upgrade'], array($this, 'compareVersions'));
             return $result;
         }
 
@@ -355,10 +357,10 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
      * (non-PHPdoc)
      * @see PHPUnit_Framework_Constraint::customFailureDescription()
      */
-    protected function customFailureDescription($other, $description, $not)
+    protected function customFailureDescription($other)
     {
         return sprintf(
-            'Failed asserting that setup resources %s.',
+            'setup resources %s.',
             $this->toString()
         );
     }

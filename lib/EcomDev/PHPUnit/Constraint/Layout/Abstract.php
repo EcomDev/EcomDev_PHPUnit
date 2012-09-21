@@ -27,10 +27,10 @@ abstract class EcomDev_PHPUnit_Constraint_Layout_Abstract extends EcomDev_PHPUni
      * (non-PHPdoc)
      * @see PHPUnit_Framework_Constraint::customFailureDescription()
      */
-    protected function customFailureDescription($other, $description, $not)
+    protected function customFailureDescription($other)
     {
         return sprintf(
-            'Failed asserting that layout %s.',
+            'layout %s.',
             $this->toString()
         );
     }
@@ -40,13 +40,9 @@ abstract class EcomDev_PHPUnit_Constraint_Layout_Abstract extends EcomDev_PHPUni
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Constraint_Abstract::getActualValue()
      */
-    protected function getActualValue($other)
+    protected function getActualValue($other = null)
     {
         if ($this->_useActualValue) {
-            if (is_array($this->_actualValue)) {
-                return PHPUnit_Util_Type::toString($this->_actualValue);
-            }
-
             return parent::getActualValue($other);
         }
 

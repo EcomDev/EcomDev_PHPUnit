@@ -14,27 +14,11 @@
  * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
+ * @author     Steve Rice <srice@endertech.com>
  */
 
-/**
- * Front controller for test suite
- *
- */
-class EcomDev_PHPUnit_Controller_Front extends Mage_Core_Controller_Varien_Front
+class EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Default
+	extends EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
 {
-    /**
-     * Overriden for getting rid
-     * of initialization of routers for each test case
-     *
-     * (non-PHPdoc)
-     * @see Mage_Core_Controller_Varien_Front::init()
-     */
-    public function init()
-    {
-        if (!$this->_routers) {
-            parent::init();
-        }
 
-        return $this;
-    }
 }

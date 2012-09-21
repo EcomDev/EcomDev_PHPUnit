@@ -67,6 +67,21 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Returns a EcomDev_PHPUnit_Constraint_Or matcher object.
+     *
+     * @return EcomDev_PHPUnit_Constraint_Or
+     */
+    public static function logicalOr()
+    {
+        $constraints = func_get_args();
+
+        $constraint = new EcomDev_PHPUnit_Constraint_Or;
+        $constraint->setConstraints($constraints);
+
+        return $constraint;
+    }
+
+    /**
      * Asserts that event was dispatched at least once
      *
      * @param string|array $event
@@ -341,8 +356,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             );
         }
 
-
-        if ($type == 'helper' && strpos($classAlias, '/') === false) {
+        // Remove addition of /data suffix if version is more than 1.6.x
+        if (version_compare(Mage::getVersion(), '1.6.0.0', '<') && $type == 'helper' && strpos($classAlias, '/') === false) {
             $classAlias .= '/data';
         }
 
@@ -582,7 +597,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @param  string  $type
      * @param  string  $classAlias
-     * @param  array   $methods
+     * @param  array|null  $methods
      * @param  boolean $isAbstract
      * @param  array   $constructorArguments
      * @param  string  $mockClassAlias
@@ -591,7 +606,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callAutoload
      * @return PHPUnit_Framework_MockObject_MockObject
      */
-    public function getGroupedClassMock($type, $classAlias, array $methods = array(), $isAbstract = false,
+    public function getGroupedClassMock($type, $classAlias, $methods = array(), $isAbstract = false,
                                         array $constructorArguments = array(),
                                         $mockClassAlias = '',  $callOriginalConstructor = true,
                                         $callOriginalClone = true, $callAutoload = true)
@@ -703,7 +718,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         if (current($annotationValue)) {
             $classAlias = current($annotationValue);
         } else {
-            $classAlias = self::app()->getConfig()->getNode($configPath);
+            $classAlias = (string) self::app()->getConfig()->getNode($configPath);
         }
 
         return $classAlias;

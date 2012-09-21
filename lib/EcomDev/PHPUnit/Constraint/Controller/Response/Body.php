@@ -49,7 +49,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Response_Body
     protected function evaluateConstraint($other)
     {
         $this->setActualValue($other->getOutputBody());
-        return $this->_expectedValue->evaluate($this->_actualValue);
+        return $this->_expectedValue->evaluate($this->_actualValue, '', true);
     }
 
     /**
@@ -59,6 +59,20 @@ class EcomDev_PHPUnit_Constraint_Controller_Response_Body
      */
     protected function textConstraint()
     {
-        return sprintf('body %s', $this->_expectedValue->toString());
+        return $this->_expectedValue->toString();
+    }
+
+    /**
+     * Custom failure description
+     *
+     * @param $other
+     * @return string
+     */
+    protected function customFailureDescription($other)
+    {
+        return sprintf(
+            'request body %s.',
+            $this->toString()
+        );
     }
 }

@@ -150,7 +150,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Action extends EcomDev_PHPUnit_Con
             $withArguments = ' with expected arguments';
         }
 
-        return sprintf('block "%s" action for method "%s" was invoked%s',
+        return sprintf('block "%s" action for method "%s" is invoked%s',
                        $this->_blockName, $this->_method, $withArguments);
     }
 

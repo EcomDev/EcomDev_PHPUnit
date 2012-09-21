@@ -1,0 +1,3 @@
+[submodule "lib/vfsStream"]
+	path = lib/vfsStream
+	url = git://github.com/mikey179/vfsStream.git
