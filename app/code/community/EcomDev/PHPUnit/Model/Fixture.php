@@ -973,7 +973,7 @@ class EcomDev_PHPUnit_Model_Fixture
 
 		$this->getResource()->commit();
 
-		$this->setStorageData(self::STORAGE_KEY_ATTRIBUTES, array_keys($attributes));
+		$this->setStorageData(self::STORAGE_KEY_ATTRIBUTES, $attributes);
 
 		return $this;
 	}
