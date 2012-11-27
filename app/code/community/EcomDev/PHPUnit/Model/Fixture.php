@@ -488,6 +488,7 @@ class EcomDev_PHPUnit_Model_Fixture
      *
      * @param array $configuration
      * @return EcomDev_PHPUnit_Model_Fixture
+     * @throws InvalidArgumentException in case if wrong configuration array supplied
      */
     protected function _applyConfig($configuration)
     {
@@ -522,6 +523,7 @@ class EcomDev_PHPUnit_Model_Fixture
      *
      * @param array $configuration
      * @return EcomDev_PHPUnit_Model_Fixture
+     * @throws InvalidArgumentException in case of wrong configuration data passed
      */
     protected function _applyConfigXml($configuration)
     {
@@ -665,6 +667,23 @@ class EcomDev_PHPUnit_Model_Fixture
      */
     protected function _setConfigNodeValue($path, $value)
     {
+        $originalNode = Mage::getConfig()->getNode($path);
+
+        // Support for custom backend values
+        if (!empty($value) && $originalNode !== false && $originalNode->getAttribute('backend_model')) {
+            $backend = Mage::getModel((string) $originalNode->getAttribute('backend_model'));
+            $dataPath = explode('/', $path);
+            if (current($dataPath) === 'default') {
+                array_shift($dataPath);
+            } elseif (current($dataPath) === 'websites' || current($dataPath) === 'stores') {
+                $dataPath = array_splice($dataPath, 0, 2);
+            }
+
+            $backend->setPath(implode('/', $dataPath))->setValue($value);
+            EcomDev_Utils_Reflection::invokeRestrictedMethod($backend, '_beforeSave');
+            $value = $backend->getValue();
+        }
+
         Mage::getConfig()->setNode($path, $value);
         return $this;
     }
