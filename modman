@@ -1,5 +1,4 @@
 # EcomDev_PHPUnit definition
-UnitTests.php                           UnitTests.php
 app/etc/modules/EcomDev_PHPUnit.xml     app/etc/modules/EcomDev_PHPUnit.xml
 app/code/community/EcomDev/PHPUnit      app/code/community/EcomDev/PHPUnit
 lib/EcomDev/PHPUnit                     lib/EcomDev/PHPUnit
@@ -8,10 +7,5 @@ lib/Spyc                                lib/Spyc
 lib/vfsStream                           lib/vfsStream
 shell/ecomdev-phpunit-install.php       shell/ecomdev-phpunit-install.php
 
-# Copy local.xml.phpunit if it doesn't already exist
-@shell \
-DIR_BEFORE_INSTALL=`pwd` \
-cd $PROJECT/shell \
-php -f ecomdev-phpunit-install.php --module $MODULE --project $PROJECT \
-cd $DIR_BEFORE_INSTALL
-
+# Run shell installer
+@shell  cd $PROJECT/shell && php -f ecomdev-phpunit-install.php -- --module $MODULE --project $PROJECT

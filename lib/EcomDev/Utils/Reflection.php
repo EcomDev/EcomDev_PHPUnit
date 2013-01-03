@@ -31,6 +31,7 @@ class EcomDev_Utils_Reflection
      * @param string|object $object class name
      * @param string $property
      * @param mixed $value
+     * @throws RuntimeException
      */
     public static function setRestrictedPropertyValue($object, $property, $value)
     {
@@ -38,7 +39,7 @@ class EcomDev_Utils_Reflection
             throw new RuntimeException('For setting of restricted properties via Reflection, PHP version should be 5.3.0 or later');
         }
 
-        $reflectionObject = self::getRelflection($object);
+        $reflectionObject = self::getReflection($object);
         $reflectionProperty = $reflectionObject->getProperty($property);
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue((is_string($object) ? null : $object), $value);
@@ -49,6 +50,7 @@ class EcomDev_Utils_Reflection
      *
      * @param string|object $object class name
      * @param array $properties
+     * @throws RuntimeException
      */
     public static function setRestrictedPropertyValues($object, array $properties)
     {
@@ -67,6 +69,7 @@ class EcomDev_Utils_Reflection
      * @param string|object $object class name
      * @param string $property
      * @return mixed
+     * @throws RuntimeException
      */
     public static function getRestrictedPropertyValue($object, $property)
     {
@@ -74,7 +77,7 @@ class EcomDev_Utils_Reflection
             throw new RuntimeException('For getting of restricted properties via Reflection, PHP version should be 5.3.0 or later');
         }
 
-        $reflectionObject = self::getRelflection($object);
+        $reflectionObject = self::getReflection($object);
         $reflectionProperty = $reflectionObject->getProperty($property);
         $reflectionProperty->setAccessible(true);
         return $reflectionProperty->getValue((is_string($object) ? null : $object));
@@ -88,6 +91,7 @@ class EcomDev_Utils_Reflection
      * @param string $method
      * @param array $args
      * @return mixed
+     * @throws RuntimeException
      */
     public static function invokeRestrictedMethod($object, $method, $args = array())
     {
@@ -95,7 +99,7 @@ class EcomDev_Utils_Reflection
             throw new RuntimeException('For invoking restricted methods via Reflection, PHP version should be 5.3.2 or later');
         }
 
-        $reflectionObject = self::getRelflection($object);
+        $reflectionObject = self::getReflection($object);
         $reflectionMethod = $reflectionObject->getMethod($method);
         $reflectionMethod->setAccessible(true);
 
@@ -111,8 +115,21 @@ class EcomDev_Utils_Reflection
      *
      * @param string|object $object
      * @return ReflectionClass|ReflectionObject
+     * @deprecated since 0.3.0 deprecated because of typo
      */
     public static function getRelflection($object)
+    {
+        return self::getReflection($object);
+    }
+
+    /**
+     * Returns reflection object from instance or class name
+     *
+     * @param string|object $object
+     * @return ReflectionClass|ReflectionObject
+     * @throws InvalidArgumentException
+     */
+    public static function getReflection($object)
     {
         // If object is a class name
         if (is_string($object) && class_exists($object)) {

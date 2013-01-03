@@ -42,7 +42,7 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
     public function __construct($theClass = '', $groups = array())
     {
         if (!$theClass instanceof ReflectionClass) {
-            $theClass = EcomDev_Utils_Reflection::getRelflection($theClass);
+            $theClass = EcomDev_Utils_Reflection::getReflection($theClass);
         }
 
         // Check annotations for test case name

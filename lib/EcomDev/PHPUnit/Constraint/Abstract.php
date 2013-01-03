@@ -83,7 +83,7 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
      */
     public function __construct($type, $expectedValue = null)
     {
-        $reflection = EcomDev_Utils_Reflection::getRelflection(get_class($this));
+        $reflection = EcomDev_Utils_Reflection::getReflection(get_class($this));
         $types = array();
         foreach ($reflection->getConstants() as $name => $constant) {
             if (strpos($name, 'TYPE_') === 0) {

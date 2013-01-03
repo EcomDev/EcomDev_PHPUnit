@@ -16,7 +16,6 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
-
 /**
  * Test suite for Magento
  *
@@ -35,27 +34,6 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
     const CACHE_TYPE = 'ecomdev_phpunit';
 
     /**
-     * Setting up test scope for Magento
-     * (non-PHPdoc)
-     * @see PHPUnit_Framework_TestSuite::setUp()
-     * @deprecated since 0.3.0
-     */
-    protected function setUp()
-    {
-
-    }
-
-    /**
-     * Returning Magento to the state before suite was run
-     * (non-PHPdoc)
-     * @see PHPUnit_Framework_TestSuite::tearDown()
-     */
-    protected function tearDown()
-    {
-
-    }
-
-    /**
      * This method loads all available test suites for PHPUnit
      *
      * @return PHPUnit_Framework_TestSuite
@@ -64,7 +42,7 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
     {
         $groups = Mage::getConfig()->getNode(self::XML_PATH_UNIT_TEST_GROUPS);
         $modules = Mage::getConfig()->getNode(self::XML_PATH_UNIT_TEST_MODULES);
-        $testSuiteClass = EcomDev_Utils_Reflection::getRelflection((string) Mage::getConfig()->getNode(self::XML_PATH_UNIT_TEST_SUITE));
+        $testSuiteClass = EcomDev_Utils_Reflection::getReflection((string) Mage::getConfig()->getNode(self::XML_PATH_UNIT_TEST_SUITE));
 
         if (!$testSuiteClass->isSubclassOf('EcomDev_PHPUnit_Test_Suite_Group')) {
             new RuntimeException('Test Suite class should be extended from EcomDev_PHPUnit_Test_Suite_Group');
@@ -146,7 +124,7 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
             // Add unit test case only
             // if it is a valid class extended from EcomDev_PHPUnit_Test_Case
             if (class_exists($className, true)) {
-                $reflectionClass = EcomDev_Utils_Reflection::getRelflection($className);
+                $reflectionClass = EcomDev_Utils_Reflection::getReflection($className);
                 if (!$reflectionClass->isSubclassOf('EcomDev_PHPUnit_Test_Case')
                     || $reflectionClass->isAbstract()) {
                     continue;

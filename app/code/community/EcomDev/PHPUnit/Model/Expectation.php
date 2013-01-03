@@ -1,9 +1,5 @@
 <?php
 
-// Loading Spyc yaml parser,
-// becuase Symfony component is not working propertly with nested
-require_once 'Spyc/spyc.php';
-
 class EcomDev_PHPUnit_Model_Expectation
     implements EcomDev_PHPUnit_Model_Expectation_Interface
 {
@@ -124,20 +120,25 @@ class EcomDev_PHPUnit_Model_Expectation
      */
     public function loadByTestCase(PHPUnit_Framework_TestCase $testCase)
     {
-        $expectations = $testCase->getAnnotationByName('loadExpectation');
+        $expectations = EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(
+            get_class($testCase), 'loadExpectation', array('class', 'method'), $testCase->getName(false)
+        );
 
         if (!$expectations) {
-            $expectations[] = null;
+            $expectations[] = $testCase->getName(false);
         }
 
         $expectationData = array();
 
         foreach ($expectations as $expectation) {
             if (empty($expectation)) {
-                $expectation = null;
+                $expectation = $testCase->getName(false);
             }
 
-            $expectationFile = $testCase->getYamlFilePath('expectations', $expectation);
+            $expectationFile = EcomDev_PHPUnit_Test_Case_Util::getYamlLoader(get_class($testCase))
+                ->resolveFilePath(
+                    get_class($testCase), EcomDev_PHPUnit_Model_Yaml_Loader::TYPE_EXPECTATION, $expectation
+                );
 
             if (!$expectationFile) {
                 $text = 'There was no expectation defined for current test case';
@@ -148,7 +149,7 @@ class EcomDev_PHPUnit_Model_Expectation
             }
 
             $expectationData = array_merge_recursive(
-                $expectationData, Spyc::YAMLLoad($expectationFile)
+                $expectationData, EcomDev_PHPUnit_Test_Case_Util::getYamlLoader()->load($expectationFile)
             );
         }
 

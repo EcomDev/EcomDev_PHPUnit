@@ -48,6 +48,7 @@ class EcomDev_PHPUnit_Install extends Mage_Shell_Abstract
 
         $this->_copyLocalXml();
         $this->_copyPHPUnitXml();
+        $this->_cleanCache();
     }
 
     /**
@@ -76,4 +77,23 @@ class EcomDev_PHPUnit_Install extends Mage_Shell_Abstract
                 $this->getArg('project') . DIRECTORY_SEPARATOR . self::FILE_PHPUNIT_XML);
         }
     }
+
+    /**
+     * Clears cache of the magento project
+     *
+     *
+     */
+    protected function _cleanCache()
+    {
+        if (is_dir($this->getArg('project') . '/var/cache')) {
+            shell_exec('rm -rf ' . $this->getArg('project') . '/var/cache');
+        }
+
+        if (is_dir($this->getArg('project') . '/var/phpunit.cache')) {
+            shell_exec('rm -rf ' . $this->getArg('project') . '/var/phpunit.cache');
+        }
+    }
 }
+
+$shell = new EcomDev_PHPUnit_Install();
+$shell->run();

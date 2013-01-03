@@ -45,6 +45,14 @@
     </global>
     <phpunit>
         <suite>
+            <yaml>
+                <model>ecomdev_phpunit/yaml_loader</model>
+                <loaders>
+                    <default>ecomdev_phpunit/yaml_loader_default</default>
+                    <module>ecomdev_phpunit/yaml_loader_module</module>
+                    <global>ecomdev_phpunit/yaml_loader_global</global>
+                </loaders>
+            </yaml>
             <!-- The names of directories inside Test for recognizion of tests per group -->
             <groups>
                 <models>Model</models>
@@ -70,6 +78,15 @@
             <fixture>
                 <!-- Default model for loading of fixtures -->
                 <model>ecomdev_phpunit/fixture</model>
+                <processors>
+                    <scope>ecomdev_phpunit/fixture_processor_scope</scope>
+                    <config>ecomdev_phpunit/fixture_processor_config</config>
+                    <config_xml>ecomdev_phpunit/fixture_processor_config</config_xml>
+                    <cache_options>ecomdev_phpunit/fixture_processor_cache</cache_options>
+                    <eav>ecomdev_phpunit/fixture_processor_eav</eav>
+                    <tables>ecomdev_phpunit/fixture_processor_tables</tables>
+                    <vfs>ecomdev_phpunit/fixture_processor_vfs</vfs>
+                </processors>
                 <eav>
                     <!-- Here goes the list of fixture loaders for EAV
                          If no fixture loader is specified for entity, then default will be used 
