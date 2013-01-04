@@ -55,7 +55,6 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
             }
 
             $this->firstLevelTestSuite = $suite;
-            echo 'Starting suite...' . $suite->getName();
         }
 
         if (EcomDev_Utils_Reflection::getRestrictedPropertyValue($suite, 'testCase')) {
