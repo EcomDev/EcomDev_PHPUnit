@@ -255,7 +255,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     {
         // Cache beckend initialization for unit tests,
         // because it should be separate from live one
-        $this->setNode('global/cache/backend', 'file');
+        $this->setNode('global/cache/backend', '');
         $this->getOptions()->setData('cache_dir', $this->getVarDir() . DS . 'phpunit.cache');
         $this->getOptions()->setData('session_dir', $this->getVarDir() . DS . 'phpunit.session');
         return $this;
