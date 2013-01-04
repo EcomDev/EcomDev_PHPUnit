@@ -79,6 +79,7 @@
                 <!-- Default model for loading of fixtures -->
                 <model>ecomdev_phpunit/fixture</model>
                 <processors>
+                    <registry>ecomdev_phpunit/fixture_processor_registry</registry>
                     <scope>ecomdev_phpunit/fixture_processor_scope</scope>
                     <config>ecomdev_phpunit/fixture_processor_config</config>
                     <config_xml>ecomdev_phpunit/fixture_processor_config</config_xml>
