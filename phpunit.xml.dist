@@ -30,7 +30,7 @@
             <!-- Exclude Mage.php file from code coverage -->
             <file>app/Mage.php</file>
             <!-- Exclude template files -->
-            <directory suffix=".phtml">app/code/design</directory>
+            <directory suffix=".phtml">app/design</directory>
             <!-- Exclude Varien & Zend libraries -->
             <directory suffix=".php">lib/Varien</directory>
             <directory suffix=".php">lib/Zend</directory>
