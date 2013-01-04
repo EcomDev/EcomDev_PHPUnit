@@ -34,6 +34,9 @@ class EcomDev_PHPUnit_Model_Fixture
     // Processors configuration path
     const XML_PATH_FIXTURE_PROCESSORS = 'phpunit/suite/fixture/processors';
 
+	// Configuration path for attribute loaders
+    const XML_PATH_FIXTURE_ATTRIBUTE_LOADERS = 'phpunit/suite/fixture/attribute';
+
     // Default eav loader class node in loaders configuration
     /* @deprecated since 0.3.0 */
     const DEFAULT_EAV_LOADER_NODE = EcomDev_PHPUnit_Model_Fixture_Processor_Eav::DEFAULT_EAV_LOADER_NODE;
@@ -59,7 +62,7 @@ class EcomDev_PHPUnit_Model_Fixture
     // Key for loaded cache options
     /* @deprecated since 0.3.0 */
     const STORAGE_KEY_CACHE_OPTIONS = EcomDev_PHPUnit_Model_Fixture_Processor_Cache::STORAGE_KEY;
-    
+
     // Key for created scope models
     /* @deprecated since 0.3.0 */
     const STORAGE_KEY_SCOPE = EcomDev_PHPUnit_Model_Fixture_Processor_Scope::STORAGE_KEY;
@@ -289,7 +292,7 @@ class EcomDev_PHPUnit_Model_Fixture
     }
 
     /**
-     * Check that current fixture scope is equal to SCOPE_LOCAL
+     * Check that current fixture scope is equal to SCOPE_DEFAULT
      *
      * @return boolean
      */
@@ -329,10 +332,10 @@ class EcomDev_PHPUnit_Model_Fixture
         $this->_loadFixtureFiles($fixtures, $className);
         return $this;
     }
-    
+
     /**
      * Loads test case cache on off annotations
-     * 
+     *
      * @param array $annotations
      * @return EcomDev_PHPUnit_Model_Fixture
      * @deprecated since 0.3.0
@@ -450,7 +453,7 @@ class EcomDev_PHPUnit_Model_Fixture
             }
         }
 
-        // Clear fixture for getting rid of duoble processing
+        // Clear fixture for getting rid of double processing
         $this->_fixture = array();
         return $this;
     }
@@ -480,10 +483,10 @@ class EcomDev_PHPUnit_Model_Fixture
 
         $this->_fixture = array();
     }
-    
+
     /**
      * Applies cache options for current test or test case
-     * 
+     *
      * @param array $options
      * @return EcomDev_PHPUnit_Model_Fixture
      * @deprecated since 0.3.0
@@ -492,10 +495,10 @@ class EcomDev_PHPUnit_Model_Fixture
     {
         return $this;
     }
-    
+
     /**
      * Discards changes that were made to Magento cache
-     * 
+     *
      * @return EcomDev_PHPUnit_Model_Fixture
      * @deprecated since 0.3.0
      */
@@ -510,6 +513,7 @@ class EcomDev_PHPUnit_Model_Fixture
      * @param array $configuration
      * @return EcomDev_PHPUnit_Model_Fixture
      * @deprecated since 0.3.0
+     * @throws InvalidArgumentException in case if wrong configuration array supplied
      */
     protected function _applyConfig($configuration)
     {
@@ -522,6 +526,7 @@ class EcomDev_PHPUnit_Model_Fixture
      * @param array $configuration
      * @return EcomDev_PHPUnit_Model_Fixture
      * @deprecated since 0.3.0
+     * @throws InvalidArgumentException in case of wrong configuration data passed
      */
     protected function _applyConfigXml($configuration)
     {
@@ -607,7 +612,36 @@ class EcomDev_PHPUnit_Model_Fixture
      */
     protected function _getEavLoader($entityType)
     {
-        return false;
+		return $this->_getComplexLoader($entityType, 'EAV');
+	}
+
+    /**
+     * Retrieves the loader for a particular entity type and data type
+     *
+     * @throws InvalidArgumentException
+     * @param string $entityType
+     * @param string $dataType
+     * @return EcomDev_PHPUnit_Model_Mysql4_Fixture
+     */
+    protected function _getComplexLoader($entityType, $dataType)
+    {
+	    if(!$dataType) {
+		    throw new InvalidArgumentException('Must specify a data type for the loader');
+	    }
+
+	    $reflection = EcomDev_Utils_Reflection::getRelflection($this);
+
+        $loaders = Mage::getConfig()->getNode($reflection->getConstant("XML_PATH_FIXTURE_{$dataType}_LOADERS"));
+
+        if (isset($loaders->$entityType)) {
+            $classAlias = (string)$loaders->$entityType;
+        } elseif (isset($loaders->{self::DEFAULT_EAV_LOADER_NODE})) {
+            $classAlias = (string)$loaders->{self::DEFAULT_EAV_LOADER_NODE};
+        } else {
+            $classAlias = self::DEFAULT_EAV_LOADER_CLASS;
+        }
+
+        return Mage::getResourceSingleton($classAlias);
     }
 
     /**
@@ -658,7 +692,7 @@ class EcomDev_PHPUnit_Model_Fixture
     protected function _handleScopeRow($type, $row)
     {
         return false;
-    }
+   }
 
     /**
      * Validate scope data
@@ -747,7 +781,6 @@ class EcomDev_PHPUnit_Model_Fixture
      */
     protected function _discardVfs()
     {
-        $this->getVfs()->discard();
         return $this;
     }
 }

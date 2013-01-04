@@ -48,6 +48,14 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
      */
     protected $_replaceInstanceCreation = array();
 
+    /**
+     * No cache sections should be cached,
+     * in favor to get rid of buggy config set options
+     *
+     * @var array
+     */
+    protected $_cacheSections = array();
+
 	/**
      * Load config data from DB
      *
