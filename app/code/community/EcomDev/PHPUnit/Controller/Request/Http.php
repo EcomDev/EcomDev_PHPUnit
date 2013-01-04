@@ -179,6 +179,18 @@ class EcomDev_PHPUnit_Controller_Request_Http
     }
 
     /**
+     * Sets rawBody property to request
+     *
+     * @param string $rawBody
+     * @return EcomDev_PHPUnit_Controller_Request_Http
+     */
+    public function setRawBody($rawBody)
+    {
+        $this->_rawBody = $rawBody;
+        return $this;
+    }
+
+    /**
      * Set custom http header
      *
      * @param string $name
