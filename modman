@@ -7,15 +7,7 @@ lib/EcomDev/Utils                       lib/EcomDev/Utils
 lib/Spyc                                lib/Spyc
 
 # Copy local.xml.phpunit if it doesn't already exist
-@shell \
-LOCALXML=app/etc/local.xml.phpunit; \
-if [ ! -f $PROJECT/$LOCALXML ]; then \
-  cp $MODULE/$LOCALXML $PROJECT/$LOCALXML; \
-fi
+@shell if [ ! -f $PROJECT/app/etc/local.xml.phpunit ]; then cp $MODULE/app/etc/local.xml.phpunit $PROJECT/app/etc/local.xml.phpunit; fi
 
 # Copy phpunit.xml if it doesn't already exist
-@shell \
-PHPUNITXML=phpunit.xml.dist; \
-if [ ! -f $PROJECT/$LOCALXML ]; then \
-  cp $MODULE/$PHPUNITXML $PROJECT/$PHPUNITXML; \
-fi
+@shell if [ ! -f $PROJECT/phpunit.xml.dist ]; then cp $MODULE/phpunit.xml.dist $PROJECT/phpunit.xml.dist; fi
