@@ -87,7 +87,6 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
 
         if ($this->firstLevelTestSuite === $suite) {
             $this->firstLevelTestSuite = null;
-            echo 'Finishing test suite...' . $suite->getName();
             // Discard test scope app
             if ($this->getAppReflection()->hasMethod('discardTestScope')) {
                 $this->getAppReflection()->getMethod('discardTestScope')->invoke(null);
