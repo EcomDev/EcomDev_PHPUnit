@@ -149,7 +149,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param string $type
      * @param string|null $expectedValue
-     * @return string
+     * @return EcomDev_PHPUnit_Constraint_Controller_Request
      */
     public static function request($type, $expectedValue = null)
     {
@@ -162,7 +162,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $type
      * @param string $headerName
      * @param PHPUnit_Framework_Constraint|null $constraint
-     * @return string
+     * @return EcomDev_PHPUnit_Constraint_Controller_Response_Header
      */
     public static function responseHeader($headerName, $type, PHPUnit_Framework_Constraint $constraint = null)
     {
@@ -173,7 +173,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Controller response body constraint creation
      *
      * @param PHPUnit_Framework_Constraint $constraint
-     * @return string
+     * @return EcomDev_PHPUnit_Constraint_Controller_Response_Body
      */
     public static function responseBody(PHPUnit_Framework_Constraint $constraint)
     {
@@ -523,12 +523,12 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert that response header is equal to expected value
      *
      * @param string $headerName
-     * @param mixed $expectedValue
+     * @param mixed  $expectedValue
      * @param string $message
-     * @param float  $delta
-     * @param integer $maxDepth
-     * @param boolean $canonicalize
-     * @param boolean $ignoreCase
+     * @param int    $delta
+     * @param int    $maxDepth
+     * @param bool   $canonicalize
+     * @param bool   $ignoreCase
      */
     public static function assertResponseHeaderEquals($headerName, $expectedValue, $message = '',
         $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
@@ -544,12 +544,12 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert that response header is not equal to expected value
      *
      * @param string $headerName
-     * @param mixed $expectedValue
+     * @param mixed  $expectedValue
      * @param string $message
-     * @param float  $delta
-     * @param integer $maxDepth
-     * @param boolean $canonicalize
-     * @param boolean $ignoreCase
+     * @param int    $delta
+     * @param int    $maxDepth
+     * @param bool   $canonicalize
+     * @param bool   $ignoreCase
      */
     public static function assertResponseHeaderNotEquals($headerName, $expectedValue, $message = '',
         $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
@@ -633,7 +633,6 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $headerName
      * @param string $pcrePattern
      * @param string $message
-     * @param boolean $ignoreCase
      */
     public static function assertResponseHeaderRegExp($headerName, $pcrePattern, $message = '')
     {
@@ -650,7 +649,6 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $headerName
      * @param string $pcrePattern
      * @param string $message
-     * @param boolean $ignoreCase
      */
     public static function assertResponseHeaderNotRegExp($headerName, $pcrePattern, $message = '')
     {
