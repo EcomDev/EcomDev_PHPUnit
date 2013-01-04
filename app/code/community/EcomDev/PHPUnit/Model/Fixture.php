@@ -154,17 +154,6 @@ class EcomDev_PHPUnit_Model_Fixture
 
 
     /**
-     * Model constructor, just defines which resource model to use
-     * (non-PHPdoc)
-     * @see Varien_Object::_construct()
-     */
-    protected function _construct()
-    {
-        // Additional property for test data fixture
-        $this->setTestData(new Varien_Object());
-    }
-
-    /**
      * Set fixture options
      *
      * @param array $options
@@ -622,6 +611,7 @@ class EcomDev_PHPUnit_Model_Fixture
      * @param string $entityType
      * @param string $dataType
      * @return EcomDev_PHPUnit_Model_Mysql4_Fixture
+     * @deprecated since 0.3.0
      */
     protected function _getComplexLoader($entityType, $dataType)
     {
