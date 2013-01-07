@@ -122,10 +122,10 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
             $className = uc_words(ltrim($classPath, DS), '_', DS);
 
             // Add unit test case only
-            // if it is a valid class extended from EcomDev_PHPUnit_Test_Case
+            // if it is a valid class extended from PHPUnit_Framework_TestCase
             if (class_exists($className, true)) {
                 $reflectionClass = EcomDev_Utils_Reflection::getReflection($className);
-                if (!$reflectionClass->isSubclassOf('EcomDev_PHPUnit_Test_Case')
+                if (!$reflectionClass->isSubclassOf('PHPUnit_Framework_TestCase')
                     || $reflectionClass->isAbstract()) {
                     continue;
                 }
