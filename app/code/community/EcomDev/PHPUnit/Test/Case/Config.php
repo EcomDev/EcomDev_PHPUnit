@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -181,10 +181,29 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     }
 
     /**
+     * Constraint for testing observer
+     * event definitions in configuration
+     *
+     * @param string $area
+     * @param string $routeName
+     * @param string $expectedValue
+     * @param string $type
+     * @return EcomDev_PHPUnit_Constraint_Config
+     */
+    public static function configRouter($area, $routeName, $expectedValue,
+                                               $type = EcomDev_PHPUnit_Constraint_Config_Route::TYPE_MODULE)
+    {
+        return self::config(
+            new EcomDev_PHPUnit_Constraint_Config_Route($area, $routeName, $type, $expectedValue)
+        );
+    }
+
+    /**
      * Executes configuration constraint
      *
-     * @param EcomDev_PHPUnit_Constraint_Config $constraint
-     * @param string $message
+     * @param PHPUnit_Framework_Constraint $constraint
+     * @param string  $message
+     * @return void
      */
     public static function assertThatConfig(PHPUnit_Framework_Constraint $constraint, $message)
     {
@@ -1249,5 +1268,276 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             ),
             $message
         );
+    }
+
+    /**
+     * Asserts that route frontName is the same as expected one
+     *
+     * If $frontName is empty, it uses $routeName as its expected value
+     *
+     * @param string $routeName
+     * @param string|null $frontName
+     * @param string $area
+     * @param string $message
+     */
+    public static function assertRouteFrontName($routeName, $frontName = null,
+                                                $area = EcomDev_PHPUnit_Model_App::AREA_FRONTEND, $message = '')
+    {
+        if ($frontName === null) {
+            $frontName = $routeName;
+        }
+        self::assertThatConfig(
+            self::configRouter(
+                $area, $routeName, $frontName, EcomDev_PHPUnit_Constraint_Config_Route::TYPE_FRONT_NAME
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that route frontName is NOT the same as expected one
+     *
+     * If $frontName is empty, it uses $routeName as its expected value
+     *
+     * @param string $routeName
+     * @param string|null $frontName
+     * @param string $area
+     * @param string $message
+     */
+    public static function assertRouteFrontNameNot($routeName, $frontName = null,
+                                                   $area = EcomDev_PHPUnit_Model_App::AREA_FRONTEND, $message = '')
+    {
+        if ($frontName === null) {
+            $frontName = $routeName;
+        }
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configRouter(
+                    $area, $routeName, $frontName, EcomDev_PHPUnit_Constraint_Config_Route::TYPE_FRONT_NAME
+                )
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that route belongs to expected router
+     *
+     * @param string $routeName
+     * @param string $routerName
+     * @param string $area
+     * @param string $message
+     */
+    public static function assertRouteIn($routeName, $routerName = 'standard',
+                                         $area = EcomDev_PHPUnit_Model_App::AREA_FRONTEND, $message = '')
+    {
+        self::assertThatConfig(
+            self::configRouter(
+                $area, $routeName, $routerName, EcomDev_PHPUnit_Constraint_Config_Route::TYPE_ROUTER
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that route DOES NOT belong to expected router
+     *
+     * @param string $routeName
+     * @param string $routerName
+     * @param string $area
+     * @param string $message
+     */
+    public static function assertRouteNotIn($routeName, $routerName = 'standard',
+                                            $area = EcomDev_PHPUnit_Model_App::AREA_FRONTEND, $message = '')
+    {
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configRouter(
+                    $area, $routeName, $routerName, EcomDev_PHPUnit_Constraint_Config_Route::TYPE_ROUTER
+                )
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that route contains module as controller resolve path
+     *
+     * @param string $routeName
+     * @param string|null   $moduleName
+     * @param string $area
+     * @param string $message
+     */
+    public static function assertRouteModule($routeName, $moduleName = null,
+                                             $area = EcomDev_PHPUnit_Model_App::AREA_FRONTEND, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+        self::assertThatConfig(
+            self::configRouter(
+                $area, $routeName, $moduleName
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that route DOES NOT contain module as controller resolve path
+     *
+     * @param string $routeName
+     * @param string|null   $moduleName
+     * @param string $area
+     * @param string $message
+     */
+    public static function assertRouteModuleNot($routeName, $moduleName = null,
+                                                $area = EcomDev_PHPUnit_Model_App::AREA_FRONTEND, $message = '')
+    {
+        if ($moduleName === null) {
+            $moduleName = self::getModuleNameFromCallStack();
+        }
+
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configRouter(
+                    $area, $routeName, $moduleName
+                )
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that route contains all expected modules in the same order in its controller resolve path
+     *
+     * @param string $routeName
+     * @param array  $expectedModuleNames
+     * @param string $area
+     * @param string $message
+     */
+    public static function assertRouteModuleOrder($routeName, array $expectedModuleNames,
+                                                  $area = EcomDev_PHPUnit_Model_App::AREA_FRONTEND, $message = '')
+    {
+        self::assertThatConfig(
+            self::configRouter(
+                $area, $routeName, $expectedModuleNames, EcomDev_PHPUnit_Constraint_Config_Route::TYPE_MODULE_ORDER
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that route DOES NOT contain all expected modules in the same order in its controller resolve path
+     *
+     * @param string $routeName
+     * @param array  $expectedModuleNames
+     * @param string $area
+     * @param string $message
+     */
+    public static function assertRouteModuleOrderNot($routeName, array $expectedModuleNames,
+                                                        $area = EcomDev_PHPUnit_Model_App::AREA_FRONTEND, $message = '')
+    {
+        self::assertThatConfig(
+            self::logicalNot(
+                self::configRouter(
+                    $area, $routeName, $expectedModuleNames, EcomDev_PHPUnit_Constraint_Config_Route::TYPE_MODULE_ORDER
+                )
+            ),
+            $message
+        );
+    }
+
+    /**
+     * Asserts that default config value matches expected type of constraint with expected value
+     *
+     * @param string $nodePath
+     * @param mixed  $expectedValue
+     * @param string $message
+     * @param string $type
+     */
+    public static function assertDefaultConfigValue($nodePath, $expectedValue, $message = '',
+                                                    $type = EcomDev_PHPUnit_Constraint_Config_Node::TYPE_EQUALS_STRING)
+    {
+        $nodePath = 'default/' . $nodePath;
+        self::assertConfigNodeValue($nodePath, $expectedValue, $message, $type);
+    }
+
+    /**
+     * Asserts that default config value DOES NOT match expected type of constraint with expected value
+     *
+     * @param string $nodePath
+     * @param mixed  $expectedValue
+     * @param string $message
+     * @param string $type
+     */
+    public static function assertDefaultConfigValueNot($nodePath, $expectedValue, $message = '',
+                                                    $type = EcomDev_PHPUnit_Constraint_Config_Node::TYPE_EQUALS_STRING)
+    {
+        $nodePath = 'default/' . $nodePath;
+        self::assertConfigNodeNotValue($nodePath, $expectedValue, $message, $type);
+    }
+
+    /**
+     * Asserts that store config value matches expected type of constraint with expected value
+     *
+     * @param string|int $store
+     * @param string $nodePath
+     * @param mixed  $expectedValue
+     * @param string $message
+     * @param string $type
+     */
+    public static function assertStoreConfigValue($store, $nodePath, $expectedValue, $message = '',
+                                                  $type = EcomDev_PHPUnit_Constraint_Config_Node::TYPE_EQUALS_STRING)
+    {
+        $nodePath = 'stores/' . self::app()->getStore($store)->getCode() . '/' . $nodePath;
+        self::assertConfigNodeValue($nodePath, $expectedValue, $message, $type);
+    }
+
+    /**
+     * Asserts that store config value DOES NOT match expected type of constraint with expected value
+     *
+     * @param string|int $store
+     * @param string $nodePath
+     * @param mixed  $expectedValue
+     * @param string $message
+     * @param string $type
+     */
+    public static function assertStoreConfigValueNot($store, $nodePath, $expectedValue, $message = '',
+                                                     $type = EcomDev_PHPUnit_Constraint_Config_Node::TYPE_EQUALS_STRING)
+    {
+        $nodePath = 'stores/' . self::app()->getStore($store)->getCode() . '/' . $nodePath;
+        self::assertConfigNodeNotValue($nodePath, $expectedValue, $message, $type);
+    }
+
+    /**
+     * Asserts that website config value matches expected type of constraint with expected value
+     *
+     * @param string|int $website
+     * @param string $nodePath
+     * @param mixed  $expectedValue
+     * @param string $message
+     * @param string $type
+     */
+    public static function assertWebsiteConfigValue($website, $nodePath, $expectedValue, $message = '',
+                                                    $type = EcomDev_PHPUnit_Constraint_Config_Node::TYPE_EQUALS_STRING)
+    {
+        $nodePath = 'websites/' . self::app()->getWebsite($website)->getCode() . '/' . $nodePath;
+        self::assertConfigNodeValue($nodePath, $expectedValue, $message, $type);
+    }
+
+    /**
+     * Asserts that website config value DOES NOT match expected type of constraint with expected value
+     *
+     * @param string|int $website
+     * @param string $nodePath
+     * @param mixed  $expectedValue
+     * @param string $message
+     * @param string $type
+     */
+    public static function assertWebsiteConfigValueNot($website, $nodePath, $expectedValue, $message = '',
+                                                       $type = EcomDev_PHPUnit_Constraint_Config_Node::TYPE_EQUALS_STRING)
+    {
+        $nodePath = 'websites/' . self::app()->getWebsite($website)->getCode() . '/' . $nodePath;
+        self::assertConfigNodeNotValue($nodePath, $expectedValue, $message, $type);
     }
 }

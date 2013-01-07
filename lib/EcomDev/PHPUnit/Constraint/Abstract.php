@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -186,13 +186,16 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
         $failureDescription = sprintf('Failed asserting that %s', $this->failureDescription($other));
 
         if (in_array($this->_type, $this->_typesWithDiff)) {
+            $actual = $this->getActualValue($other);
+            $expected = $this->getExpectedValue();
+
             throw new EcomDev_PHPUnit_Constraint_Exception(
                 $failureDescription,
                 new PHPUnit_Framework_ComparisonFailure(
-                     $this->getExpectedValue(),
-                     $this->getActualValue($other),
-                     $this->getExpectedValue(),
-                     $this->getActualValue($other)
+                     $expected,
+                     $actual,
+                     $this->exportAsString($expected),
+                     $this->exportAsString($actual)
                 ),
                 $description
             );
@@ -254,5 +257,25 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
     public function toString()
     {
         return $this->callProtectedByType('text');
+    }
+
+    /**
+     * Exports value as string
+     *
+     * @param mixed $value
+     * @return string
+     */
+    public function exportAsString($value)
+    {
+        if (is_array($value) && preg_match('/^\d+$/', implode('', array_keys($value)))) {
+            $stringValue = '';
+            foreach ($value as $val) {
+                $stringValue .= (is_string($val) ? $val : PHPUnit_Util_Type::export($val)) . "\n";
+            }
+
+            return $stringValue;
+        } else {
+            return PHPUnit_Util_Type::export($value);
+        }
     }
 }
