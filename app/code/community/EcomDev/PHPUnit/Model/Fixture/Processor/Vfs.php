@@ -19,6 +19,8 @@
 
 class EcomDev_PHPUnit_Model_Fixture_Processor_Vfs implements EcomDev_PHPUnit_Model_Fixture_Processor_Interface
 {
+    const STORAGE_KEY = 'vfs';
+
     /**
      * Does nothing
      *
@@ -41,7 +43,15 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Vfs implements EcomDev_PHPUnit_Mod
      */
     public function apply(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
     {
-        $fixture->getVfs()->apply($data, $fixture->isScopeLocal());
+        if ($fixture->isScopeLocal()
+            && ($parentData = $fixture->getStorageData(self::STORAGE_KEY,
+                                                       EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED))) {
+            $data = array_merge_recursive($parentData, $data);
+        }
+
+        $fixture->getVfs()->apply($data);
+        $fixture->setStorageData(self::STORAGE_KEY, $data);
+
         return $this;
     }
 
@@ -57,6 +67,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Vfs implements EcomDev_PHPUnit_Mod
     public function discard(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
     {
         $fixture->getVfs()->discard();
+        $fixture->setStorageData(self::STORAGE_KEY, null);
         return $this;
     }
 }

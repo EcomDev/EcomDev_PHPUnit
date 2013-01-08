@@ -720,7 +720,7 @@ class EcomDev_PHPUnit_Model_Fixture
             return $this->_vfs;
         }
 
-        if (is_dir(Mage::getBaseDir('lib') . DS . 'vfsStream' . DS . 'main')) {
+        if (is_dir(Mage::getBaseDir('lib')  . DS . 'vfsStream' . DS . 'src')) {
             spl_autoload_register(array($this, 'vfsAutoload'), true, true);
             $this->_vfs = Mage::getModel('ecomdev_phpunit/fixture_vfs');
             return $this->_vfs;
@@ -740,12 +740,11 @@ class EcomDev_PHPUnit_Model_Fixture
      */
     public function vfsAutoload($className)
     {
-        if (strpos($className, 'vfs') !== 0) {
+        if (strpos($className, 'org\\bovigo\\vfs') === false) {
             return false;
         }
 
-        $fileName = 'vfsStream' . DS . 'src'
-            . DS . 'main' . DS . 'php' . DS
+        $fileName = 'vfsStream' . DS . 'src' . DS . 'main' . DS . 'php' . DS
             . strtr(trim($className, '\\'), '\\', DS) . '.php';
 
         return include $fileName;

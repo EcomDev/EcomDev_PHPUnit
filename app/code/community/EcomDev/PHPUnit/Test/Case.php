@@ -597,7 +597,6 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * Retrieves fixture model singleton
      *
      * @return EcomDev_PHPUnit_Model_Fixture
-     * @deprecated since 0.3.0
      */
     protected static function getFixture()
     {

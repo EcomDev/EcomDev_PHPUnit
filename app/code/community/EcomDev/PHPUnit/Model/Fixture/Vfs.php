@@ -17,6 +17,7 @@
  */
 
 use org\bovigo\vfs\vfsStream as Stream;
+use org\bovigo\vfs\vfsStreamDirectory as StreamDirectory;
 use org\bovigo\vfs\vfsStreamWrapper as StreamWrapper;
 use org\bovigo\vfs\visitor\vfsStreamStructureVisitor as StreamVisitor;
 
@@ -30,7 +31,7 @@ class EcomDev_PHPUnit_Model_Fixture_Vfs
     /**
      * Current root directory stack of the VFS before apply process were started
      *
-     * @var array
+     * @var StreamDirectory[]
      */
     protected $_currentRoot = array();
 
@@ -50,18 +51,9 @@ class EcomDev_PHPUnit_Model_Fixture_Vfs
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Vfs
      */
-    public function apply($data, $cloneCurrent = false)
+    public function apply($data)
     {
         $this->_currentRoot[] = StreamWrapper::getRoot();
-        StreamWrapper::setRoot(Stream::newDirectory(uniqid('root')));
-        if ($cloneCurrent) {
-            $visitor = new StreamVisitor();
-            $visitor->visitDirectory(end($this->_currentRoot));
-            if ($visitor->getStructure()) {
-                Stream::create($visitor->getStructure());
-            }
-        }
-
         Stream::create($data);
         return $this;
     }
@@ -77,6 +69,23 @@ class EcomDev_PHPUnit_Model_Fixture_Vfs
             StreamWrapper::setRoot(array_pop($this->_currentRoot));
         }
         return $this;
+    }
+
+    /**
+     * Dump current files structure
+     *
+     * @return array
+     */
+    public function dump()
+    {
+        $currentRoot = StreamWrapper::getRoot();
+        if (!$currentRoot) {
+            return array();
+        }
+
+        $visitor = new StreamVisitor();
+        $visitor->visit($currentRoot);
+        return $visitor->getStructure();
     }
 
     /**
