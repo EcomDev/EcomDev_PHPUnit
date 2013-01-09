@@ -27,6 +27,17 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Category extends EcomDev_
         'catalog_category_flat'
     );
 
+    protected function _getBackendTables()
+    {
+        return array(
+            'varchar',
+            'int',
+            'decimal',
+            'text',
+            'datetime'
+        );
+    }
+
     /**
      * Overriden to add easy fixture loading for product associations
      * (non-PHPdoc)

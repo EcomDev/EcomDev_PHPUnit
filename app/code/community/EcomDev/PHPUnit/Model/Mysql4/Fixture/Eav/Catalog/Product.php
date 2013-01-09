@@ -29,6 +29,20 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
         'catalog_product_price'
     );
 
+    protected function _getBackendTables()
+    {
+        return array(
+            'datetime',
+            'decimal',
+            'gallery',
+            'int',
+            'media_gallery',
+            'media_gallery_value',
+            'text',
+            'tier_price',
+            'varchar'
+        );
+    }
 
     /**
      * Overridden to fix issue with flat tables existance mark

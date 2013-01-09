@@ -92,6 +92,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Eav
             $eavLoaders[] = $this->_getEavLoader($entityType)
                 ->setFixture($fixture)
                 ->setOptions($fixture->getOptions())
+                ->cleanEntity($entityType)
                 ->loadEntity($entityType, $values);
         }
 
