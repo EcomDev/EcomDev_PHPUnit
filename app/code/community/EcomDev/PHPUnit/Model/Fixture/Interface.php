@@ -136,6 +136,15 @@ interface EcomDev_PHPUnit_Model_Fixture_Interface extends EcomDev_PHPUnit_Model_
     public function setFixtureValue($key, $value);
 
     /**
+     * Retrieves fixture value
+     *
+     * @param string $key
+     *
+     * @return array[]
+     */
+    public function getFixtureValue($key);
+
+    /**
      * Returns VFS wrapper instance
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Vfs

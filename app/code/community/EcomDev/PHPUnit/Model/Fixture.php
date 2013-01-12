@@ -349,6 +349,21 @@ class EcomDev_PHPUnit_Model_Fixture
     }
 
     /**
+     * Returns value from fixture
+     *
+     * @param $key
+     * @return array[]
+     */
+    public function getFixtureValue($key)
+    {
+        if (isset($this->_fixture[$key])) {
+            return $this->_fixture[$key];
+        }
+
+        return array();
+    }
+
+    /**
      * Loads fixture files
      *
      * @param array                            $fixtures
