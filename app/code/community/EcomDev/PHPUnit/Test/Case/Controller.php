@@ -869,7 +869,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
             $params['_store'] = EcomDev_PHPUnit_Model_App::ADMIN_STORE_CODE;
         }
 
-        if ($params['_store'] === EcomDev_PHPUnit_Model_App::ADMIN_STORE_CODE) {
+        if (isset($params['_store']) && $params['_store'] === EcomDev_PHPUnit_Model_App::ADMIN_STORE_CODE) {
             $urlModel = Mage::getModel('adminhtml/url');
         } else {
             $urlModel = Mage::getModel('core/url');
