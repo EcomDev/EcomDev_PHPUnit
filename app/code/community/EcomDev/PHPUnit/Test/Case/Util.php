@@ -91,7 +91,7 @@ class EcomDev_PHPUnit_Test_Case_Util
                 'yaml',
                 self::XML_PATH_DEFAULT_YAML_LOADER_MODEL
             );
-        } elseif (self::$fixtureModelAlias === null) {
+        } elseif (self::$yamlLoaderModelAlias === null) {
             self::$yamlLoaderModelAlias = self::getLoadableClassAlias(
                 get_called_class(), // Just fallback to current test util
                 'yaml',
