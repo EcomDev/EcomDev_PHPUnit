@@ -59,7 +59,7 @@ class EcomDev_PHPUnit_Install extends Mage_Shell_Abstract
     {
         if (!file_exists($this->getArg('project') . DIRECTORY_SEPARATOR . self::FILE_LOCAL_XML)) {
             copy($this->getArg('module') . DIRECTORY_SEPARATOR . self::FILE_LOCAL_XML,
-                 $this->getArg('project') . DIRECTORY_SEPARATOR . self::FILE_PHPUNIT_XML);
+                 $this->getArg('project') . DIRECTORY_SEPARATOR . self::FILE_LOCAL_XML);
         }
     }
 
