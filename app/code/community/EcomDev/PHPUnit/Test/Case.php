@@ -356,6 +356,8 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     {
         if (!is_array($firstArgument)) {
             $arguments = func_get_args();
+        } elseif ($firstArgument === 'auto' && $this->readAttribute($this, 'dataName')) {
+            $arguments = $this->readAttribute($this, 'dataName');
         } else {
             $arguments = $firstArgument;
         }
