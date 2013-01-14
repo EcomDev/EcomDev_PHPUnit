@@ -286,7 +286,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      *
      * @return string
      */
-    protected function textContainValue()
+    protected function textContainValues()
     {
         return sprintf('contains "%s" in comma separated value list',
                        PHPUnit_Util_Type::export($this->_expectedValue));
