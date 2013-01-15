@@ -1,0 +1,44 @@
+vfs:
+  directory_one_valid:
+    install-1.0.0.php: <?php // file
+    upgrade-1.0.0-1.0.1.php: <?php // file
+    mysql4-install-0.8.0.php: <?php // file
+    mysql4-upgrade-0.8.0-0.8.1.php: <?php // file
+  directory_two_valid:
+    install-1.0.0.php: <?php // file
+    upgrade-1.0.0-1.0.1.php: <?php // file
+    upgrade-1.0.1-1.0.2.php: <?php // file
+    upgrade-1.0.2-1.0.3.php: <?php // file
+    upgrade-1.0.3-1.0.4.php: <?php // file
+    mysql4-install-0.8.0.php: <?php // file
+    mysql4-upgrade-0.8.0-0.8.1.php: <?php // file
+    mysql4-upgrade-0.8.1-0.8.2.php: <?php // file
+    mysql4-upgrade-0.8.2-0.8.3.php: <?php // file
+    mysql4-upgrade-0.8.3-0.8.4.php: <?php // file
+  directory_one_data_valid:
+    data-install-1.0.0.php: <?php // file
+    data-upgrade-1.0.0-1.0.1.php: <?php // file
+    data-upgrade-1.0.1-1.0.2.php: <?php // file
+    data-upgrade-1.0.2-1.0.3.php: <?php // file
+    data-upgrade-1.0.3-1.0.4.php: <?php // file
+  directory_one_scheme_valid:
+    install-1.0.0.php: <?php // file
+    upgrade-1.0.0-1.0.1.php: <?php // file
+    upgrade-1.0.1-1.0.2.php: <?php // file
+    upgrade-1.0.2-1.0.3.php: <?php // file
+    upgrade-1.0.3-1.0.4.php: <?php // file
+  directory_one_invalid:
+    instal-1.0.0.php: <?php // file # error in install script file name
+    upgrade-1.0.0-1.0.1.php: <?php // file
+  directory_two_invalid:
+    install-1.0.0.php: <?php // file
+    update-1.0.0-1.0.1.php: <?php // file # error in upgrade script file name
+    upgrade-1.0.1-1.0.2.php: <?php // file
+    upgrade-1.0.2-1.0.3.php: <?php // file
+    upgrade-1.0.3-1.0.4.php: <?php // file
+  directory_one_data_invalid:
+    data-install-1.0.0.php: <?php // file
+    data-upgade-1.0.0-1.0.1.php: <?php // file # error in the filename
+    data-upgrade-1.0.1-1.0.2.php: <?php // file
+    data-upgrade-1.0.2-1.0.3.php: <?php // file
+    data-upgrade-1.0.3-1.0.4.php: <?php // file

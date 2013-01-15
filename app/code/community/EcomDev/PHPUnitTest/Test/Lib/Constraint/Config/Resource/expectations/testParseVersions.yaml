@@ -1,0 +1,200 @@
+directory_one_valid:
+  versions:
+    scheme:
+      install:
+        - filename: install-1.0.0.php
+          prefix: install
+          from: 1.0.0
+          to: null
+        - filename: mysql4-install-0.8.0.php
+          prefix: mysql4-install
+          from: 0.8.0
+          to: null
+      upgrade:
+        - filename: upgrade-1.0.0-1.0.1.php
+          prefix: upgrade
+          from: 1.0.0
+          to: 1.0.1
+        - filename: mysql4-upgrade-0.8.0-0.8.1.php
+          prefix: mysql4-upgrade
+          from: 0.8.0
+          to: 0.8.1
+    data:
+      install: []
+      upgrade: []
+directory_two_valid:
+  versions:
+    scheme:
+      install:
+        - filename: install-1.0.0.php
+          prefix: install
+          from: 1.0.0
+          to: null
+        - filename: mysql4-install-0.8.0.php
+          prefix: mysql4-install
+          from: 0.8.0
+          to: null
+      upgrade:
+        - filename: upgrade-1.0.0-1.0.1.php
+          prefix: upgrade
+          from: 1.0.0
+          to: 1.0.1
+        - filename: upgrade-1.0.1-1.0.2.php
+          prefix: upgrade
+          from: 1.0.1
+          to: 1.0.2
+        - filename: upgrade-1.0.2-1.0.3.php
+          prefix: upgrade
+          from: 1.0.2
+          to: 1.0.3
+        - filename: upgrade-1.0.3-1.0.4.php
+          prefix: upgrade
+          from: 1.0.3
+          to: 1.0.4
+        - filename: mysql4-upgrade-0.8.0-0.8.1.php
+          prefix: mysql4-upgrade
+          from: 0.8.0
+          to: 0.8.1
+        - filename: mysql4-upgrade-0.8.1-0.8.2.php
+          prefix: mysql4-upgrade
+          from: 0.8.1
+          to: 0.8.2
+        - filename: mysql4-upgrade-0.8.2-0.8.3.php
+          prefix: mysql4-upgrade
+          from: 0.8.2
+          to: 0.8.3
+        - filename: mysql4-upgrade-0.8.3-0.8.4.php
+          prefix: mysql4-upgrade
+          from: 0.8.3
+          to: 0.8.4
+    data:
+      install: []
+      upgrade: []
+directory_one_data_scheme_valid:
+  versions:
+    scheme:
+      install:
+        - filename: install-1.0.0.php
+          prefix: install
+          from: 1.0.0
+          to: null
+      upgrade:
+        - filename: upgrade-1.0.0-1.0.1.php
+          prefix: upgrade
+          from: 1.0.0
+          to: 1.0.1
+        - filename: upgrade-1.0.1-1.0.2.php
+          prefix: upgrade
+          from: 1.0.1
+          to: 1.0.2
+        - filename: upgrade-1.0.2-1.0.3.php
+          prefix: upgrade
+          from: 1.0.2
+          to: 1.0.3
+        - filename: upgrade-1.0.3-1.0.4.php
+          prefix: upgrade
+          from: 1.0.3
+          to: 1.0.4
+    data:
+      install:
+        - filename: data-install-1.0.0.php
+          prefix: data-install
+          from: 1.0.0
+          to: null
+      upgrade:
+        - filename: data-upgrade-1.0.0-1.0.1.php
+          prefix: data-upgrade
+          from: 1.0.0
+          to: 1.0.1
+        - filename: data-upgrade-1.0.1-1.0.2.php
+          prefix: data-upgrade
+          from: 1.0.1
+          to: 1.0.2
+        - filename: data-upgrade-1.0.2-1.0.3.php
+          prefix: data-upgrade
+          from: 1.0.2
+          to: 1.0.3
+        - filename: data-upgrade-1.0.3-1.0.4.php
+          prefix: data-upgrade
+          from: 1.0.3
+          to: 1.0.4
+directory_one_invalid:
+  versions:
+    scheme:
+      install: []
+      upgrade:
+        - filename: upgrade-1.0.0-1.0.1.php
+          prefix: upgrade
+          from: 1.0.0
+          to: 1.0.1
+    data:
+      install: []
+      upgrade: []
+directory_two_invalid:
+  versions:
+    scheme:
+      install:
+        - filename: install-1.0.0.php
+          prefix: install
+          from: 1.0.0
+          to: null
+      upgrade:
+        - filename: upgrade-1.0.1-1.0.2.php
+          prefix: upgrade
+          from: 1.0.1
+          to: 1.0.2
+        - filename: upgrade-1.0.2-1.0.3.php
+          prefix: upgrade
+          from: 1.0.2
+          to: 1.0.3
+        - filename: upgrade-1.0.3-1.0.4.php
+          prefix: upgrade
+          from: 1.0.3
+          to: 1.0.4
+    data:
+      install: []
+      upgrade: []
+directory_one_data_scheme_invalid:
+  versions:
+    scheme:
+      install:
+        - filename: install-1.0.0.php
+          prefix: install
+          from: 1.0.0
+          to: null
+      upgrade:
+        - filename: upgrade-1.0.0-1.0.1.php
+          prefix: upgrade
+          from: 1.0.0
+          to: 1.0.1
+        - filename: upgrade-1.0.1-1.0.2.php
+          prefix: upgrade
+          from: 1.0.1
+          to: 1.0.2
+        - filename: upgrade-1.0.2-1.0.3.php
+          prefix: upgrade
+          from: 1.0.2
+          to: 1.0.3
+        - filename: upgrade-1.0.3-1.0.4.php
+          prefix: upgrade
+          from: 1.0.3
+          to: 1.0.4
+    data:
+      install:
+        - filename: data-install-1.0.0.php
+          prefix: data-install
+          from: 1.0.0
+          to: null
+      upgrade:
+        - filename: data-upgrade-1.0.1-1.0.2.php
+          prefix: data-upgrade
+          from: 1.0.1
+          to: 1.0.2
+        - filename: data-upgrade-1.0.2-1.0.3.php
+          prefix: data-upgrade
+          from: 1.0.2
+          to: 1.0.3
+        - filename: data-upgrade-1.0.3-1.0.4.php
+          prefix: data-upgrade
+          from: 1.0.3
+          to: 1.0.4
