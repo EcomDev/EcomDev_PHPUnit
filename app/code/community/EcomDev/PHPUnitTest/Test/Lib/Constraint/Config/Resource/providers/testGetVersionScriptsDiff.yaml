@@ -28,3 +28,13 @@ from_1.0.0_to_1.0.5_one_invalid:
   - scheme
   - 1.0.0
   - 1.0.5
+from_1.0.0_one_invalid:
+  - directory_one_invalid
+  - scheme
+  - 1.0.0
+  - null
+to_1.0.5_one_invalid:
+  - directory_one_invalid
+  - scheme
+  - null
+  - 1.0.5
