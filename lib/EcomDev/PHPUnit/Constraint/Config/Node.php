@@ -43,7 +43,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
     public function __construct($nodePath, $type, $expectedValue = null)
     {
         $this->_expectedValueValidation += array(
-            self::TYPE_EQUALS_STRING => array(true, 'is_string', 'string'),
+            self::TYPE_EQUALS_STRING => array(true, 'is_scalar', 'scalar'),
             self::TYPE_EQUALS_NUMBER => array(true, 'is_numeric', 'numeric'),
             self::TYPE_LESS_THAN => array(true, 'is_numeric', 'numeric'),
             self::TYPE_GREATER_THAN => array(true, 'is_numeric', 'numeric'),
@@ -68,7 +68,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      */
     protected function evaluateEqualsString($other)
     {
-        return (string)$other === $this->_expectedValue;
+        return $this->compareValues($this->_expectedValue, (string)$other);
     }
 
     /**
@@ -88,7 +88,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      */
     protected function evaluateEqualsNumber($other)
     {
-        return (float)$other == $this->_expectedValue;
+        return $this->compareValues($this->_expectedValue, (float)$other);
     }
 
     /**
@@ -171,27 +171,10 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      */
     protected function evaluateEqualsXml($other)
     {
-        // Normalize expected XML for matching appropriate xml structure without
-        // whitespaces, etc
-        if (!$this->_expectedValue instanceof Varien_Simplexml_Element) {
-            try {
-               if ($other instanceof SimpleXMLElement) {
-                   $other = $other->asXML();
-               }
-               $expectedXml = new Varien_Simplexml_Element($this->_expectedValue);
-            } catch (Exception $e) {
-                throw new RuntimeException(sprintf(
-                    'Expected value is not an xml string for node %s, passed expected value: %s, parsing error: %s',
-                    $this->_nodePath,
-                    PHPUnit_Util_Type::export($this->_expectedValue),
-                    $e->getMessage()
-                ));
-            }
+        $expectedValue = $this->getXmlAsDom($this->_expectedValue);
+        $other = $this->getXmlAsDom($other);
 
-            $this->_expectedValue = $expectedXml;
-        }
-
-        return $this->_expectedValue->asNiceXml() == $other->asNiceXml();
+        return $this->compareValues($expectedValue, $other);
     }
 
 

@@ -99,9 +99,7 @@ class EcomDev_PHPUnit_Constraint_Config_Module
      */
     protected function evaluateCodePool($other)
     {
-        $this->setActualValue((string)$other->codePool);
-
-        return  $this->_actualValue === $this->_expectedValue;
+        return $this->compareValues($this->_expectedValue, (string)$other->codePool);
     }
 
     /**

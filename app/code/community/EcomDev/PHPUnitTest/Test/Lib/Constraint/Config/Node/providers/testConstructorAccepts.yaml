@@ -1,0 +1,18 @@
+-
+  - 1
+  - equals_string
+-
+  - '0'
+  - equals_string
+-
+  - 0.01
+  - equals_string
+-
+  - "0.01"
+  - equals_decimal
+-
+  - "0"
+  - equals_decimal
+-
+  - "100.0123"
+  - equals_decimal
