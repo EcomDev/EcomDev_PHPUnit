@@ -20,7 +20,6 @@
  * Abstract constraint for EcomDev_PHPUnit constraints
  * Contains flexible constaint types implementation
  *
- *  @todo refactor failures for being 100% compatible with PHPUnit 3.6
  */
 abstract class EcomDev_PHPUnit_Constraint_Abstract
     extends PHPUnit_Framework_Constraint
@@ -75,11 +74,20 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
     protected $_useActualValue = false;
 
     /**
+     * Comparison failure for nice failure messages
+     *
+     * @var PHPUnit_Framework_ComparisonFailure
+     */
+    protected $_comparisonFailure = null;
+
+    /**
      * Abstract cnstraint constructor,
      * provides unified interface for working with multiple types of evalation
      *
      * @param string $type
-     * @param mixed $expectedValue
+     * @param mixed  $expectedValue
+     *
+     * @throws PHPUnit_Framework_Exception
      */
     public function __construct($type, $expectedValue = null)
     {
@@ -98,7 +106,7 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
 
         if (isset($this->_expectedValueValidation[$type])) {
             $expectedValueType = (isset($this->_expectedValueValidation[$type][2]) ?
-                                  isset($this->_expectedValueValidation[$type][2]) :
+                                  $this->_expectedValueValidation[$type][2] :
                                   '');
 
             // Mandatory check
@@ -186,17 +194,9 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
         $failureDescription = sprintf('Failed asserting that %s', $this->failureDescription($other));
 
         if (in_array($this->_type, $this->_typesWithDiff)) {
-            $actual = $this->getActualValue($other);
-            $expected = $this->getExpectedValue();
-
             throw new EcomDev_PHPUnit_Constraint_Exception(
                 $failureDescription,
-                new PHPUnit_Framework_ComparisonFailure(
-                     $expected,
-                     $actual,
-                     $this->exportAsString($expected),
-                     $this->exportAsString($actual)
-                ),
+                $this->getComparisonFailure($this->getExpectedValue(), $this->getActualValue($other)),
                 $description
             );
         } else {
@@ -277,5 +277,61 @@ abstract class EcomDev_PHPUnit_Constraint_Abstract
         } else {
             return PHPUnit_Util_Type::export($value);
         }
+    }
+
+    /**
+     * Compares two values by using correct comparator for two types
+     *
+     * @param mixed $expectedValue
+     * @param mixed $actualValue
+     * @return bool
+     */
+    public function compareValues($expectedValue, $actualValue)
+    {
+        $comparatorFactory = PHPUnit_Framework_ComparatorFactory::getDefaultInstance();
+
+        try {
+            $comparator = $comparatorFactory->getComparatorFor(
+                $expectedValue, $actualValue
+            );
+
+            $comparator->assertEquals(
+                $expectedValue,
+                $actualValue
+            );
+        }
+
+        catch (PHPUnit_Framework_ComparisonFailure $f) {
+            $this->_comparisonFailure = $f;
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Retrieve comparison failure exception.
+     *
+     * Is used for generation of the failure messages
+     *
+     * @param mixed $actualValue
+     * @param mixed $expectedValue
+     *
+     * @return PHPUnit_Framework_ComparisonFailure
+     */
+    public function getComparisonFailure($actualValue, $expectedValue)
+    {
+        if ($this->_comparisonFailure !== null) {
+            $failure = $this->_comparisonFailure;
+            $this->_comparisonFailure = null;
+            return $failure;
+        }
+
+        return new PHPUnit_Framework_ComparisonFailure(
+            $expectedValue,
+            $actualValue,
+            $this->exportAsString($expectedValue),
+            $this->exportAsString($actualValue)
+        );
     }
 }

@@ -154,6 +154,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
             self::FILE_UPGRADE_DATA => array('data', 'upgrade')
         );
 
+
         foreach ($directoryIterator as $entry) {
             /* @var $entry SplFileInfo */
             // We do not support scheme upgrade scripts with .sql
@@ -206,6 +207,9 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
      */
     protected function getVersionScriptsDiff($versions, $from = null, $to = null, $scriptPrefix = '')
     {
+        usort($versions['install'], array($this, 'compareVersions'));
+        usort($versions['upgrade'], array($this, 'compareVersions'));
+
         if ($from === null && end($versions['install'])) {
             $version = end($versions['install']);
             $from = $version['from'];
@@ -227,7 +231,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
 
         $latestVersionFound = null;
         if (empty($versions['install']) && $from !== null) {
-            $expectedVersions[] = sprintf('install-%s.php', $scriptPrefix, $from);
+            $expectedVersions[] = sprintf('%sinstall-%s.php', $scriptPrefix, $from);
             $latestVersionFound = $from;
         } elseif ($from !== null) {
             foreach ($versions['install'] as $index=>$version) {

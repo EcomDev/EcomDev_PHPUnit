@@ -1,0 +1,16 @@
+directory_one_valid:
+  - directory_one_valid
+directory_two_valid:
+  - directory_two_valid
+directory_one_data_scheme_valid:
+  -
+    - directory_one_data_valid
+    - directory_one_scheme_valid
+directory_one_invalid:
+  - directory_one_invalid
+directory_two_invalid:
+  - directory_two_invalid
+directory_one_data_scheme_invalid:
+  -
+    - directory_one_data_invalid
+    - directory_one_scheme_valid
