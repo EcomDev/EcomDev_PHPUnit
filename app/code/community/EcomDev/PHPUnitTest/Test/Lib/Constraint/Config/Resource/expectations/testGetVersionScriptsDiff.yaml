@@ -1,0 +1,64 @@
+from_1.0.0_to_1.0.1_one:
+  diff:
+    expected:
+      - install-1.0.0.php
+      - upgrade-1.0.0-1.0.1.php
+    actual:
+      - install-1.0.0.php
+      - upgrade-1.0.0-1.0.1.php
+from_1.0.0_to_1.0.5_one:
+   diff:
+     expected:
+       - install-1.0.0.php
+       - upgrade-1.0.0-1.0.1.php
+       - upgrade-1.0.1-1.0.5.php
+     actual:
+       - install-1.0.0.php
+       - upgrade-1.0.0-1.0.1.php
+to_1.0.5_one:
+   diff:
+     expected:
+       - install-1.0.0.php
+       - upgrade-1.0.0-1.0.1.php
+       - upgrade-1.0.1-1.0.5.php
+     actual:
+       - install-1.0.0.php
+       - upgrade-1.0.0-1.0.1.php
+from_1.0.0_one:
+   diff:
+     expected:
+       - install-1.0.0.php
+       - upgrade-1.0.0-1.0.1.php
+     actual:
+       - install-1.0.0.php
+       - upgrade-1.0.0-1.0.1.php
+from_1.0.0_to_1.0.1_one_invalid:
+  diff:
+    expected:
+      - install-1.0.0.php
+      - upgrade-1.0.0-1.0.1.php
+    actual:
+      - upgrade-1.0.0-1.0.1.php
+from_1.0.0_to_1.0.5_one_invalid:
+   diff:
+     expected:
+       - install-1.0.0.php
+       - upgrade-1.0.0-1.0.1.php
+       - upgrade-1.0.1-1.0.5.php
+     actual:
+       - upgrade-1.0.0-1.0.1.php
+from_1.0.0_one_invalid:
+   diff:
+     expected:
+       - install-1.0.0.php
+       - upgrade-1.0.0-1.0.1.php
+     actual:
+       - upgrade-1.0.0-1.0.1.php
+to_1.0.5_one_invalid:
+   diff:
+     expected:
+       - install-1.0.0.php
+       - upgrade-1.0.0-1.0.1.php
+       - upgrade-1.0.1-1.0.5.php
+     actual:
+       - upgrade-1.0.0-1.0.1.php

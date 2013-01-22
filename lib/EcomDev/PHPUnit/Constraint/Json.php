@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -103,10 +103,13 @@ class EcomDev_PHPUnit_Constraint_Json extends EcomDev_PHPUnit_Constraint_Abstrac
         $decodedJson = Zend_Json::decode($other);
         $this->setActualValue($decodedJson);
 
-        $intersection = array_intersect_assoc(
-            $this->_actualValue,
-            $this->_expectedValue
+
+        $intersection = array_intersect(
+            array_keys($this->_actualValue),
+            array_keys($this->_expectedValue)
         );
+
+        // @todo make it more recursive
 
         switch ($this->_matchType) {
             case self::MATCH_OR:

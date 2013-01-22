@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -39,6 +39,13 @@ interface EcomDev_PHPUnit_Model_Fixture_Interface extends EcomDev_PHPUnit_Model_
      * @return EcomDev_PHPUnit_Model_Fixture_Interface
      */
     public function setOptions(array $options);
+
+    /**
+     * Sets fixture options
+     *
+     * @return array
+     */
+    public function getOptions();
 
     /**
      * Sets storage for fixtures
@@ -117,4 +124,30 @@ interface EcomDev_PHPUnit_Model_Fixture_Interface extends EcomDev_PHPUnit_Model_
      * @return EcomDev_PHPUnit_Model_Fixture_Interface
      */
     public function loadForClass($className);
+
+    /**
+     * Sets fixture value
+     *
+     * @param string $key
+     * @param array[] $value
+     *
+     * @return EcomDev_PHPUnit_Model_Fixture_Interface
+     */
+    public function setFixtureValue($key, $value);
+
+    /**
+     * Retrieves fixture value
+     *
+     * @param string $key
+     *
+     * @return array[]
+     */
+    public function getFixtureValue($key);
+
+    /**
+     * Returns VFS wrapper instance
+     *
+     * @return EcomDev_PHPUnit_Model_Fixture_Vfs
+     */
+    public function getVfs();
 }

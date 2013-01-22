@@ -12,7 +12,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -45,6 +45,14 @@
     </global>
     <phpunit>
         <suite>
+            <yaml>
+                <model>ecomdev_phpunit/yaml_loader</model>
+                <loaders>
+                    <default>ecomdev_phpunit/yaml_loader_default</default>
+                    <module>ecomdev_phpunit/yaml_loader_module</module>
+                    <global>ecomdev_phpunit/yaml_loader_global</global>
+                </loaders>
+            </yaml>
             <!-- The names of directories inside Test for recognizion of tests per group -->
             <groups>
                 <models>Model</models>
@@ -70,6 +78,16 @@
             <fixture>
                 <!-- Default model for loading of fixtures -->
                 <model>ecomdev_phpunit/fixture</model>
+                <processors>
+                    <registry>ecomdev_phpunit/fixture_processor_registry</registry>
+                    <scope>ecomdev_phpunit/fixture_processor_scope</scope>
+                    <config>ecomdev_phpunit/fixture_processor_config</config>
+                    <config_xml>ecomdev_phpunit/fixture_processor_config</config_xml>
+                    <cache_options>ecomdev_phpunit/fixture_processor_cache</cache_options>
+                    <eav>ecomdev_phpunit/fixture_processor_eav</eav>
+                    <tables>ecomdev_phpunit/fixture_processor_tables</tables>
+                    <vfs>ecomdev_phpunit/fixture_processor_vfs</vfs>
+                </processors>
 	            <attribute>
 		            <!-- Fixture loaders for EAV attributes
 		                 Default can be used but does not support extra attribute table configuration -->

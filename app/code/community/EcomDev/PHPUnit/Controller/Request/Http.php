@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -76,7 +76,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
      *
      * @param string|array $name
      * @param string|null $value
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function setCookie($name, $value)
     {
@@ -88,7 +88,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
      * Sets more than one cookie
      *
      * @param array $cookies
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function setCookies(array $cookies)
     {
@@ -99,7 +99,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Resets all cookies for the test request
      *
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function resetCookies()
     {
@@ -110,7 +110,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Resets query for the current request
      *
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function resetQuery()
     {
@@ -121,7 +121,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Resets $_POST superglobal for test request
      *
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function resetPost()
     {
@@ -132,7 +132,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Resets user defined request params for test request
      *
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function resetParams()
     {
@@ -143,7 +143,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Resets internal properties to its default values
      *
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function resetInternalProperties()
     {
@@ -179,11 +179,23 @@ class EcomDev_PHPUnit_Controller_Request_Http
     }
 
     /**
+     * Sets rawBody property to request
+     *
+     * @param string $rawBody
+     * @return EcomDev_PHPUnit_Controller_Request_Http
+     */
+    public function setRawBody($rawBody)
+    {
+        $this->_rawBody = $rawBody;
+        return $this;
+    }
+
+    /**
      * Set custom http header
      *
      * @param string $name
      * @param string $value
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function setHeader($name, $value)
     {
@@ -199,7 +211,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
      * headers list is an associative array
      *
      * @param array $headers
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function setHeaders(array $headers)
     {
@@ -229,7 +241,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Resets headers in test request
      *
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function resetHeaders()
     {
@@ -255,7 +267,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
      *
      * @param string $name
      * @param string $value
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function setServer($name, $value)
     {
@@ -272,7 +284,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
      * Sets multiple values for $_SERVER superglobal in test request
      *
      * @param array $values
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function setServers(array $values)
     {
@@ -285,7 +297,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Resets $_SERVER superglobal to previous state
      *
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function resetServer()
     {
@@ -307,7 +319,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
      * Sets request method for test request
      *
      * @param string $requestMethod
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function setMethod($requestMethod)
     {
@@ -320,7 +332,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
      * accepts boolean flag for HTTPS
      *
      * @param boolean $flag
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function setIsSecure($flag = true)
     {
@@ -365,7 +377,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Resets all request data for test
      *
-     * @return EcomDev_PHPUnit_Controller_Request_Http_Test
+     * @return EcomDev_PHPUnit_Controller_Request_Http
      */
     public function reset()
     {

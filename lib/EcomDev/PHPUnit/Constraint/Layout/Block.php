@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -263,7 +263,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
         }
 
         $this->setActualValue($blockInfo['class']);
-        $actualReflection = EcomDev_Utils_Reflection::getRelflection($this->_actualValue);
+        $actualReflection = EcomDev_Utils_Reflection::getReflection($this->_actualValue);
         return $this->_actualValue === $this->_expectedValue
                || $actualReflection->isSubclassOf($this->_expectedValue);
     }

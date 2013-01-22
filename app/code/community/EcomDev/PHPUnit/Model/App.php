@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -131,6 +131,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
      * List of module names stored by class name
      *
      * @var array
+     * @deprecated since 0.3.0
      */
     protected $_moduleNameByClassName = array();
 
@@ -402,7 +403,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     {
         $className = (string)$this->getConfig()->getNode($configPath);
 
-        $reflection = EcomDev_Utils_Reflection::getRelflection($className);
+        $reflection = EcomDev_Utils_Reflection::getReflection($className);
         if ($interface !== null && !$reflection->implementsInterface($interface)) {
             throw new RuntimeException(
                 sprintf('Invalid class name defined in configuration path %s, because %s does not implement %s interface',
@@ -443,31 +444,11 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
      * @param string|object $className
      * @throws RuntimeException if module name was not found for the passed class name
      * @return string
+     * @deprecated since 0.3.0
      */
     public function getModuleNameByClassName($className)
     {
-        if (is_object($className)) {
-            $className = get_class($className);
-        }
-
-        if (!isset($this->_moduleNameByClassName[$className])) {
-            // Try to find the module name by class name
-            $moduleName = false;
-            foreach ($this->getConfig()->getNode('modules')->children() as $module) {
-                if (strpos($className, $module->getName()) === 0) {
-                   $moduleName = $module->getName();
-                   break;
-                }
-            }
-
-            if (!$moduleName) {
-                throw new RuntimeException('Cannot to find the module name for class name: ' . $className);
-            }
-
-            $this->setModuleNameForClassName($className, $moduleName);
-        }
-
-        return $this->_moduleNameByClassName[$className];
+        return EcomDev_PHPUnit_Test_Case_Util::getModuleNameByClassName($className);
     }
 
     /**
@@ -478,10 +459,11 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
      * @param string $className
      * @param string $moduleName
      * @return EcomDev_PHPUnit_Model_App
+     * @deprecated since 0.3.0
      */
     public function setModuleNameForClassName($className, $moduleName)
     {
-        $this->_moduleNameByClassName[$className] = $moduleName;
+        EcomDev_PHPUnit_Test_Case_Util::setModuleNameForClassName($className, $moduleName);
         return $this;
     }
 

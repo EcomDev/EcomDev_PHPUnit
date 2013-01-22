@@ -11,14 +11,10 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
-
-// Loading Spyc yaml parser,
-// becuase Symfony component is not working propertly with nested associations
-require_once 'Spyc/spyc.php';
 
 /**
  * Basic test case class
@@ -28,14 +24,21 @@ require_once 'Spyc/spyc.php';
 abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
 {
 
-    const XML_PATH_DEFAULT_FIXTURE_MODEL = 'phpunit/suite/fixture/model';
-    const XML_PATH_DEFAULT_EXPECTATION_MODEL = 'phpunit/suite/expectation/model';
+    /**
+     * @deprecated since 0.3.0
+     **/
+    const XML_PATH_DEFAULT_FIXTURE_MODEL = EcomDev_PHPUnit_Test_Case_Util::XML_PATH_DEFAULT_FIXTURE_MODEL;
+    /**
+     * @deprecated since 0.3.0
+     **/
+    const XML_PATH_DEFAULT_EXPECTATION_MODEL = EcomDev_PHPUnit_Test_Case_Util::XML_PATH_DEFAULT_EXPECTATION_MODEL;
 
 
     /**
      * List of system registry values replaced by test case
      *
      * @var array
+     * @deprecated since 0.3.0
      */
     protected $_replacedRegistry = array();
 
@@ -52,6 +55,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * if was set in test method
      *
      * @var Mage_Core_Model_Store
+     * @deprecated since 0.3.0
      */
     protected $_originalStore = null;
 
@@ -63,7 +67,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public static function app()
     {
-        return Mage::app();
+        return EcomDev_PHPUnit_Test_Case_Util::app();
     }
 
     /**
@@ -84,8 +88,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     /**
      * Asserts that event was dispatched at least once
      *
-     * @param string|array $event
-     * @param string $message
+     * @param array|string $eventName
      */
     public static function assertEventDispatched($eventName)
     {
@@ -104,8 +107,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     /**
      * Asserts that event was not dispatched
      *
-     * @param string|array $event
-     * @param string $message
+     * @param string|array $eventName
      */
     public static function assertEventNotDispatched($eventName)
     {
@@ -172,7 +174,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * is matched expected JSON structure
      *
      * @param array $expectedValue
-     * @param strign $matchType
+     * @param string $matchType
      * @return EcomDev_PHPUnit_Constraint_Json
      */
     public static function matchesJson(array $expectedValue, $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
@@ -213,7 +215,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $string
      * @param array $expectedValue
      * @param string $message
-     * @param strign $matchType
+     * @param string $matchType
      */
     public static function assertJsonMatch($string, array $expectedValue, $message = '',
         $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
@@ -252,10 +254,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @return string
      * @throws RuntimeException if module name was not found for the passed class name
+     * @deprecated since 0.3.0
      */
     public function getModuleName()
     {
-        return $this->app()->getModuleNameByClassName($this);
+        return EcomDev_PHPUnit_Test_Case_Util::getModuleName($this);
     }
 
     /**
@@ -266,14 +269,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected static function getModuleNameFromCallStack()
     {
-        $backTrace = debug_backtrace(true);
-        foreach ($backTrace as $call) {
-            if (isset($call['object']) && $call['object'] instanceof EcomDev_PHPUnit_Test_Case) {
-                return $call['object']->getModuleName();
-            }
-        }
-
-        throw new RuntimeException('Unable to retrieve module name from call stack, because assertion is not called from EcomDev_PHPUnit_Test_Case based class method');
+        return EcomDev_PHPUnit_Test_Case_Util::getModuleNameFromCallStack();
     }
 
 
@@ -284,10 +280,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $name
      * @param array|string $sources
      * @return array
+     * @deprecated since 0.3.0
      */
     public function getAnnotationByName($name, $sources = 'method')
     {
-        return self::getAnnotationByNameFromClass(get_class($this), $name, $sources, $this->getName(false));
+        return EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(get_class($this), $name, $sources, $this->getName(false));
     }
 
     /**
@@ -297,30 +294,12 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $name annotation name
      * @param array|string $sources
      * @param string $testName test method name
+     * @return array
+     * @deprecated since 0.3.0
      */
     public static function getAnnotationByNameFromClass($className, $name, $sources = 'class', $testName = '')
     {
-        if (is_string($sources)) {
-            $sources = array($sources);
-        }
-
-        $allAnnotations =  PHPUnit_Util_Test::parseTestMethodAnnotations(
-          $className, $testName
-        );
-
-        $annotation = array();
-
-        // Walkthrough sources for annotation retrieval
-        foreach ($sources as $source) {
-            if (isset($allAnnotations[$source][$name])) {
-                $annotation = array_merge(
-                    $allAnnotations[$source][$name],
-                    $annotation
-                );
-            }
-        }
-
-        return $annotation;
+        return EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass($className, $name, $sources, $testName);
     }
 
     /**
@@ -344,35 +323,10 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $type
      * @param string $classAlias
      * @param PHPUnit_Framework_MockObject_MockObject|PHPUnit_Framework_MockObject_MockBuilder $mock
-     * @return EcomDev_PHPUnit_Test_Case
      */
     protected function replaceByMock($type, $classAlias, $mock)
     {
-        if ($mock instanceof PHPUnit_Framework_MockObject_MockBuilder) {
-            $mock = $mock->getMock();
-        } elseif (!$mock instanceof PHPUnit_Framework_MockObject_MockObject) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(
-              1, 'PHPUnit_Framework_MockObject_MockObject'
-            );
-        }
-
-        // Remove addition of /data suffix if version is more than 1.6.x
-        if (version_compare(Mage::getVersion(), '1.6.0.0', '<') && $type == 'helper' && strpos($classAlias, '/') === false) {
-            $classAlias .= '/data';
-        }
-
-        if (in_array($type, array('model', 'resource_model'))) {
-            $this->app()->getConfig()->replaceInstanceCreation($type, $classAlias, $mock);
-            $type = str_replace('model', 'singleton', $type);
-        } elseif ($type == 'block') {
-            $this->app()->getLayout()->replaceBlockCreation($classAlias, $mock);
-        }
-
-        if (in_array($type, array('singleton', 'resource_singleton', 'helper'))) {
-            $registryPath = '_' . $type . '/' . $classAlias;
-            $this->replaceRegistry($registryPath, $mock);
-        }
-
+        EcomDev_PHPUnit_Test_Case_Util::replaceByMock($type, $classAlias, $mock);
         return $this;
     }
 
@@ -381,14 +335,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @param string $key
      * @param mixed $value
+     * @return EcomDev_PHPUnit_Test_Case
      */
     protected function replaceRegistry($key, $value)
     {
-        $oldValue = Mage::registry($key);
-
-        $this->app()->replaceRegistry($key, $value);
-
-        $this->_replacedRegistry[$key] = $oldValue;
+        EcomDev_PHPUnit_Test_Case_Util::replaceRegistry($key, $value);
         return $this;
     }
 
@@ -396,31 +347,22 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * Shortcut for expectation data object retrieval
      * Can be called with arguments array or in usual method
      *
-     * @param string|array $pathFormat
-     * @param mixed $arg1
-     * @param mixed $arg2 ...
+     * @param string|array $firstArgument
+     * @optional @param mixed $arg1
+     * @optional @param mixed $arg2 ...
      * @return Varien_Object
      */
     protected function expected($firstArgument = null)
     {
-        if (!$this->getExpectation()->isLoaded()) {
-            $this->getExpectation()->loadByTestCase($this);
-            $this->getExpectation()->apply();
-        }
-
-        if (!is_array($firstArgument)) {
+        if ($firstArgument === 'auto' && $this->readAttribute($this, 'dataName')) {
+            $arguments = $this->readAttribute($this, 'dataName');
+        } elseif (!is_array($firstArgument)) {
             $arguments = func_get_args();
         } else {
             $arguments = $firstArgument;
         }
 
-        $pathFormat = null;
-        if ($arguments) {
-            $pathFormat = array_shift($arguments);
-        }
-
-        return $this->getExpectation()
-            ->getDataObject($pathFormat, $arguments);
+        return EcomDev_PHPUnit_Test_Case_Util::expected($this, $arguments);
     }
 
     /**
@@ -660,43 +602,18 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected static function getFixture()
     {
-        $fixture = Mage::getSingleton(
-            self::getLoadableClassAlias(
-                'fixture',
-                self::XML_PATH_DEFAULT_FIXTURE_MODEL
-            )
-        );
-
-        if (!$fixture instanceof EcomDev_PHPUnit_Model_Fixture_Interface) {
-            throw new RuntimeException('Fixture model should implement EcomDev_PHPUnit_Model_Fixture_Interface interface');
-        }
-
-        $storage = Mage::registry(EcomDev_PHPUnit_Model_App::REGISTRY_PATH_SHARED_STORAGE);
-
-        if (!$storage instanceof Varien_Object) {
-            throw new RuntimeException('Fixture storage object was not initialized during test application setup');
-        }
-
-        $fixture->setStorage(
-            Mage::registry(EcomDev_PHPUnit_Model_App::REGISTRY_PATH_SHARED_STORAGE)
-        );
-
-        return $fixture;
+        return EcomDev_PHPUnit_Test_Case_Util::getFixture(get_called_class());
     }
 
     /**
      * Returns expectation model singleton
      *
      * @return EcomDev_PHPUnit_Model_Expectation
+     * @deprecated since 0.3.0
      */
     protected function getExpectation()
     {
-        return Mage::getSingleton(
-            self::getLoadableClassAlias(
-                'expectation',
-                self::XML_PATH_DEFAULT_EXPECTATION_MODEL
-            )
-        );
+        return EcomDev_PHPUnit_Test_Case_Util::getExpectation(get_class($this));
     }
 
 
@@ -707,21 +624,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $type
      * @param string $configPath
      * @return string
+     * @deprecated since 0.3.0
      */
     protected static function getLoadableClassAlias($type, $configPath)
     {
-        $annotationValue = self::getAnnotationByNameFromClass(
-            get_called_class(),
-            $type .'Model'
-        );
-
-        if (current($annotationValue)) {
-            $classAlias = current($annotationValue);
-        } else {
-            $classAlias = (string) self::app()->getConfig()->getNode($configPath);
-        }
-
-        return $classAlias;
+        return EcomDev_PHPUnit_Test_Case_Util::getLoadableClassAlias(get_called_class(), $type, $configPath);
     }
 
     /**
@@ -754,7 +661,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $name = $this->getName(false);
         }
 
-        return self::getYamlFilePathByClass(get_called_class(), $type, $name);
+        return EcomDev_PHPUnit_Test_Case_Util::getYamlFilePath(get_called_class(), $type, $name);
     }
 
     /**
@@ -766,79 +673,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $type type of YAML data (fixtures,expectations,dataproviders)
      * @param string $name the file name for loading
      * @return string|boolean
+     * @depracated since 0.3.0
      */
     public static function getYamlFilePathByClass($className, $type, $name)
     {
-        if (strrpos($name, '.yaml') !== strlen($name) - 5) {
-            $name .= '.yaml';
-        }
-
-        $classFileObject = new SplFileInfo(
-            EcomDev_Utils_Reflection::getRelflection($className)->getFileName()
-        );
-
-        // When prefixed with ~/ or ~My_Module/, load from the module's Test/<type> directory
-        if (preg_match('#^~(?<module>[^/]*)/(?<path>.*)$#', $name, $matches)) {
-            $name = $matches['path'];
-            if( ! empty($matches['module'])) {
-              $moduleName = $matches['module'];
-            } else {
-              $moduleName = substr($className, 0, strpos($className, '_Test_'));;
-            }
-            $filePath = Mage::getModuleDir('', $moduleName) . DS . 'Test' . DS;
-        }
-        // Otherwise load from the Class/<type> directory
-        else {
-            $filePath = $classFileObject->getPath() . DS
-                      . $classFileObject->getBasename('.php') . DS;
-        }
-        $filePath .= $type . DS . $name;
-
-        if (file_exists($filePath)) {
-            return $filePath;
-        }
-
-        return false;
-    }
-
-    /**
-     * Initializes a particular test environment
-     *
-     * (non-PHPdoc)
-     * @see PHPUnit_Framework_TestCase::setUp()
-     */
-    protected function setUp()
-    {
-        self::getFixture()
-            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
-            ->loadByTestCase($this);
-        $annotations = $this->getAnnotations();
-        self::getFixture()
-            ->setOptions($annotations['method'])
-            ->apply();
-        $this->app()->resetDispatchedEvents();
-        parent::setUp();
-    }
-
-    /**
-     * Initializes test environment for subset of tests
-     *
-     */
-    public static function setUpBeforeClass()
-    {
-        self::getFixture()
-            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
-            ->loadForClass(get_called_class());
-
-        $annotations = PHPUnit_Util_Test::parseTestMethodAnnotations(
-            get_called_class()
-        );
-
-        self::getFixture()
-            ->setOptions($annotations['class'])
-            ->apply();
-
-        parent::setUpBeforeClass();
+        return EcomDev_PHPUnit_Test_Case_Util::getYamlFilePath($className, $type, $name);
     }
 
     /**
@@ -850,15 +689,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public function dataProvider($testName)
     {
-        $this->setName($testName);
-        $filePath = $this->getYamlFilePath('providers');
-        $this->setName(null);
-
-        if (!$filePath) {
-            throw new RuntimeException('Unable to load data provider for the current test');
-        }
-
-        return Spyc::YAMLLoad($filePath);
+        return EcomDev_PHPUnit_Test_Case_Util::dataProvider(get_called_class(), $testName);
     }
 
     /**
@@ -869,57 +700,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public function setCurrentStore($store)
     {
-        if (!$this->_originalStore) {
-            $this->_originalStore = $this->app()->getStore();
-        }
-
-        $this->app()->setCurrentStore(
-            $this->app()->getStore($store)
-        );
+        EcomDev_PHPUnit_Test_Case_Util::setCurrentStore($store);
         return $this;
     }
-
-    /**
-     * Performs a clean up after a particular test was run
-     * (non-PHPdoc)
-     * @see PHPUnit_Framework_TestCase::tearDown()
-     */
-    protected function tearDown()
-    {
-        if ($this->_originalStore) { // Remove store scope, that was set in test
-            $this->app()->setCurrentStore($this->_originalStore);
-            $this->_originalStore = null;
-        }
-
-        if ($this->getExpectation()->isLoaded()) {
-            $this->getExpectation()->discard();
-        }
-
-        $this->app()->getConfig()->flushReplaceInstanceCreation();
-        $this->app()->getLayout()->flushReplaceBlockCreation();
-
-        foreach ($this->_replacedRegistry as $registryPath => $originalValue) {
-            $this->app()->replaceRegistry($registryPath, $originalValue);
-        }
-
-        self::getFixture()
-            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
-            ->discard(); // Clear applied fixture
-        parent::tearDown();
-    }
-
-    /**
-     * Clean up all the shared fixture data
-     *
-     * @return void
-     */
-    public static function tearDownAfterClass()
-    {
-        self::getFixture()
-            ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
-            ->discard();
-
-        parent::tearDownAfterClass();
-    }
-
 }

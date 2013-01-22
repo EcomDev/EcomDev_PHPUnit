@@ -1,0 +1,13 @@
+<config>
+    <phpunit>
+        <suite>
+            <modules>
+                <EcomDev_PHPUnitTest />
+            </modules>
+            <groups>
+                <lib>Lib</lib>
+            </groups>
+        </suite>
+    </phpunit>
+
+</config>

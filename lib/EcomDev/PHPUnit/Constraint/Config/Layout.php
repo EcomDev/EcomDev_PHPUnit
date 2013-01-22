@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -90,6 +90,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
         );
 
         $this->_typesWithDiff[] = self::TYPE_LAYOUT_FILE;
+        $this->_typesWithDiff[] = self::TYPE_LAYOUT_DEFINITION;
 
         $nodePath = sprintf(self::XML_PATH_LAYOUT, $area);
 
@@ -131,7 +132,18 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
             }
         }
 
-        return false;
+        if ($this->_layoutUpdate === null) {
+            $this->_layoutUpdate = 'your_module';
+        }
+
+        $expected = clone $other;
+        $expected->addChild($this->_layoutUpdate)
+            ->addChild('file', htmlspecialchars($this->_expectedValue));
+
+        return $this->compareValues(
+            $this->getXmlAsDom($expected),
+            $this->getXmlAsDom($other)
+        );
     }
 
     /**
@@ -156,15 +168,12 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
      * @param Varien_Simplexml_Element $other
      * @return boolean
      */
-    protected function evaluateLayoutFile($other)
+    protected function evaluateLayoutFile()
     {
         $assertion = self::getDesignPackageModel()
             ->getLayoutFileAssertion($this->_expectedValue, $this->_area, $this->_designPackage, $this->_theme);
 
-        $this->setActualValue($assertion['actual']);
-        $this->_expectedValue = $assertion['expected'];
-
-        return $this->_actualValue === $this->_expectedValue;
+        return $this->compareValues($assertion['expected'], $assertion['actual']);
     }
 
     /**

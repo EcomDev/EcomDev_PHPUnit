@@ -11,7 +11,7 @@
  *
  * @category   EcomDev
  * @package    EcomDev_PHPUnit
- * @copyright  Copyright (c) 2012 EcomDev BV (http://www.ecomdev.org)
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
@@ -86,7 +86,7 @@ abstract class EcomDev_PHPUnit_Constraint_Config_Abstract
     protected function getActualValue($other = null)
     {
         if (!$this->_useActualValue && $other->hasChildren()) {
-            return $other->asNiceXml();
+            return $this->getXmlAsDom($this->_expectedValue);
         } elseif (!$this->_useActualValue) {
             return (string) $other;
         }
@@ -102,9 +102,28 @@ abstract class EcomDev_PHPUnit_Constraint_Config_Abstract
     protected function getExpectedValue()
     {
         if ($this->_expectedValue instanceof Varien_Simplexml_Element) {
-            return $this->_expectedValue->asNiceXml();
+            return $this->getXmlAsDom($this->_expectedValue);
         }
 
         return parent::getExpectedValue();
+    }
+
+    /**
+     * Converts xml to dom object
+     *
+     * @param $xmlValue
+     * @return DOMDocument
+     */
+    protected function getXmlAsDom($xmlValue)
+    {
+        if ($xmlValue instanceof SimpleXMLElement) {
+            $xmlValue = $xmlValue->asXML();
+        }
+
+        $domValue = new DOMDocument;
+        $domValue->preserveWhiteSpace = FALSE;
+        $domValue->loadXML($xmlValue);
+
+        return $domValue;
     }
 }
