@@ -28,7 +28,8 @@ class EcomDev_PHPUnit_Model_Yaml_Loader_Module extends EcomDev_PHPUnit_Model_Yam
      */
     protected function _getFilePath($fileName, $relatedClassName, $type)
     {
-        $moduleName = EcomDev_PHPUnit_Test_Case_Util::getModuleNameByClassName($relatedClassName);
+        $moduleName = false;
+
         if (preg_match('#^~(?<module>[^/]*)/(?<fileName>.*)$#', $fileName, $matches)) {
             $fileName = $matches['fileName'];
             if(!empty($matches['module'])) {
@@ -36,7 +37,23 @@ class EcomDev_PHPUnit_Model_Yaml_Loader_Module extends EcomDev_PHPUnit_Model_Yam
             }
         }
 
-        $filePath = Mage::getModuleDir('', $moduleName) . DS . 'Test' . DS . $type . DS . $fileName;
-        return false;
+        if (!$moduleName) {
+            try {
+                $moduleName = EcomDev_PHPUnit_Test_Case_Util::getModuleNameByClassName($relatedClassName);
+            } catch (RuntimeException $e) {
+                return false;
+            }
+        }
+
+
+        $basePath = array();
+        if ($prefixPosition = strpos($relatedClassName, $moduleName . '_Test_')) {
+            $testType = substr($relatedClassName, $prefixPosition, strpos($relatedClassName, '_', $prefixPosition));
+            $basePath[] = Mage::getModuleDir('', $moduleName) . DS . 'Test' . DS . $testType;
+        }
+
+        $basePath[] = Mage::getModuleDir('', $moduleName) . DS . 'Test';
+
+        return $this->_checkFilePath($basePath, $fileName, $type);
     }
 }

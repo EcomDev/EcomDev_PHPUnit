@@ -30,6 +30,11 @@ class EcomDev_PHPUnit_Model_Yaml_Loader_Default extends EcomDev_PHPUnit_Model_Ya
     {
         $reflection = EcomDev_Utils_Reflection::getReflection($relatedClassName);
         $fileObject = new SplFileInfo($reflection->getFileName());
-        return $fileObject->getPath() . DS . $fileObject->getBasename('.php') . DS . $type . DS . $fileName;
+
+        return $this->_checkFilePath(array(
+            $fileObject->getPath(),
+            $fileObject->getPath() . DS . $fileObject->getBasename('.php')
+        ), $fileName, $type);
+
     }
 }
