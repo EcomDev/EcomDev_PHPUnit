@@ -5,7 +5,7 @@
     "description": "Magento PHPUnit Integration",
     "homepage": "http://www.ecomdev.org/shop/code-testing/php-unit-test-suite.html",
     "require": {
-        "magento-hackathon/magento-composer-installer": "dev-master",
+        "magento-hackathon/magento-composer-installer": "*",
         "phpunit/phpunit": "3.6.*"
     },
     "authors":[
