@@ -49,15 +49,28 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
     public function startTestSuite(PHPUnit_Framework_TestSuite $suite)
     {
         if ($this->firstLevelTestSuite === null) {
+            Mage::dispatchEvent('phpunit_suite_start_before', array(
+                'suite' => $suite,
+                'listener' => $this
+            ));
+
             // Apply app substitution for tests
             if ($this->getAppReflection()->hasMethod('applyTestScope')) {
                 $this->getAppReflection()->getMethod('applyTestScope')->invoke(null);
             }
 
             $this->firstLevelTestSuite = $suite;
+            Mage::dispatchEvent('phpunit_suite_start_after', array(
+                'suite' => $suite,
+                'listener' => $this
+            ));
         }
 
         if (EcomDev_Utils_Reflection::getRestrictedPropertyValue($suite, 'testCase')) {
+            Mage::dispatchEvent('phpunit_test_case_start_before', array(
+                'suite' => $suite,
+                'listener' => $this
+            ));
             EcomDev_PHPUnit_Test_Case_Util::getFixture($suite->getName())
                 ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
                 ->loadForClass($suite->getName());
@@ -69,6 +82,10 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
             EcomDev_PHPUnit_Test_Case_Util::getFixture($suite->getName())
                 ->setOptions($annotations['class'])
                 ->apply();
+            Mage::dispatchEvent('phpunit_test_case_start_after', array(
+                'suite' => $suite,
+                'listener' => $this
+            ));
         }
     }
 
@@ -80,17 +97,33 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
     public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
     {
         if (EcomDev_Utils_Reflection::getRestrictedPropertyValue($suite, 'testCase')) {
+            Mage::dispatchEvent('phpunit_test_case_end_before', array(
+                'suite' => $suite,
+                'listener' => $this
+            ));
             EcomDev_PHPUnit_Test_Case_Util::getFixture($suite->getName())
                 ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
                 ->discard();
+            Mage::dispatchEvent('phpunit_test_case_end_after', array(
+                'suite' => $suite,
+                'listener' => $this
+            ));
         }
 
         if ($this->firstLevelTestSuite === $suite) {
+            Mage::dispatchEvent('phpunit_suite_end_before', array(
+                'suite' => $suite,
+                'listener' => $this
+            ));
             $this->firstLevelTestSuite = null;
             // Discard test scope app
             if ($this->getAppReflection()->hasMethod('discardTestScope')) {
                 $this->getAppReflection()->getMethod('discardTestScope')->invoke(null);
             }
+            Mage::dispatchEvent('phpunit_suite_end_after', array(
+                'suite' => $suite,
+                'listener' => $this
+            ));
         }
     }
 
@@ -101,6 +134,10 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
      */
     public function startTest(PHPUnit_Framework_Test $test)
     {
+        Mage::dispatchEvent('phpunit_test_start_before', array(
+            'test' => $test,
+            'listener' => $this
+        ));
         if ($test instanceof PHPUnit_Framework_TestCase) {
             EcomDev_PHPUnit_Test_Case_Util::getFixture(get_class($test))
                 ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
@@ -112,6 +149,10 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
 
             EcomDev_PHPUnit_Test_Case_Util::setUp();
         }
+        Mage::dispatchEvent('phpunit_test_start_after', array(
+            'test' => $test,
+            'listener' => $this
+        ));
     }
 
     /**
@@ -122,6 +163,11 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
      */
     public function endTest(PHPUnit_Framework_Test $test, $time)
     {
+        Mage::dispatchEvent('phpunit_test_end_before', array(
+            'test' => $test,
+            'listener' => $this
+        ));
+
         if ($test instanceof PHPUnit_Framework_TestCase) {
             EcomDev_PHPUnit_Test_Case_Util::getFixture(get_class($test))
                 ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
@@ -133,6 +179,11 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
 
             EcomDev_PHPUnit_Test_Case_Util::tearDown();
         }
+
+        Mage::dispatchEvent('phpunit_test_end_after', array(
+            'test' => $test,
+            'listener' => $this
+        ));
     }
 
     /**
@@ -144,6 +195,12 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
      */
     public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
+        Mage::dispatchEvent('phpunit_test_error', array(
+            'test' => $test,
+            'exception' => $e,
+            'time' => $time,
+            'listener' => $this
+        ));
         // No action is required
     }
 
@@ -156,6 +213,12 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
      */
     public function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
     {
+        Mage::dispatchEvent('phpunit_test_failure', array(
+            'test' => $test,
+            'exception' => $e,
+            'time' => $time,
+            'listener' => $this
+        ));
         // No action is required
     }
 
@@ -168,6 +231,12 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
      */
     public function addIncompleteTest(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
+        Mage::dispatchEvent('phpunit_test_incomplete', array(
+            'test' => $test,
+            'exception' => $e,
+            'time' => $time,
+            'listener' => $this
+        ));
         // No action is required
     }
 
@@ -180,6 +249,12 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
      */
     public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
+        Mage::dispatchEvent('phpunit_test_skipped', array(
+            'test' => $test,
+            'exception' => $e,
+            'time' => $time,
+            'listener' => $this
+        ));
         // No action is required
     }
 
