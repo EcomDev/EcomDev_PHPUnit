@@ -423,7 +423,9 @@ class EcomDev_PHPUnit_Test_Case_Util
      */
     public static function replaceByMock($type, $classAlias, $mock)
     {
-        if ($mock instanceof PHPUnit_Framework_MockObject_MockBuilder) {
+        if ($mock instanceof EcomDev_PHPUnit_Mock_Proxy) {
+            $mock = $mock->getMockInstance();
+        } elseif ($mock instanceof PHPUnit_Framework_MockObject_MockBuilder) {
             $mock = $mock->getMock();
         } elseif (!$mock instanceof PHPUnit_Framework_MockObject_MockObject) {
             throw PHPUnit_Util_InvalidArgumentHelper::factory(
