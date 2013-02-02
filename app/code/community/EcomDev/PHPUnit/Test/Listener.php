@@ -59,6 +59,8 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
                 $this->getAppReflection()->getMethod('applyTestScope')->invoke(null);
             }
 
+
+
             $this->firstLevelTestSuite = $suite;
             Mage::dispatchEvent('phpunit_suite_start_after', array(
                 'suite' => $suite,
@@ -139,6 +141,7 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
             'listener' => $this
         ));
         if ($test instanceof PHPUnit_Framework_TestCase) {
+            EcomDev_PHPUnit_Helper::setTestCase($test);
             EcomDev_PHPUnit_Test_Case_Util::getFixture(get_class($test))
                 ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
                 ->loadByTestCase($test);
