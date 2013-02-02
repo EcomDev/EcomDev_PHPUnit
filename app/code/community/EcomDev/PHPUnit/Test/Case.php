@@ -16,6 +16,8 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
+use EcomDev_PHPUnit_Test_Case_Util as TestUtil;
+
 /**
  * Basic test case class
  *
@@ -27,11 +29,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     /**
      * @deprecated since 0.3.0
      **/
-    const XML_PATH_DEFAULT_FIXTURE_MODEL = EcomDev_PHPUnit_Test_Case_Util::XML_PATH_DEFAULT_FIXTURE_MODEL;
+    const XML_PATH_DEFAULT_FIXTURE_MODEL = TestUtil::XML_PATH_DEFAULT_FIXTURE_MODEL;
     /**
      * @deprecated since 0.3.0
      **/
-    const XML_PATH_DEFAULT_EXPECTATION_MODEL = EcomDev_PHPUnit_Test_Case_Util::XML_PATH_DEFAULT_EXPECTATION_MODEL;
+    const XML_PATH_DEFAULT_EXPECTATION_MODEL = TestUtil::XML_PATH_DEFAULT_EXPECTATION_MODEL;
 
 
     /**
@@ -67,7 +69,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public static function app()
     {
-        return EcomDev_PHPUnit_Test_Case_Util::app();
+        return TestUtil::app();
     }
 
     /**
@@ -258,7 +260,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public function getModuleName()
     {
-        return EcomDev_PHPUnit_Test_Case_Util::getModuleName($this);
+        return TestUtil::getModuleName($this);
     }
 
     /**
@@ -269,7 +271,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected static function getModuleNameFromCallStack()
     {
-        return EcomDev_PHPUnit_Test_Case_Util::getModuleNameFromCallStack();
+        return TestUtil::getModuleNameFromCallStack();
     }
 
 
@@ -284,7 +286,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public function getAnnotationByName($name, $sources = 'method')
     {
-        return EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(get_class($this), $name, $sources, $this->getName(false));
+        return TestUtil::getAnnotationByNameFromClass(get_class($this), $name, $sources, $this->getName(false));
     }
 
     /**
@@ -299,7 +301,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public static function getAnnotationByNameFromClass($className, $name, $sources = 'class', $testName = '')
     {
-        return EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass($className, $name, $sources, $testName);
+        return TestUtil::getAnnotationByNameFromClass($className, $name, $sources, $testName);
     }
 
     /**
@@ -326,7 +328,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected function replaceByMock($type, $classAlias, $mock)
     {
-        EcomDev_PHPUnit_Test_Case_Util::replaceByMock($type, $classAlias, $mock);
+        TestUtil::replaceByMock($type, $classAlias, $mock);
         return $this;
     }
 
@@ -339,7 +341,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected function replaceRegistry($key, $value)
     {
-        EcomDev_PHPUnit_Test_Case_Util::replaceRegistry($key, $value);
+        TestUtil::replaceRegistry($key, $value);
         return $this;
     }
 
@@ -362,7 +364,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $arguments = $firstArgument;
         }
 
-        return EcomDev_PHPUnit_Test_Case_Util::expected($this, $arguments);
+        return TestUtil::expected($this, $arguments);
     }
 
     /**
@@ -602,7 +604,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected static function getFixture()
     {
-        return EcomDev_PHPUnit_Test_Case_Util::getFixture(get_called_class());
+        return TestUtil::getFixture(get_called_class());
     }
 
     /**
@@ -613,7 +615,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected function getExpectation()
     {
-        return EcomDev_PHPUnit_Test_Case_Util::getExpectation(get_class($this));
+        return TestUtil::getExpectation(get_class($this));
     }
 
 
@@ -628,7 +630,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected static function getLoadableClassAlias($type, $configPath)
     {
-        return EcomDev_PHPUnit_Test_Case_Util::getLoadableClassAlias(get_called_class(), $type, $configPath);
+        return TestUtil::getLoadableClassAlias(get_called_class(), $type, $configPath);
     }
 
     /**
@@ -661,7 +663,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
             $name = $this->getName(false);
         }
 
-        return EcomDev_PHPUnit_Test_Case_Util::getYamlFilePath(get_called_class(), $type, $name);
+        return TestUtil::getYamlFilePath(get_called_class(), $type, $name);
     }
 
     /**
@@ -677,7 +679,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public static function getYamlFilePathByClass($className, $type, $name)
     {
-        return EcomDev_PHPUnit_Test_Case_Util::getYamlFilePath($className, $type, $name);
+        return TestUtil::getYamlFilePath($className, $type, $name);
     }
 
     /**
@@ -689,7 +691,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public function dataProvider($testName)
     {
-        return EcomDev_PHPUnit_Test_Case_Util::dataProvider(get_called_class(), $testName);
+        return TestUtil::dataProvider(get_called_class(), $testName);
     }
 
     /**
@@ -700,7 +702,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     public function setCurrentStore($store)
     {
-        EcomDev_PHPUnit_Test_Case_Util::setCurrentStore($store);
+        TestUtil::setCurrentStore($store);
         return $this;
     }
 }
