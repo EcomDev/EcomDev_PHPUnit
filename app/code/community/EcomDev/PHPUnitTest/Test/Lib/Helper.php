@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHP Unit test suite for Magento
  *

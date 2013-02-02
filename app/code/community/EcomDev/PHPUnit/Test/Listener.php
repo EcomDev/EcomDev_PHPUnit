@@ -59,6 +59,8 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
                 $this->getAppReflection()->getMethod('applyTestScope')->invoke(null);
             }
 
+
+
             $this->firstLevelTestSuite = $suite;
             Mage::dispatchEvent('phpunit_suite_start_after', array(
                 'suite' => $suite,

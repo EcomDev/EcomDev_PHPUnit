@@ -147,4 +147,5 @@ class EcomDev_PHPUnitTest_Test_Lib_Mock_Proxy extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $this->mockProxy->compareValues('value1', 'value2'));
         $this->assertEquals(true, $this->mockProxy->compareValues('value1', 'value1'));
     }
+
 }
