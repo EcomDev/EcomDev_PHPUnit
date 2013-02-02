@@ -42,6 +42,16 @@
                 </ecomdev_phpunit>
             </types>
         </cache>
+        <events>
+            <phpunit_suite_start_after>
+                <observers>
+                    <ecomdev_phpunit>
+                        <class>ecomdev_phpunit/observer</class>
+                        <method>registerDefaultTestHelpers</method>
+                    </ecomdev_phpunit>
+                </observers>
+            </phpunit_suite_start_after>
+        </events>
     </global>
     <phpunit>
         <suite>

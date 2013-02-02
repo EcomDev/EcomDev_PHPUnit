@@ -17,11 +17,15 @@
  */
 
 use EcomDev_PHPUnit_Test_Case_Util as TestUtil;
+use EcomDev_PHPUnit_Helper as TestHelper;
 
 /**
- * Basic test case class
+ * Basic test case class, implements test helpers for easy working with Magento
  *
- *
+ * @method EcomDev_PHPUnit_Mock_Proxy mockClassAlias(string $type, $classAlias, array $methods = array(), array $constructorArgs = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy mockModel($classAlias, array $methods = array(), array $constructorArgs = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy mockBlock($classAlias, array $methods = array(), array $constructorArgs = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy mockHelper($classAlias, array $methods = array(), array $constructorArgs = array())
  */
 abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
 {
@@ -372,20 +376,18 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @param string $type block|model|helper
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getGroupedClassMockBuilder($type, $classAlias)
     {
-        $className = $this->getGroupedClassName($type, $classAlias);
-
-        return $this->getMockBuilder($className);
+        return TestUtil::getGroupedClassMockBuilder($this, $type, $classAlias);
     }
 
     /**
      * Retrieves a mock builder for a block class alias
      *
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getBlockMockBuilder($classAlias)
     {
@@ -396,7 +398,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * Retrieves a mock builder for a model class alias
      *
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getModelMockBuilder($classAlias)
     {
@@ -407,7 +409,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * Retrieves a mock builder for a resource model class alias
      *
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getResourceModelMockBuilder($classAlias)
     {
@@ -418,7 +420,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * Retrieves a mock builder for a helper class alias
      *
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getHelperMockBuilder($classAlias)
     {
@@ -436,7 +438,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callOriginalConstructor
      * @param  boolean $callOriginalClone
      * @param  boolean $callAutoload
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getModelMock($classAlias, $methods = array(), $isAbstract = false,
                                  array $constructorArguments = array(),
@@ -460,7 +462,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callOriginalConstructor
      * @param  boolean $callOriginalClone
      * @param  boolean $callAutoload
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getResourceModelMock($classAlias, $methods = array(), $isAbstract = false,
                                  array $constructorArguments = array(),
@@ -484,7 +486,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callOriginalConstructor
      * @param  boolean $callOriginalClone
      * @param  boolean $callAutoload
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getHelperMock($classAlias, $methods = array(), $isAbstract = false,
                                  array $constructorArguments = array(),
@@ -508,7 +510,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callOriginalConstructor
      * @param  boolean $callOriginalClone
      * @param  boolean $callAutoload
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getBlockMock($classAlias, $methods = array(), $isAbstract = false,
                                  array $constructorArguments = array(),
@@ -529,11 +531,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      */
     protected function getGroupedClassName($type, $classAlias)
     {
-        if ($type === 'resource_model') {
-            return $this->app()->getConfig()->getResourceModelClassName($classAlias);
-        }
-
-        return $this->app()->getConfig()->getGroupedClassName($type, $classAlias);
+        return TestUtil::getGroupedClassName($type, $classAlias);
     }
 
     /**
@@ -704,5 +702,17 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     {
         TestUtil::setCurrentStore($store);
         return $this;
+    }
+
+    /**
+     * Calling of the helper method
+     *
+     * @param string $method
+     * @param array $args
+     * @return mixed
+     */
+    public function __call($method, array $args)
+    {
+        return TestUtil::call($method, $args);
     }
 }

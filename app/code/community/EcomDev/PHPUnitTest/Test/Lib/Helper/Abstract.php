@@ -103,5 +103,4 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper_Abstract extends PHPUnit_Framework_Tes
         $this->assertAttributeSame($this, 'testCase', $this->helper);
     }
 
-
 }

@@ -1,4 +1,20 @@
 <?php
+/**
+ * PHP Unit test suite for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   EcomDev
+ * @package    EcomDev_PHPUnit
+ * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
+ */
 
 use EcomDev_PHPUnit_Helper as Helper;
 
@@ -43,9 +59,15 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
     {
         $result = array();
 
+        $helperInterfaces = array(
+            true => 'EcomDev_PHPUnit_Helper_Interface',
+            false => 'EcomDev_PHPUnit_Helper_Listener_Interface'
+        );
+
         for ($i = 0; $i < $count; $i ++) {
+            $helperInterface = $helperInterfaces[$i % 2 === 0];
             $result[] = $this->getMockForAbstractClass(
-                'EcomDev_PHPUnit_Helper_Interface', array(), 'Test_Helper_Name' . $i
+                $helperInterface, array(), 'Test_Helper_Name' . $i
             );
         }
 
@@ -329,6 +351,48 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
         }
 
         EcomDev_PHPUnit_Helper::setTestCase($this);
+    }
+
+    /**
+     * Test that when set up is invoked,
+     * test helpers that support setUp method invoked as well
+     *
+     */
+    public function testSetUp()
+    {
+        $helpers = $this->getHelpersForTest(4, true);
+
+        $helpers[0]->expects($this->never())
+            ->method('setUp');
+        $helpers[1]->expects($this->once())
+            ->method('setUp');
+        $helpers[2]->expects($this->never())
+            ->method('setUp');
+        $helpers[3]->expects($this->once())
+            ->method('setUp');
+
+        EcomDev_PHPUnit_Helper::setUp();
+    }
+
+    /**
+     * Test that when set up is invoked,
+     * test helpers that support setUp method invoked as well
+     *
+     */
+    public function testTearDown()
+    {
+        $helpers = $this->getHelpersForTest(4, true);
+
+        $helpers[0]->expects($this->never())
+            ->method('tearDown');
+        $helpers[1]->expects($this->once())
+            ->method('tearDown');
+        $helpers[2]->expects($this->never())
+            ->method('tearDown');
+        $helpers[3]->expects($this->once())
+            ->method('tearDown');
+
+        EcomDev_PHPUnit_Helper::tearDown();
     }
 
     protected function tearDown()

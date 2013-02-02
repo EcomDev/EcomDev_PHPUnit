@@ -152,6 +152,35 @@ class EcomDev_PHPUnit_Helper
     }
 
     /**
+     * Calls setUp method on helper,
+     * that implements EcomDev_PHPUnit_Helper_Listener_Interface
+     *
+     */
+    public static function setUp()
+    {
+        foreach (self::$helpers as $helper) {
+            if ($helper instanceof EcomDev_PHPUnit_Helper_Listener_Interface) {
+                $helper->setUp();
+            }
+        }
+    }
+
+    /**
+     * Calls tearDown method on helper,
+     * that implements EcomDev_PHPUnit_Helper_Listener_Interface
+     *
+     */
+    public static function tearDown()
+    {
+        foreach (self::$helpers as $helper) {
+            if ($helper instanceof EcomDev_PHPUnit_Helper_Listener_Interface) {
+                $helper->tearDown();
+            }
+        }
+    }
+
+
+    /**
      * Finds a helper instance by class name
      *
      * @param string $className
@@ -163,6 +192,5 @@ class EcomDev_PHPUnit_Helper
             return get_class($item) === $className;
         });
     }
-
 
 }
