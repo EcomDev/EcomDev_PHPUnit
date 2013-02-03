@@ -312,7 +312,7 @@ USAGE;
      */
     protected function _fixAutoloader()
     {
-        $autoloaderFile = $this->getArg('project') . DIRECTORY_SEPARATOR . 'lib/Varien/Autoloader.php';
+        $autoloaderFile = $this->getArg('project') . DIRECTORY_SEPARATOR . 'lib/Varien/Autoload.php';
 
         file_put_contents(
             $autoloaderFile,
@@ -322,6 +322,7 @@ USAGE;
                 file_get_contents($autoloaderFile)
             )
         );
+
         echo "Varien_Autoloader was patched\n";
     }
 }
