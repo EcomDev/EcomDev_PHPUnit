@@ -12,15 +12,18 @@ before_script:
   - mkdir bin/ && wget -O bin/mage-ci -q https://raw.github.com/EcomDev/MageCI/master/bin/mage-ci --no-check-certificate
   - chmod +x bin/mage-ci
   # Installing magento version with prepared DB dump
-  - bin/mage-ci install tests/magento $MAGE magento -c -t -r http://mage-ci.ecomdev.org
+  - bin/mage-ci install tests/magento $MAGE magento -c -r http://mage-ci.ecomdev.org
   # Installing EcomDev_PHPUnit module
   - bin/mage-ci install-module tests/magento $(pwd)
   # Configuring EcomDev_PHPUnit module
   - CURRENT_DIR=$(pwd)
   - cd tests/magento/shell
+  # Configuring test suite
   - php ecomdev-phpunit.php -a magento-config --db-name magento --same-db 1 --base_url http://test.magento.com/
   - php ecomdev-phpunit.php -a change-status --enable
   - php ecomdev-phpunit.php -a fix-autoloader
   - cd $CURRENT_DIR
+  # Copying phpunit.xml for travis builds
+  - cp .travis.phpunit.xml tests/magento/phpunit.xml
 script:
   - bin/mage-ci phpunit tests/magento --colors --coverage-text
