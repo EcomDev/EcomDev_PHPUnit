@@ -1,0 +1,25 @@
+language: php
+php:
+  - 5.3
+  - 5.4
+env:
+  - MAGE=1.7.0.2
+  - MAGE=1.6.2.0
+  - MAGE=1.5.1.0
+before_script:
+  # Fixing Magento hackathon installer
+  - mkdir -p tests/magento
+  # Installing required composer packages
+  - composer update --dev
+  # Installing magento version with prepared DB dump
+  - bin/mage-ci install tests/magento $MAGE magento -c -t -r http://mage-ci.ecomdev.org
+  # Installing EcomDev_PHPUnit module
+  - bin/mage-ci install-module tests/magento $(pwd)
+  # Configuring EcomDev_PHPUnit module
+  - CURRENT_DIR=$(pwd)
+  - cd tests/magento/shell
+  - php ecomdev-phpunit.php -a magento-config --db-name magento --same-db 1 --base_url http://test.magento.com/
+  - php ecomdev-phpunit.php -a change-status --enable
+  - cd $CURRENT_DIR
+script:
+  - bin/mage-ci phpunit tests/magento --colors --coverage-text

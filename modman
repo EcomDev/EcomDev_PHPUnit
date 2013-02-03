@@ -1,10 +1,13 @@
 # EcomDev_PHPUnit definition
-app/etc/modules/EcomDev_*.xml           app/etc/modules/
+app/etc/modules/*.xml                   app/etc/modules/
 app/code/community/EcomDev/*            app/code/community/EcomDev/
 lib/EcomDev/*                           lib/EcomDev/
 lib/Spyc                                lib/Spyc
 lib/vfsStream                           lib/vfsStream
-shell/ecomdev-phpunit-install.php       shell/ecomdev-phpunit-install.php
+shell/*.php                             shell/
 
 # Run shell installer
-@shell  cd $PROJECT/shell && php -f ecomdev-phpunit-install.php -- --module $MODULE --project $PROJECT
+@shell  cd $PROJECT/shell && php -f ecomdev-phpunit.php -- --action install
+
+# Disables built in tests for extension
+@shell  cd $PROJECT/shell && php -f ecomdev-phpunit.php -- --action change-status

@@ -25,4 +25,7 @@
             </url>
         </web>
     </default>
+    <phpunit>
+        <allow_same_db>0</allow_same_db>
+    </phpunit>
 </config>
