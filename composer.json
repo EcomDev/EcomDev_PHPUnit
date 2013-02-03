@@ -11,6 +11,10 @@
     "require-dev": {
         "ecomdev/mage-ci": "dev-master"
     },
+    "repositories": [{
+        "type": "composer",
+        "url": "http://packages.firegento.com"
+    }],
     "authors":[
         {
             "name":"Ivan Chepurnyi"
