@@ -23,4 +23,4 @@ before_script:
   - php ecomdev-phpunit.php -a fix-autoloader
   - cd $CURRENT_DIR
 script:
-  - vendor/bin/mage-ci phpunit tests/magento --colors --coverage-text
+  - bin/mage-ci phpunit tests/magento --colors --coverage-text
