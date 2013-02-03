@@ -11,6 +11,12 @@ System Requirements
 * PHPUnit 3.7.x
 * Magento CE1.4.x-1.7.x/PE1.9.x-PE1.10.x/EE1.9.x-1.12.x
 
+Build Status
+------------
+* Latest Release: [![Master Branch](https://travis-ci.org/IvanChepurnyi/EcomDev_PHPUnit.png?branch=master)](https://travis-ci.org/IvanChepurnyi/EcomDev_PHPUnit)
+* Development Branch: [![Development Branch](https://travis-ci.org/IvanChepurnyi/EcomDev_PHPUnit.png?branch=dev)](https://travis-ci.org/IvanChepurnyi/EcomDev_PHPUnit)
+
+
 Documentation
 -------------
 
