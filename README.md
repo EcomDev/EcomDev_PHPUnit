@@ -35,13 +35,13 @@ Installation
      modman clone git://github.com/IvanChepurnyi/EcomDev_PHPUnit.git 
      ```
     * Add extension as dependency in your composer.json to install it from [Magento Composer Repository](http://packages.firegento.com/)
-     ```json
-     {
-        "require": {
-            "ivanchepurnyi/ecomdev_phpunit":"*"
-        }
-     }
-     ```
+      ```json
+      {
+            "require": {
+               "ivanchepurnyi/ecomdev_phpunit": "*"
+            }
+      }
+      ```
 
 3. Open your terminal and navigate to your magento directory for performing the following command, they are required to configure system for running the test suite 
     ```bash
