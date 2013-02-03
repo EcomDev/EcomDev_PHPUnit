@@ -9,17 +9,18 @@ env:
 before_script:
   # Fixing Magento hackathon installer
   - mkdir -p tests/magento
-  # Installing required composer packages
-  - composer update --dev
+  - mkdir bin/ && wget -O bin/mage-ci -q https://raw.github.com/EcomDev/MageCI/master/bin/mage-ci --no-check-certificate
+  - chmod +x bin/mage-ci
   # Installing magento version with prepared DB dump
-  - vendor/bin/mage-ci install tests/magento $MAGE magento -c -t -r http://mage-ci.ecomdev.org
+  - bin/mage-ci install tests/magento $MAGE magento -c -t -r http://mage-ci.ecomdev.org
   # Installing EcomDev_PHPUnit module
-  - vendor/bin/mage-ci install-module tests/magento $(pwd)
+  - bin/mage-ci install-module tests/magento $(pwd)
   # Configuring EcomDev_PHPUnit module
   - CURRENT_DIR=$(pwd)
   - cd tests/magento/shell
   - php ecomdev-phpunit.php -a magento-config --db-name magento --same-db 1 --base_url http://test.magento.com/
   - php ecomdev-phpunit.php -a change-status --enable
+  - php ecomdev-phpunit.php -a fix-autoloader
   - cd $CURRENT_DIR
 script:
   - vendor/bin/mage-ci phpunit tests/magento --colors --coverage-text
