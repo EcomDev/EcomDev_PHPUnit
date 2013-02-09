@@ -18,12 +18,33 @@
 
 class EcomDev_PHPUnit_Model_Observer
 {
+    const XML_PATH_TEST_HELPERS = 'phpunit/suite/helpers';
+
     /**
      * Registers default test helpers
      *
      */
     public function registerDefaultTestHelpers()
     {
-        EcomDev_PHPUnit_Helper::add(new EcomDev_PHPUnit_Test_Case_Helper_Mock());
+        foreach (Mage::getConfig()->getNode(self::XML_PATH_TEST_HELPERS)->children() as $helperNode) {
+            $helperClass = (string)$helperNode;
+
+            if ($helperClass && class_exists($helperClass)) {
+                $helper = new $helperClass();
+
+                if (!$helper instanceof EcomDev_PHPUnit_Helper_Interface) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Test helpers should implement %s, but %s is not implementing it.',
+                            'EcomDev_PHPUnit_Helper_Interface',
+                            $helperClass
+                        )
+                    );
+                }
+
+                EcomDev_PHPUnit_Helper::add($helper);
+            }
+
+        }
     }
 }

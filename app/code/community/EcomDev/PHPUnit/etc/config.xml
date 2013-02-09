@@ -141,6 +141,11 @@
                 <Namespace_MyModule />
                 -->
             </modules>
+
+            <helpers>
+                <mock>EcomDev_PHPUnit_Test_Case_Helper_Mock</mock>
+                <session>EcomDev_PHPUnit_Test_Case_Helper_Session</session>
+            </helpers>
         </suite>
     </phpunit>
     <test>
