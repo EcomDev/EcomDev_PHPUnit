@@ -18,6 +18,10 @@
 
 use EcomDev_PHPUnit_Test_Case_Util as TestUtil;
 
+/**
+ * Session mocks helper
+ *
+ */
 class EcomDev_PHPUnit_Test_Case_Helper_Session
     extends EcomDev_PHPUnit_Helper_Abstract
     implements EcomDev_PHPUnit_Helper_Listener_Interface
@@ -57,10 +61,17 @@ class EcomDev_PHPUnit_Test_Case_Helper_Session
         $session = $this->helperMockSession('admin/session', array('refreshAcl'));
         $user = $this->createUser();
         $this->loadRules($user, $this->getAcl(), $resources);
+        $session->setAcl($this->getAcl());
         $session->setUser($user);
         return $session;
     }
 
+    /**
+     * Returns an instance of ACL object that will be used for all
+     * admin stubs
+     *
+     * @return Mage_Admin_Model_Acl
+     */
     public function getAcl()
     {
         if ($this->acl === null) {
@@ -70,42 +81,69 @@ class EcomDev_PHPUnit_Test_Case_Helper_Session
         return $this->acl;
     }
 
-    public function loadRules($user, $acl, array $allowedResources = array())
+    /**
+     * Loads role rules into ACL for admin user
+     *
+     * @param Mage_Admin_Model_User $user
+     * @param Mage_Admin_Model_Acl  $acl
+     * @param array                 $allowedResources
+     *
+     * @return $this
+     */
+    public function loadRules(Mage_Admin_Model_User $user, Mage_Admin_Model_Acl $acl, array $allowedResources = array())
     {
         $userRole = Mage::getModel('admin/acl_role_user', Mage_Admin_Model_Acl::ROLE_TYPE_USER . $user->getId());
         $acl->addRole($userRole);
 
         if (empty($allowedResources)) {
             $acl->allow($userRole);
+            $acl->allow($userRole, $acl->getResources());
             return $this;
         }
 
+        $aclResources = $acl->getResources();
         $allow = array();
         foreach ($allowedResources as $resource) {
             $childResources = array_filter(
-                $acl->getResources(),
+                $aclResources,
                 function ($entry) use ($resource) {
                     return strpos($entry, 'admin/' . $resource) === 0;
                 }
             );
 
-            $allow = array_merge($allow, array($resource), $childResources);
+            $allow = array_merge($allow, $childResources);
         }
 
         $deny = array();
-        foreach ($acl->getResources() as $resource) {
+        foreach ($aclResources as $resource) {
             if (!in_array($resource, $allow)) {
                 $deny[] = $resource;
             }
         }
 
-        $deny;
+        $acl->allow($userRole, $allow);
+        $acl->deny($userRole, $deny);
+        return $this;
     }
 
+    /**
+     * Creates a new instance of user with unique id
+     *
+     * Used for stubbing admin user roles
+     *
+     * @param int $entropy
+     * @return Mage_Admin_Model_User
+     */
     public function createUser($entropy = 3)
     {
         $userId = floor(microtime(true)*pow(10, $entropy) - floor(time()/100)*100*pow(10, $entropy));
-        return Mage::getModel('admin/user')->setId($userId);
+        // Fix for EE gws functionality
+        $userRole = Mage::getModel('admin/roles');
+        $userRole->setGwsIsAll(1);
+        $user = Mage::getModel('admin/user');
+        $user->setId($userId);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue($user, '_role', $userRole);
+        return $user;
     }
 
     /**

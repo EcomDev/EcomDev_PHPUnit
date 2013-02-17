@@ -27,6 +27,7 @@ use EcomDev_PHPUnit_Helper as TestHelper;
  * @method EcomDev_PHPUnit_Mock_Proxy mockBlock($classAlias, array $methods = array(), array $constructorArgs = array())
  * @method EcomDev_PHPUnit_Mock_Proxy mockHelper($classAlias, array $methods = array(), array $constructorArgs = array())
  * @method EcomDev_PHPUnit_Mock_Proxy mockSession($classAlias, array $methods = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy adminSession(array $resources = array())
  */
 abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
 {

@@ -145,6 +145,7 @@
             <helpers>
                 <mock>EcomDev_PHPUnit_Test_Case_Helper_Mock</mock>
                 <session>EcomDev_PHPUnit_Test_Case_Helper_Session</session>
+                <customer>EcomDev_PHPUnit_Test_Case_Helper_Customer</customer>
             </helpers>
         </suite>
     </phpunit>

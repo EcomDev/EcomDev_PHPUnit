@@ -2,6 +2,10 @@
 
 class EcomDev_PHPUnitTest_Test_Helper_Session extends EcomDev_PHPUnit_Test_Case_Controller
 {
+    /**
+     * Tests stubbing of any session
+     *
+     */
     public function testMockSession()
     {
         $sessionMock = $this->mockSession('admin/session', array('getUserId'));
@@ -19,7 +23,8 @@ class EcomDev_PHPUnitTest_Test_Helper_Session extends EcomDev_PHPUnit_Test_Case_
     public function testAdminSessionAllRights()
     {
         $this->adminSession();
-        $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('catalog/product'));
+        $this->assertTrue(Mage::getSingleton('admin/session')->isLoggedIn());
+        $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('catalog/products'));
         $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('sales/order'));
         $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('system/config'));
     }
@@ -31,9 +36,9 @@ class EcomDev_PHPUnitTest_Test_Helper_Session extends EcomDev_PHPUnit_Test_Case_
     public function testAdminSessionOnlyCatalog()
     {
         $this->adminSession(array('catalog'));
-
-        $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('catalog/product'));
-        $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('catalog/category'));
+        $this->assertTrue(Mage::getSingleton('admin/session')->isLoggedIn());
+        $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('catalog/products'));
+        $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('catalog/categories'));
         $this->assertFalse(Mage::getSingleton('admin/session')->isAllowed('sales/order'));
         $this->assertFalse(Mage::getSingleton('admin/session')->isAllowed('system/config'));
     }
@@ -44,10 +49,11 @@ class EcomDev_PHPUnitTest_Test_Helper_Session extends EcomDev_PHPUnit_Test_Case_
      */
     public function testAdminSessionOnlyCatalogProduct()
     {
-        $this->adminSession(array('catalog/product'));
+        $this->adminSession(array('catalog/products'));
 
-        $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('catalog/product'));
-        $this->assertFalse(Mage::getSingleton('admin/session')->isAllowed('catalog/category'));
+        $this->assertTrue(Mage::getSingleton('admin/session')->isLoggedIn());
+        $this->assertTrue(Mage::getSingleton('admin/session')->isAllowed('catalog/products'));
+        $this->assertFalse(Mage::getSingleton('admin/session')->isAllowed('catalog/categories'));
         $this->assertFalse(Mage::getSingleton('admin/session')->isAllowed('sales/order'));
         $this->assertFalse(Mage::getSingleton('admin/session')->isAllowed('system/config'));
     }
