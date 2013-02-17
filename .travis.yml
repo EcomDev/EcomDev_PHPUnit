@@ -7,6 +7,7 @@ env:
   - MAGE=1.6.2.0
   - MAGE=1.5.1.0
 before_script:
+  - pear upgrade-all # Fix segmentation fault for phpunits
   # Fixing Magento hackathon installer
   - mkdir -p tests/magento
   - mkdir bin/ && wget -O bin/mage-ci -q https://raw.github.com/EcomDev/MageCI/master/bin/mage-ci --no-check-certificate
@@ -26,4 +27,4 @@ before_script:
   # Copying phpunit.xml for travis builds
   - cp .travis.phpunit.xml tests/magento/phpunit.xml
 script:
-  - bin/mage-ci phpunit tests/magento -d memory_limit=1024M --colors --coverage-text
+  - bin/mage-ci phpunit tests/magento --colors --coverage-text
