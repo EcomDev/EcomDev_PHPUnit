@@ -31,7 +31,7 @@ class EcomDev_PHPUnit_Controller_Front extends Mage_Core_Controller_Varien_Front
      */
     public function init()
     {
-        if ($this->_routers) {;
+        if ($this->_routers) {
             $this->_routers = array();
         }
 
