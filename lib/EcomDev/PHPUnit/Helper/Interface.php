@@ -17,24 +17,33 @@
  */
 
 /**
- * Front controller for test suite
- *
+ * Interface for PHPUnit Test Helpers
  */
-class EcomDev_PHPUnit_Controller_Front extends Mage_Core_Controller_Varien_Front
+interface EcomDev_PHPunit_Helper_Interface
 {
     /**
-     * Resets initialized routers before front controller re-initialization
-     * on test cases
+     * Checks if helper has action for invocation
      *
-     * (non-PHPdoc)
-     * @see Mage_Core_Controller_Varien_Front::init()
+     * @param string $action
+     * @return bool
      */
-    public function init()
-    {
-        if ($this->_routers) {;
-            $this->_routers = array();
-        }
+    public function has($action);
 
-        return parent::init();
-    }
+    /**
+     * Invokes helper action
+     *
+     * @param string $action
+     * @param array $args
+     *
+     * @return mixed
+     */
+    public function invoke($action, array $args);
+
+    /**
+     * Sets test case for usage in helper
+     *
+     * @param PHPUnit_Framework_TestCase $testCase
+     * @return $this
+     */
+    public function setTestCase(PHPUnit_Framework_TestCase $testCase);
 }
