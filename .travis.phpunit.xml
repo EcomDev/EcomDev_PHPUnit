@@ -33,6 +33,7 @@
             <!-- Exclude Varien & Zend libraries -->
             <directory suffix=".php">lib/Varien</directory>
             <directory suffix=".php">lib/Zend</directory>
+            <directory suffix=".php">../../vendor/</directory>
        </blacklist>  
    </filter>
 </phpunit>

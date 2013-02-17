@@ -7,11 +7,9 @@ env:
   - MAGE=1.6.2.0
   - MAGE=1.5.1.0
 before_script:
-  - pear upgrade-all # Fix segmentation fault for phpunits
   # Fixing Magento hackathon installer
   - mkdir -p tests/magento
-  - mkdir bin/ && wget -O bin/mage-ci -q https://raw.github.com/EcomDev/MageCI/master/bin/mage-ci --no-check-certificate
-  - chmod +x bin/mage-ci
+  - composer install --dev
   # Installing magento version with prepared DB dump
   - bin/mage-ci install tests/magento $MAGE magento -c -r http://mage-ci.ecomdev.org
   # Installing EcomDev_PHPUnit module
