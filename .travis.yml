@@ -26,4 +26,4 @@ before_script:
   # Copying phpunit.xml for travis builds
   - cp .travis.phpunit.xml tests/magento/phpunit.xml
 script:
-  - bin/mage-ci phpunit tests/magento --colors --coverage-text
+  - bin/mage-ci phpunit tests/magento -d memory_limit=1024M --colors --coverage-text
