@@ -1,0 +1,12 @@
+{
+    "require": {
+        "phpunit/phpunit": "*",
+        "ecomdev/mage-ci": "*"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra":{
+        "magento-root-dir": "tests/magento"
+    }
+}

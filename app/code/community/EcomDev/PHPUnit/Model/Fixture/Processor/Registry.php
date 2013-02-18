@@ -23,6 +23,7 @@
  * @singleton catalog/product_type
  * @resource catalog/product
  * @helper catalog
+ * @registry key
  *
  * or by specifying it in Yaml file:
  *
@@ -55,7 +56,8 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Registry implements EcomDev_PHPUni
         $typeToKey = array(
             'singleton' => '_singleton/',
             'resource'  => '_resource_singleton/',
-            'helper'    => '_helper/'
+            'helper'    => '_helper/',
+            'registry'  => ''
         );
 
         if ($fixture->getStorageData(self::STORAGE_KEY) !== null) {
@@ -116,7 +118,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Registry implements EcomDev_PHPUni
     {
         $options = $fixture->getOptions();
         $registry = array();
-        foreach (array('singleton', 'resource', 'helper') as $type) {
+        foreach (array('singleton', 'resource', 'helper', 'registry') as $type) {
             if (!isset($options[$type])) {
                 continue;
             }

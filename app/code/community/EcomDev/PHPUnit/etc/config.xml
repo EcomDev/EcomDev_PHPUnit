@@ -42,6 +42,16 @@
                 </ecomdev_phpunit>
             </types>
         </cache>
+        <events>
+            <phpunit_suite_start_after>
+                <observers>
+                    <ecomdev_phpunit>
+                        <class>ecomdev_phpunit/observer</class>
+                        <method>registerDefaultTestHelpers</method>
+                    </ecomdev_phpunit>
+                </observers>
+            </phpunit_suite_start_after>
+        </events>
     </global>
     <phpunit>
         <suite>
@@ -131,6 +141,12 @@
                 <Namespace_MyModule />
                 -->
             </modules>
+
+            <helpers>
+                <mock>EcomDev_PHPUnit_Test_Case_Helper_Mock</mock>
+                <session>EcomDev_PHPUnit_Test_Case_Helper_Session</session>
+                <customer>EcomDev_PHPUnit_Test_Case_Helper_Customer</customer>
+            </helpers>
         </suite>
     </phpunit>
     <test>

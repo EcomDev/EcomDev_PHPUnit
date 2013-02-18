@@ -173,6 +173,8 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
         $assertion = self::getDesignPackageModel()
             ->getLayoutFileAssertion($this->_expectedValue, $this->_area, $this->_designPackage, $this->_theme);
 
+        $this->setActualValue($assertion['actual']);
+        $this->_expectedValue = $assertion['expected'];
         return $this->compareValues($assertion['expected'], $assertion['actual']);
     }
 

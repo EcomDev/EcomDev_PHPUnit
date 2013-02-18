@@ -1,0 +1,8 @@
+john_doe:
+  name: John Doe
+  is_logged_in: true
+jane_doe:
+  name: Jane Doe
+  is_logged_in: true
+unknown_customer:
+  is_logged_in: false
