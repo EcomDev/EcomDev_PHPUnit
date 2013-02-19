@@ -9,7 +9,7 @@ class EcomDev_PHPUnit_Helper
     /**
      * Helpers container
      *
-     * @var EcomDev_PHPunit_Helper_Interface[]
+     * @var EcomDev_PHPUnit_Helper_Interface[]
      */
     protected static $helpers = array();
 
@@ -19,12 +19,12 @@ class EcomDev_PHPUnit_Helper
      * If $position is specified, it will use value
      * from before or after key as related helper
      *
-     * @param EcomDev_PHPunit_Helper_Interface $helper
+     * @param EcomDev_PHPUnit_Helper_Interface $helper
      * @param bool|array                       $position
      *
      * @throws RuntimeException
      */
-    public static function add(EcomDev_PHPunit_Helper_Interface $helper, $position = false)
+    public static function add(EcomDev_PHPUnit_Helper_Interface $helper, $position = false)
     {
         if ($position === false) {
             self::$helpers[] = $helper;
@@ -82,7 +82,7 @@ class EcomDev_PHPUnit_Helper
      * if helper for action was not found it returns false
      *
      * @param $action
-     * @return bool|EcomDev_PHPunit_Helper_Interface
+     * @return bool|EcomDev_PHPUnit_Helper_Interface
      */
     public static function getByAction($action)
     {
