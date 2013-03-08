@@ -718,4 +718,17 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     {
         return TestUtil::call($method, $args);
     }
+
+    /**
+     * Set up controller params
+     * (non-PHPdoc)
+     * @see PHPUnit_Framework_TestCase::setUp()
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $_SESSION = array();
+        $_baseUrl = Mage::getStoreConfig('web/unsecure/base_url');
+        $this->app()->getRequest()->setBaseUrl($_baseUrl);
+    }
 }
