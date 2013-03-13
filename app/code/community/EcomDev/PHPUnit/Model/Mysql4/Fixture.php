@@ -66,13 +66,14 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
         }
 
         try {
+            /** @var $setup Mage_Core_Model_Resource_Setup */
+            $setup = Mage::getResourceModel('core/setup', 'eav_write')->startSetup();
             $this->_getWriteAdapter()
-                    ->startSetup()
                     ->insertOnDuplicate(
                         $this->getTable($tableEntity),
                         $records
                     );
-            $this->_getWriteAdapter()->endSetup();
+            $setup->endSetup();
         } catch (Exception $e) {
         	throw new EcomDev_PHPUnit_Model_Mysql4_Fixture_Exception(
     			sprintf('Unable to insert/update records for a table "%s"', $tableEntity), 
