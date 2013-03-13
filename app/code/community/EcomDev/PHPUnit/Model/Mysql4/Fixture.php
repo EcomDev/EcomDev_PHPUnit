@@ -67,7 +67,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
 
         try {
             /** @var $setup Mage_Core_Model_Resource_Setup */
-            $setup = Mage::getResourceModel('core/setup', 'eav_write')->startSetup();
+            $setup = Mage::getResourceModel('core/setup', 'default_write')->startSetup();
             $this->_getWriteAdapter()
                     ->insertOnDuplicate(
                         $this->getTable($tableEntity),
