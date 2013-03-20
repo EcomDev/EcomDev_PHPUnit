@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!-- initial phpunit configuration file, that you can modify for your project needs -->
+<phpunit cacheTokens="true"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnError="false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         strict="false"
+         verbose="false"
+         bootstrap="app/code/community/EcomDev/PHPUnit/bootstrap.php">
+   <listeners>
+       <listener file="app/code/community/EcomDev/PHPUnit/Test/Listener.php" class="EcomDev_PHPUnit_Test_Listener" />
+   </listeners>
+   <testsuite name="Magento Test Suite">
+        <file>app/code/community/EcomDev/PHPUnit/Test/Suite.php</file>
+   </testsuite>
+   <filter>
+       <blacklist>
+            <!-- Exclude Magento Core files from code coverage -->
+            <directory suffix=".php">app/code/core</directory>
+            <!-- Exclude EcomDev_PHPUnit classes from code coverage -->
+            <directory suffix=".php">app/code/community/EcomDev/PHPUnitTest</directory>
+            <directory suffix=".php">lib/Spyc</directory>
+            <directory suffix=".php">lib/vfsStream</directory>
+            <!-- Exclude Mage.php file from code coverage -->
+            <file>app/Mage.php</file>
+            <!-- Exclude template files -->
+            <directory suffix=".phtml">app/design</directory>
+            <!-- Exclude Varien & Zend libraries -->
+            <directory suffix=".php">lib/Varien</directory>
+            <directory suffix=".php">lib/Zend</directory>
+            <directory suffix=".php">../../vendor/</directory>
+       </blacklist>  
+   </filter>
+</phpunit>
+
