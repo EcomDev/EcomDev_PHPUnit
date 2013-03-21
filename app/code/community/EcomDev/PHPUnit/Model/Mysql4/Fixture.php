@@ -42,7 +42,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
 	            ->delete($this->getTable($tableEntity));
     	} catch (Exception $e) {
     		throw new EcomDev_PHPUnit_Model_Mysql4_Fixture_Exception(
-    			sprintf('Unable to clear records for a table "%s"', $tableEntity),
+    			sprintf('Unable to clear records for a table "%s" - "%s"', $tableEntity, $e->getMessage()),
     			$e
     		);
     	}
@@ -72,7 +72,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
 	        );
         } catch (Exception $e) {
         	throw new EcomDev_PHPUnit_Model_Mysql4_Fixture_Exception(
-    			sprintf('Unable to insert/update records for a table "%s"', $tableEntity), 
+    			sprintf('Unable to insert/update records for a table "%s" - "%s"', $tableEntity, $e->getMessage()), 
     			$e
     		);
         }

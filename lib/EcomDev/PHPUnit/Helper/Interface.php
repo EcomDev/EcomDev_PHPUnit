@@ -19,7 +19,7 @@
 /**
  * Interface for PHPUnit Test Helpers
  */
-interface EcomDev_PHPunit_Helper_Interface
+interface EcomDev_PHPUnit_Helper_Interface
 {
     /**
      * Checks if helper has action for invocation
