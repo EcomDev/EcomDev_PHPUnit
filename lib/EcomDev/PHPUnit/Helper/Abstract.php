@@ -19,7 +19,7 @@
 /**
  * Base helper implementation
  */
-abstract class EcomDev_PHPUnit_Helper_Abstract implements EcomDev_PHPunit_Helper_Interface
+abstract class EcomDev_PHPUnit_Helper_Abstract implements EcomDev_PHPUnit_Helper_Interface
 {
     /**
      * @var PHPUnit_Framework_TestCase

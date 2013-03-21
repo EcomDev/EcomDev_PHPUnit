@@ -59,6 +59,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
         $records += $this->_getTierPriceRecords($row, $entityTypeModel);
         $records += $this->_getCategoryAssociationRecords($row, $entityTypeModel);
         $records += $this->_getProductStockRecords($row, $entityTypeModel);
+        $records += $this->_getProductSuperRelations($row, $entityTypeModel);
         return $records;
     }
 
@@ -78,6 +79,50 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
 
         return parent::_getAttributeRecords($row, $attribute, $tableColumns);
     }
+
+    /**
+     * Generates records for catalog_product_super_attribute and catalog_product_super_link tables
+     *
+     * @param array $row
+     * @param Mage_Eav_Model_Entity_Type $entityTypeModel
+     * @return array
+     * @throws RuntimeException
+     */
+    protected function _getProductSuperRelations($row, $entityTypeModel)
+    {
+        $result = array();
+        if (isset($row['super_attributes']) && is_array($row['super_attributes'])) {
+            $records = array();
+            $attributeCodes = $entityTypeModel->getAttributeCollection();
+            foreach ($row['super_attributes'] as $attributeCode) {
+                $attributeId = $attributeCodes->getItemByColumnValue('attribute_code',$attributeCode)->getId();
+                $records[] = array(
+                    'product_id' => $row[$this->_getEntityIdField($entityTypeModel)],
+                    'attribute_id' => $attributeId
+                );
+            }
+
+            if ($records) {
+                $result += array('catalog/product_super_attribute' => $records);
+            }
+        }
+        if (isset($row['configurable_children']) && is_array($row['configurable_children'])) {
+            $records = array();
+            foreach ($row['configurable_children'] as $childId) {
+                $records[] = array(
+                    'parent_id' => $row[$this->_getEntityIdField($entityTypeModel)],
+                    'product_id' => $childId
+                );
+            }
+
+            if ($records) {
+                $result += array('catalog/product_super_link' => $records);
+            }
+        }
+
+        return $result;
+    }
+
 
     /**
      * Generates records for catalog_product_website table
