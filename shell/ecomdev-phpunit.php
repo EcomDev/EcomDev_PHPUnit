@@ -109,7 +109,7 @@ Defined actions:
     --db-pwd      <string>   Changes test DB password
     --same-db     <bool>     Changes same db usage flag for unit tests
     --url-rewrite <bool>     Changes use of url rewrites for unit tests
-    --base_url    <string>   Changes base url for controller tests
+    --base-url    <string>   Changes base url for controller tests
 
   change-status              Changes status of EcomDev_PHPUnitTest module, that contains built in supplied tests
     --enable                 Used to determine the status of it. If not specified, it will be disabled
