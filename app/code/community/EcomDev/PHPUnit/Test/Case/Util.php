@@ -538,7 +538,13 @@ class EcomDev_PHPUnit_Test_Case_Util
             return TestHelper::invokeArgs($method, $args);
         }
 
-        $backTraceCalls = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 3);
+        if (version_compare(PHP_VERSION, '5.4', '>=')) {
+            $backTraceCalls = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 3);
+        } else {
+            // We cannot limit number of arguments on php before 5.4, php rises an exception :(
+            $backTraceCalls = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
+        }
+
         $previousCall = $backTraceCalls[2];
 
         throw new ErrorException(
