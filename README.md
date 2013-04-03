@@ -13,8 +13,8 @@ System Requirements
 
 Build Status
 ------------
-* Latest Release: [![Master Branch](https://travis-ci.org/IvanChepurnyi/EcomDev_PHPUnit.png?branch=master)](https://travis-ci.org/IvanChepurnyi/EcomDev_PHPUnit)
-* Development Branch: [![Development Branch](https://travis-ci.org/IvanChepurnyi/EcomDev_PHPUnit.png?branch=dev)](https://travis-ci.org/IvanChepurnyi/EcomDev_PHPUnit)
+* Latest Release: [![Master Branch](https://travis-ci.org/EcomDev/EcomDev_PHPUnit.png?branch=master)](https://travis-ci.org/EcomDev/EcomDev_PHPUnit)
+* Development Branch: [![Development Branch](https://travis-ci.org/EcomDev/EcomDev_PHPUnit.png?branch=dev)](https://travis-ci.org/EcomDev/EcomDev_PHPUnit)
 
 
 Documentation
@@ -32,13 +32,13 @@ Installation
     * Use [Module Manager](https://github.com/colinmollenhour/modman) 
         
      ```bash
-     modman clone git://github.com/IvanChepurnyi/EcomDev_PHPUnit.git 
+     modman clone git://github.com/EcomDev/EcomDev_PHPUnit.git 
      ```
     * Add extension as dependency in your composer.json to install it from [Magento Composer Repository](http://packages.firegento.com/)
       ```json
       {
             "require": {
-               "ivanchepurnyi/ecomdev_phpunit": "*"
+               "ecomdev/ecomdev_phpunit": "*"
             }
       }
       ```
