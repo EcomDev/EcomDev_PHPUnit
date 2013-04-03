@@ -1,5 +1,5 @@
 {
-    "name": "ivanchepurnyi/ecomdev_phpunit",
+    "name": "ecomdev/ecomdev_phpunit",
     "license": "OSL-3.0",
     "type": "magento-module",
     "description": "Magento PHPUnit Integration",
