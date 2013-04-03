@@ -1,6 +1,5 @@
 {
     "require": {
-        "phpunit/phpunit": "*",
         "ecomdev/mage-ci": "*"
     },
     "config": {
