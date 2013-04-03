@@ -26,4 +26,4 @@ before_script:
   - cp .travis/phpunit.xml $MAGE_DIR/phpunit.xml
 script:
   # output php ini info for checking the problem
-  - cd $MAGE_DIR && ../../bin/phpunit --colors --coverage-text -d display_errors=1
+  - bin/mage-ci phpunit $MAGE_DIR --colors --coverage-text -d display_errors=1
