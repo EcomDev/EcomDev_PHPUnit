@@ -147,6 +147,9 @@ class EcomDev_PHPUnit_Controller_Request_Http
      */
     public function resetInternalProperties()
     {
+        // old forward infos
+        $this->_beforeForwardInfo = null;
+        
         // From abstract request
         $this->_dispatched = false;
         $this->_module = null;
