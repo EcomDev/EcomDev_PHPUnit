@@ -16,12 +16,13 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
+use EcomDev_PHPUnit_Helper as TestHelper;
+
 class EcomDev_PHPUnit_Test_Case_Util
 {
     const XML_PATH_DEFAULT_FIXTURE_MODEL = 'phpunit/suite/fixture/model';
     const XML_PATH_DEFAULT_EXPECTATION_MODEL = 'phpunit/suite/expectation/model';
     const XML_PATH_DEFAULT_YAML_LOADER_MODEL = 'phpunit/suite/yaml/model';
-
 
     /**
      * List of replaced registry keys for current test case run
@@ -423,7 +424,9 @@ class EcomDev_PHPUnit_Test_Case_Util
      */
     public static function replaceByMock($type, $classAlias, $mock)
     {
-        if ($mock instanceof PHPUnit_Framework_MockObject_MockBuilder) {
+        if ($mock instanceof EcomDev_PHPUnit_Mock_Proxy) {
+            $mock = $mock->getMockInstance();
+        } elseif ($mock instanceof PHPUnit_Framework_MockObject_MockBuilder) {
             $mock = $mock->getMock();
         } elseif (!$mock instanceof PHPUnit_Framework_MockObject_MockObject) {
             throw PHPUnit_Util_InvalidArgumentHelper::factory(
@@ -464,6 +467,36 @@ class EcomDev_PHPUnit_Test_Case_Util
     }
 
     /**
+     * Returns class name by grouped class alias
+     *
+     * @param string $type block/model/helper/resource_model
+     * @param string $classAlias
+     * @return string
+     */
+    public static function getGroupedClassName($type, $classAlias)
+    {
+        if ($type === 'resource_model') {
+            return self::app()->getConfig()->getResourceModelClassName($classAlias);
+        }
+
+        return self::app()->getConfig()->getGroupedClassName($type, $classAlias);
+    }
+
+    /**
+     * Retrieve mock builder for grouped class alias
+     *
+     * @param PHPUnit_Framework_TestCase $testCase
+     * @param string                     $type block|model|helper
+     * @param string                     $classAlias
+     * @return EcomDev_PHPUnit_Mock_Proxy
+     */
+    public static function getGroupedClassMockBuilder(PHPUnit_Framework_TestCase $testCase, $type, $classAlias)
+    {
+        $className = self::getGroupedClassName($type, $classAlias);
+        return new EcomDev_PHPUnit_Mock_Proxy($testCase, $className);
+    }
+
+    /**
      * Called for each test case
      *
      */
@@ -488,5 +521,43 @@ class EcomDev_PHPUnit_Test_Case_Util
         foreach (self::$replacedRegistry as $registryPath => $originalValue) {
             self::app()->replaceRegistry($registryPath, $originalValue);
         }
+    }
+
+    /**
+     * Implementation of __call method functionality that can be used from a test case
+     *
+     * @param string                     $method
+     * @param array                      $args
+     *
+     * @throws ErrorException
+     * @return bool
+     */
+    public static function call($method, $args)
+    {
+        if (TestHelper::has($method)) {
+            return TestHelper::invokeArgs($method, $args);
+        }
+
+        if (version_compare(PHP_VERSION, '5.4', '>=')) {
+            $backTraceCalls = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 3);
+        } else {
+            // We cannot limit number of arguments on php before 5.4, php rises an exception :(
+            $backTraceCalls = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
+        }
+
+        $previousCall = $backTraceCalls[2];
+
+        throw new ErrorException(
+            sprintf(
+                'Call to undefined function %s%s%s()',
+                $previousCall['class'],
+                $previousCall['type'],
+                $previousCall['function']
+            ),
+            0,
+            E_USER_ERROR,
+            $previousCall['file'],
+            $previousCall['line']
+        );
     }
 }
