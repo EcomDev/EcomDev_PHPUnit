@@ -2027,7 +2027,22 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
             array('login', 'getId', 'save', 'authenticate', 'getRole')
         );
 
-        $adminRoleMock = $this->getModelMock('admin/roles', array('getGwsIsAll'));
+        $adminRoleMock = $this->getModelMock(
+            'admin/roles',
+            array('getGwsIsAll', 'getGwsStores', 'getGwsStoreGroups', 'getGwsRelevantWebsites')
+        );
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsStores')
+            ->will($this->returnValue(array_keys(Mage::app()->getStores(true))));
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsStoreGroups')
+            ->will($this->returnValue(array_keys(Mage::app()->getGroups(true))));
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsRelevantWebsites')
+            ->will($this->returnValue(array_keys(Mage::app()->getWebsites(true))));
 
         $adminRoleMock->expects($this->any())
             ->method('getGwsIsAll')
