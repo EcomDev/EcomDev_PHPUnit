@@ -130,6 +130,6 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
             return serialize($value['serialized']);
         }
 
-        throw new InvalidArgumentException('Unrecognized type for DB column');
+        throw new InvalidArgumentException('Unrecognized type for DB column: '.print_r($value, 1));
     }
 }
