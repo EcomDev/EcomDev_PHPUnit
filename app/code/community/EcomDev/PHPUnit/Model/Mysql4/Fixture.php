@@ -27,6 +27,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture extends Mage_Core_Model_Mysql4_Abstra
     protected function _construct()
     {
         $this->_setResource('ecomdev_phpunit');
+        $this->_resourceModel = NULL;
     }
 
     /**
