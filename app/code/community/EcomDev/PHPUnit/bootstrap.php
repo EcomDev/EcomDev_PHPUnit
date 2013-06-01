@@ -22,3 +22,14 @@ $_SERVER['SCRIPT_FILENAME'] = $_baseDir . DS . 'index.php';
 
 Mage::app('admin');
 Mage::getConfig()->init();
+
+spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
+
+spl_autoload_register(function ($classname) {
+    $classname = ltrim($classname, "\\");
+    preg_match('/^(.+)?([^\\\\]+)$/U', $classname, $match);
+    $classname = str_replace("\\", "/", $match[1])
+        . str_replace(array("\\", "_"), "/", $match[2])
+        . ".php";
+    @include_once $classname;
+});
