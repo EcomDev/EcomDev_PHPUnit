@@ -27,6 +27,7 @@ class EcomDev_PHPUnit_Install extends Mage_Shell_Abstract
 {
     const FILE_LOCAL_XML = 'app/etc/local.xml.phpunit';
     const FILE_PHPUNIT_XML = 'phpunit.xml.dist';
+    const FILE_CONFIG_XML = 'app/code/community/EcomDev/PHPUnit/etc/config.xml';
 
     const OLD_FILE_MATCH = '/\\<file\\>UnitTests.php\\<\\/file\\>/';
 
@@ -111,6 +112,8 @@ Defined actions:
     --url-rewrite <bool>     Changes use of url rewrites for unit tests
     --base_url    <string>   Changes base url for controller tests
 
+  show-version               Shows current version of the module
+
   change-status              Changes status of EcomDev_PHPUnitTest module, that contains built in supplied tests
     --enable                 Used to determine the status of it. If not specified, it will be disabled
 
@@ -160,6 +163,11 @@ USAGE;
                 break;
             case 'fix-autoloader':
                 $this->_fixAutoloader();
+                break;
+            case 'show-version':
+                $version = $this->_retrieveVersion();
+                $this->_cleanCache();
+                echo "EcomDev_PHPUnit module version is {$version} \n";
                 break;
             default:
                 $this->_showHelp();
@@ -324,6 +332,30 @@ USAGE;
         );
 
         echo "Varien_Autoloader was patched\n";
+    }
+
+    /**
+     * Retrieve current module version from the config.xml file
+     *
+     * @return string
+     */
+    protected function _retrieveVersion()
+    {
+        if (!file_exists($this->getArg('project') . DS . self::FILE_CONFIG_XML)) {
+            die('Cannot find module config file!');
+        }
+
+        $configFilePath = $this->getArg('project') . DS . self::FILE_CONFIG_XML;
+
+        /** @var $moduleConfigXml Varien_Simplexml_Element */
+        $moduleConfigXml = simplexml_load_file($configFilePath,  'Varien_Simplexml_Element');
+
+        if (!isset($moduleConfigXml->modules->EcomDev_PHPUnit->version)) {
+            die('Cannot retrieve module version!');
+        }
+        $version = $moduleConfigXml->modules->EcomDev_PHPUnit->version;
+
+        return $version;
     }
 }
 
