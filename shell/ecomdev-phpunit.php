@@ -16,7 +16,17 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
+
 require_once 'abstract.php';
+
+// Only this workaround fixes Magento core issue in 1.8 :(
+$abstractShell = new ReflectionClass('Mage_Shell_Abstract');
+
+define('PHPUNIT_MAGE_PATH', dirname(dirname($abstractShell->getFileName())));
+
+$appFile = PHPUNIT_MAGE_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
+
+require_once $appFile;
 
 /**
  * Shell script for autoinstalling of required files for phpunit extension
@@ -110,7 +120,7 @@ Defined actions:
     --db-pwd      <string>   Changes test DB password
     --same-db     <bool>     Changes same db usage flag for unit tests
     --url-rewrite <bool>     Changes use of url rewrites for unit tests
-    --base_url    <string>   Changes base url for controller tests
+    --base-url    <string>   Changes base url for controller tests
 
   show-version               Shows current version of the module
 
@@ -127,15 +137,12 @@ USAGE;
      */
     public function run()
     {
-        // We need only include mage, but not run app
-        require_once $this->_getRootPath() . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
-
         if (!$this->getArg('action') && !$this->getArg('a')) {
             die($this->usageHelp());
         }
 
         $this->_args['module'] = dirname(dirname(__FILE__));
-        $this->_args['project'] = dirname(getcwd());
+        $this->_args['project'] = PHPUNIT_MAGE_PATH;
 
         $action = $this->getArg('action') ?: $this->getArg('a');
         switch ($action) {
