@@ -1910,6 +1910,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
 
         $this->getResponse()->reset();
         $this->getLayout()->reset();
+        $this->app()->resetAreas();
+
         return $this;
     }
 
