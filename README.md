@@ -28,7 +28,7 @@ Installation
 
 1. Checkout extension
 
-        $ git clone git://github.com/IvanChepurnyi/EcomDev_PHPUnit.git
+        $ git clone git@github.com:EcomDev/EcomDev_PHPUnit.git
 
 2. Copy extension files into Magento root folder or use [Module Manager](https://github.com/colinmollenhour/modman) for auto-updating of the extension on all your installments
 
