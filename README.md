@@ -13,6 +13,12 @@ System Requirements
 * PHPUnit 3.7.x
 * Magento CE1.4.x-1.7.x/PE1.9.x-PE1.10.x/EE1.9.x-1.12.x
 
+Build Status
+------------
+* Latest Release: [![Master Branch](https://travis-ci.org/EcomDev/EcomDev_PHPUnit.png?branch=master)](https://travis-ci.org/EcomDev/EcomDev_PHPUnit)
+* Development Branch: [![Development Branch](https://travis-ci.org/EcomDev/EcomDev_PHPUnit.png?branch=dev)](https://travis-ci.org/EcomDev/EcomDev_PHPUnit)
+
+
 Documentation
 -------------
 
@@ -24,29 +30,38 @@ Installation
 ------------
 
 
-### Git Repository
+1. There are two ways of obtaining the extension:    
+    * Use [Module Manager](https://github.com/colinmollenhour/modman) 
+        
+     ```bash
+     modman clone git://github.com/EcomDev/EcomDev_PHPUnit.git 
+     ```
+    * Add extension as dependency in your composer.json to install it from [Magento Composer Repository](http://packages.firegento.com/)
+      ```json
+      {
+            "require": {
+               "ecomdev/ecomdev_phpunit": "*"
+            }
+      }
+      ```
 
-1. Checkout extension
-
-        $ git clone git@github.com:EcomDev/EcomDev_PHPUnit.git
-
-2. Copy extension files into Magento root folder or use [Module Manager](https://github.com/colinmollenhour/modman) for auto-updating of the extension on all your installments
-
-3. Open app/etc/local.xml.phpunit in editor that you are comfortable with:
-
- 1. Specify database credentials that will be used for test suite in
-**global/resources/default_setup/connection** node
-
- 2. Specify **base_url** for **secure** and **unsecure** requests in **default/web** node. It is
-required for proper controller tests.
+3. Open your terminal and navigate to your magento directory for performing the following command, they are required to configure system for running the test suite 
+    ```bash
+    # Shell scripts needs to be run from this directory
+    cd $YOUR_MAGENTO_DIRECTORY/shell 
+    # Specify your test database name and base url for controller tests
+    php ecomdev-phpunit.php -a magento-config --db-name $DB_NAME --base-url http://your.magento.url/
+    ```
+    If you receive a warning on PHPUnit checks for optional packages, run the following command
+    ```bash
+    php ecomdev-phpunit.php -a fix-autoloader
+    ```
 
 4. Run the unit tests first time for installing test database. It will take about 3 minutes.
 
-        $ phpunit
+        $ phpunit 
 
-5. If it shows that there was no tests found, it means that extension was successfully
-installed. If it shows some errors than it means that your customizations has install
-scripts that relay on your current database data so you should fix them.
+5. If it shows that there was no tests found, it means that extension was successfully installed. If it shows some errors, then it means, that your customizations has install scripts that relay on your current database data and you should fix them. Or use your dev database as a base for the tests, but prior first time running the suite.
 
 
 Issue Tracker
@@ -60,7 +75,8 @@ If you want to take a part in improving our extension please create branches bas
 
 ###Create your contribution branch: 
    
-        $ git checkout -b [your-name]/[feature] dev
+	$ git checkout -b [your-name]/[feature] dev
 
 
 Then submit them for pull request. 
+
