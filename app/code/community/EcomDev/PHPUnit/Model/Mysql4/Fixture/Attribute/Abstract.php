@@ -79,18 +79,27 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
 	 * @return EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
 	 * @throws EcomDev_PHPUnit_Model_Mysql4_Fixture_Exception
 	 */
-	public function cleanAttributes($entityType, array $attributeCodes)
+	public function cleanAttributes($entityType, array $attributes)
 	{
 		$eavSetup = new Mage_Eav_Model_Entity_Setup('core_setup');
 
 		try {
+            if(empty($attributes)) {
+                throw new Exception('Attribute array cannot be empty');
+            }
+            else {
+                $aAttributeCodes = array();
+                foreach($attributes as $oAttribute){
+                    $aAttributeCodes[] = $oAttribute->getCode();
+                }
+            }
 			//delete entry from eav/attribute and allow FK cascade to delete all related values
 			$this->_getWriteAdapter()
 				->delete(
 					$this->getTable('eav/attribute'),
 					array(
 						'entity_type_id = ?'    => $eavSetup->getEntityTypeId($entityType),
-						'attribute_code IN (?)' => $attributeCodes,
+						'attribute_code IN (?)' => $aAttributeCodes,
 					)
 				);
 			$this->_getWriteAdapter()->commit();
