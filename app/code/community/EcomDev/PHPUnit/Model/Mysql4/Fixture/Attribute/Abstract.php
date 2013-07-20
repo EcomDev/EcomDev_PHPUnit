@@ -89,11 +89,12 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
             }
             else {
                 $aAttributeCodes = array();
-                foreach($attributes as $oAttribute){
-                    $aAttributeCodes[] = $oAttribute->getCode();
+                foreach($attributes[$entityType] as $aAttribute){
+                    $aAttributeCodes[] = $aAttribute['attribute_code'];
                 }
             }
 			//delete entry from eav/attribute and allow FK cascade to delete all related values
+            //TODO: check if the attribute != is_user_defined (ie system), then *only* delete the attribute option values, not attribute definition
 			$this->_getWriteAdapter()
 				->delete(
 					$this->getTable('eav/attribute'),
