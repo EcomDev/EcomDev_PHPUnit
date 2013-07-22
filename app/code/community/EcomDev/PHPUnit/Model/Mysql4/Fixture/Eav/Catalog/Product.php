@@ -60,6 +60,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
         $records += $this->_getCategoryAssociationRecords($row, $entityTypeModel);
         $records += $this->_getProductStockRecords($row, $entityTypeModel);
         $records += $this->_getProductSuperRelations($row, $entityTypeModel);
+        $records += $this->_getProductBundleRelations($row, $entityTypeModel);
         return $records;
     }
 
@@ -78,6 +79,43 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
         }
 
         return parent::_getAttributeRecords($row, $attribute, $tableColumns);
+    }
+
+    /**
+     * Generates records for catalog_product_bundle_option and catalog_product_bundle_selection tables
+     *
+     * @param array $row
+     * @param Mage_Eav_Model_Entity_Type $entityTypeModel
+     * @return array
+     * @throws RuntimeException
+     */
+    protected function _getProductBundleRelations($row, $entityTypeModel){
+        $result = array();
+        if (isset($row['bundle_options']) && is_array($row['bundle_options'])) {
+            $aOptions = array();
+            $aSelections = array();
+            foreach($row['bundle_options'] as $iOptionId => $aOption){
+                $aOptions[] = array(
+                    'option_id' => $iOptionId,
+                    'parent_id' => $row[$this->_getEntityIdField($entityTypeModel)],
+                    'type' => 'radio'  //TODO: allow specification of different types
+                );
+                foreach($aOption as $iSelectionProductId){
+                    $aSelections[] = array(
+                        'option_id' => $iOptionId,
+                        'parent_product_id' => $row[$this->_getEntityIdField($entityTypeModel)],
+                        'product_id' => $iSelectionProductId,
+                    );
+                }
+            }
+            if(!empty($aOptions)){
+                $result += array('bundle/option' => $aOptions);
+            }
+            if(!empty($aSelections)){
+                $result += array('bundle/selection' => $aSelections);
+            }
+        }
+        return $result;
     }
 
     /**
