@@ -1808,7 +1808,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
                 array($this, 'deleteCookieCallback')
             ));
 
-        $this->replaceByMock('singleton', 'core/cookie', $cookie);
+        $this->replaceByMock('model', 'core/cookie', $cookie);
         return $this;
     }
 
