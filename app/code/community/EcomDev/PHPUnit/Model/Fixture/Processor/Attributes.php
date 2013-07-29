@@ -14,6 +14,8 @@
  * @copyright  Copyright (c) 2013 EcomDev BV (http://www.ecomdev.org)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
+ * @author     Steve Rice <srice@endertech.com>
+ * @author     Jonathan Day <jonathan@aligent.com.au>
  */
 
 
@@ -84,12 +86,12 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
      */
     public function apply(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
     {
-        $aAttributeLoaders = array();
+        $attributeLoaders = array();
 
         $this->getResource()->beginTransaction();
 
         foreach ($data as $entityType => $values) {
-            $aAttributeLoaders[] = $this->_getAttributeLoader($entityType)
+            $attributeLoaders[] = $this->_getAttributeLoader($entityType)
                 ->setFixture($fixture)
                 ->setOptions($fixture->getOptions())
                 ->loadAttribute($entityType, $values);
@@ -97,8 +99,8 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
 
         $this->getResource()->commit();
 
-        foreach ($aAttributeLoaders as $oAttributeLoader){
-            $oAttributeLoader->runRequiredIndexers();
+        foreach ($attributeLoaders as $attributeLoader){
+            $attributeLoader->runRequiredIndexers();
         }
 
         $fixture->setStorageData(self::STORAGE_KEY, array_keys($data));
