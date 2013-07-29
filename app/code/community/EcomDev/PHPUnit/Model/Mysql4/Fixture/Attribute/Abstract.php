@@ -22,6 +22,69 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
 {
 	protected $_setupModel = 'Mage_Eav_Model_Entity_Setup';
 
+    /**
+     * List of indexers required to build
+     *
+     * @var array
+     */
+    protected $_requiredIndexers = array(
+        'catalog_product_attribute',
+    );
+
+    /**
+     * Original list of indexers required to build
+     *
+     * @var array
+     */
+    protected $_originalIndexers = array();
+
+    /**
+     * Retrieve required indexers for re-building
+     *
+     * @return array
+     */
+    public function getRequiredIndexers()
+    {
+        return $this->_requiredIndexers;
+    }
+
+    /**
+     * Run required indexers and reset to original required indexers
+     *
+     * @return EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
+     */
+    public function runRequiredIndexers()
+    {
+        if (empty($this->_options['doNotIndexAll'])) {
+            $indexer = Mage::getSingleton('index/indexer');
+            foreach ($this->getRequiredIndexers() as $indexerCode) {
+                if (empty($this->_options['doNotIndex'])
+                    || !in_array($indexerCode, $this->_options['doNotIndex'])) {
+                    $indexer->getProcessByCode($indexerCode)
+                        ->reindexAll();
+                }
+            }
+        }
+
+        // Restoring original required indexers for making tests isolated
+        $this->_requiredIndexers = $this->_originalIndexers;
+        return $this;
+    }
+
+    /**
+     * Add indexer by specific code to required indexers list
+     *
+     * @param string $code
+     * @return EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
+     */
+    public function addRequiredIndexer($code)
+    {
+        if (!in_array($code, $this->_requiredIndexers)) {
+            $this->_requiredIndexers[] = $code;
+        }
+        return $this;
+    }
+
 	/**
 	 * @param string $entityType
 	 * @return array
@@ -69,6 +132,8 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
 			/** @var $eavSetupModel Mage_Eav_Model_Entity_Setup */
 			$eavSetupModel->addAttribute($entityTypeModel->getEntityTypeCode(), $value['attribute_code'], $value);
 		}
+
+        return $this;
 	}
 
 	/**
@@ -109,6 +174,8 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
 				$e
 			);
 		}
+
+        $this->resetAttributesAutoIncrement();
 
 		return $this;
 	}

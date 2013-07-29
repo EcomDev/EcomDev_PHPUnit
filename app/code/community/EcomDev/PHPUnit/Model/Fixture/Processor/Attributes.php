@@ -97,9 +97,9 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
 
         $this->getResource()->commit();
 
-//        foreach ($aAttributeLoaders as $oAttributeLoader){
-//            $oAttributeLoader->runRequiredIndexers();
-//        }
+        foreach ($aAttributeLoaders as $oAttributeLoader){
+            $oAttributeLoader->runRequiredIndexers();
+        }
 
         $fixture->setStorageData(self::STORAGE_KEY, array_keys($data));
         return $this;
@@ -136,6 +136,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
         }
 
         $this->getResource()->commit();
+        EcomDev_PHPUnit_Test_Case_Util::replaceRegistry('_singleton/eav/config', null);  //clean out the EAV cache
         return $this;
     }
 }
