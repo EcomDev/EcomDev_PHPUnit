@@ -94,6 +94,7 @@
                     <config>ecomdev_phpunit/fixture_processor_config</config>
                     <config_xml>ecomdev_phpunit/fixture_processor_config</config_xml>
                     <cache_options>ecomdev_phpunit/fixture_processor_cache</cache_options>
+                    <attributes>ecomdev_phpunit/fixture_processor_attributes</attributes>
                     <eav>ecomdev_phpunit/fixture_processor_eav</eav>
                     <tables>ecomdev_phpunit/fixture_processor_tables</tables>
                     <vfs>ecomdev_phpunit/fixture_processor_vfs</vfs>
@@ -102,10 +103,9 @@
 		            <!-- Fixture loaders for EAV attributes
 		                 Default can be used but does not support extra attribute table configuration -->
 		            <default>ecomdev_phpunit/fixture_attribute_default</default>
-		            <!--<catalog_product>ecomdev_phpunit/fixture_attribute_catalog_product</catalog_product>-->
 	            </attribute>
                 <eav>
-                    <!-- Here goes the list of fixture loaders for EAV
+                    <!-- Here goes the list of fixture loaders for EAV entities
                          If no fixture loader is specified for entity, then default will be used
                     -->
                     <default>ecomdev_phpunit/fixture_eav_default</default>

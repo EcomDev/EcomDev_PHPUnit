@@ -95,7 +95,11 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
             $records = array();
             $attributeCodes = $entityTypeModel->getAttributeCollection();
             foreach ($row['super_attributes'] as $attributeCode) {
-                $attributeId = $attributeCodes->getItemByColumnValue('attribute_code',$attributeCode)->getId();
+                $attribute = $attributeCodes->getItemByColumnValue('attribute_code', $attributeCode);
+                if(!$attribute){
+                    throw new Exception('Super attribute not found with code: ' . $attributeCode);
+                }
+                $attributeId = $attribute->getId();
                 $records[] = array(
                     'product_id' => $row[$this->_getEntityIdField($entityTypeModel)],
                     'attribute_id' => $attributeId

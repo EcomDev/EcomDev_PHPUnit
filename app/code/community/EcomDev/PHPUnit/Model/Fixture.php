@@ -36,6 +36,8 @@ class EcomDev_PHPUnit_Model_Fixture
 
 	// Configuration path for attribute loaders
     const XML_PATH_FIXTURE_ATTRIBUTE_LOADERS = 'phpunit/suite/fixture/attribute';
+    // Default attribute loader class alias
+    const DEFAULT_ATTRIBUTE_LOADER_CLASS = 'ecomdev_phpunit/fixture_attribute_default';
 
     // Default eav loader class node in loaders configuration
     /* @deprecated since 0.3.0 */
