@@ -160,6 +160,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
                 }
             }
 			//delete entry from eav/attribute and allow FK cascade to delete all related values
+            //TODO: check if the attribute != is_user_defined (ie system), then *only* delete the attribute option values, not attribute definition
 			$this->_getWriteAdapter()
 				->delete(
 					$this->getTable('eav/attribute'),
