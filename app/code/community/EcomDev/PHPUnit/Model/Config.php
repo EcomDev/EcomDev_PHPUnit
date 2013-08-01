@@ -56,6 +56,13 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
      */
     protected $_cacheSections = array();
 
+    /**
+     * Object containing parsed local.xml.phpunit
+     *
+     * @var null
+     */
+    protected $_localXmlForTest = null;
+
 	/**
      * Load config data from DB
      *
@@ -215,6 +222,22 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
         return $this;
     }
 
+    protected function _isAllowedModule($moduleName)
+    {
+        if (!parent::_isAllowedModule($moduleName)) {
+            return false;
+        }
+
+        $localXml = $this->_loadLocalXmlForTest();
+        if ($localXml) {
+            $node = $localXml->getNode("phpunit/disable_modules/$moduleName");
+            return $node === false;
+        }
+
+        return true;
+    }
+
+
     /**
      * (non-PHPdoc)
      * @see Mage_Core_Model_Config::loadModules()
@@ -235,10 +258,8 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
      */
     protected function _loadTestConfig()
     {
-        $merge = clone $this->_prototype;
-
         try {
-            if ($merge->loadFile($this->_getLocalXmlForTest())) {
+            if ($merge = $this->_loadLocalXmlForTest()) {
                 $this->_checkDbCredentialForDuplicate($this, $merge);
                 $this->_checkBaseUrl($this, $merge);
                 $this->extend($merge);
@@ -251,6 +272,20 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
         }
 
         return $this;
+    }
+
+    /**
+     * Parse the phpunit specific local configuration.  THis may be loaded by
+     * and used by _isAllowedModule before it's merged into the merged config.
+     *
+     * @return Mage_Core_Model_Config_Base|null
+     */
+    protected function _loadLocalXmlForTest() {
+        if ($this->_localXmlForTest === null) {
+            $this->_localXmlForTest = clone $this->_prototype;
+            $this->_localXmlForTest->loadFile($this->_getLocalXmlForTest());
+        }
+        return $this->_localXmlForTest;
     }
 
     /**
