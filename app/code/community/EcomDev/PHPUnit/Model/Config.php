@@ -17,7 +17,7 @@
  */
 
 /**
- * Configution model extended to make unit tests to be available
+ * Configuration model extended to make unit tests to be available
  * at separate configuration scope
  *
  */
@@ -222,6 +222,17 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
         return $this;
     }
 
+    /**
+     * Define if module is allowed
+     *
+     * Magento core allows use of a whitelist of modules supplied via the
+     * addAllowedModules method.  EcomDev_PHPUnit extends this to allow a
+     * blacklist of modules to be supplied via local.xml.phpunit.
+     *
+     * @see Mage_Core_Model_Config::_isAllowedModule()
+     * @param  string $moduleName
+     * @return bool
+     */
     protected function _isAllowedModule($moduleName)
     {
         if (!parent::_isAllowedModule($moduleName)) {
@@ -275,7 +286,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     }
 
     /**
-     * Parse the phpunit specific local configuration.  THis may be loaded by
+     * Parse the phpunit specific local configuration.  This may be loaded by
      * and used by _isAllowedModule before it's merged into the merged config.
      *
      * @return Mage_Core_Model_Config_Base|null
