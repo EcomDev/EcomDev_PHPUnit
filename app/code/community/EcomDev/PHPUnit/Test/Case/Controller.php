@@ -2009,10 +2009,18 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param array $aclResources list of allowed ACL resources for user,
      *                            if null then it is super admin
      * @param int $userId fake id of the admin user, you can use different one if it is required for your tests
+     * @param array $websites return value for the admin role getGwsRelevantWebsites
+     * @param array $stores return value for the admin role getGwsStores
+     * @param array $groups return value for the admin rolw getGwsStoreGroups
      * @return EcomDev_PHPUnit_Test_Case_Controller
      */
-    protected function mockAdminUserSession(array $aclResources = null, $userId = 1)
+    protected function mockAdminUserSession(array $aclResources = null, $userId = 1, array $websites = null, array $stores = null, array $groups = null)
     {
+
+        $websites = $websites ?: array_keys(self::app()->getWebsites(true));
+        $stores = $stores ?: array_keys(self::app()->getStores(true));
+        $groups = $groups ?: array_keys(self::app()->getGroups(true));
+
         $adminSessionMock = $this->getModelMock(
             'admin/session',
             array(
@@ -2027,11 +2035,26 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
             array('login', 'getId', 'save', 'authenticate', 'getRole')
         );
 
-        $adminRoleMock = $this->getModelMock('admin/roles', array('getGwsIsAll'));
+        $adminRoleMock = $this->getModelMock(
+            'admin/roles',
+            array('getGwsIsAll', 'getGwsRelevantWebsites', 'getGwsStores', 'getGwsStoreGroups')
+        );
 
         $adminRoleMock->expects($this->any())
             ->method('getGwsIsAll')
             ->will($this->returnValue(true));
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsRelevantWebsites')
+            ->will($this->returnValue($websites));
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsStores')
+            ->will($this->returnValue($stores));
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsStoreGroups')
+            ->will($this->returnValue($groups));
 
         $adminUserMock->expects($this->any())
             ->method('getRole')
