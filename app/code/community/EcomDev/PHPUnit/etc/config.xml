@@ -99,11 +99,11 @@
                     <tables>ecomdev_phpunit/fixture_processor_tables</tables>
                     <vfs>ecomdev_phpunit/fixture_processor_vfs</vfs>
                 </processors>
-	            <attribute>
-		            <!-- Fixture loaders for EAV attributes
-		                 Default can be used but does not support extra attribute table configuration -->
-		            <default>ecomdev_phpunit/fixture_attribute_default</default>
-	            </attribute>
+                <attribute>
+                    <!-- Fixture loaders for EAV attributes
+                         Default can be used but does not support extra attribute table configuration -->
+                    <default>ecomdev_phpunit/fixture_attribute_default</default>
+                </attribute>
                 <eav>
                     <!-- Here goes the list of fixture loaders for EAV entities
                          If no fixture loader is specified for entity, then default will be used
@@ -146,6 +146,7 @@
                 <mock>EcomDev_PHPUnit_Test_Case_Helper_Mock</mock>
                 <session>EcomDev_PHPUnit_Test_Case_Helper_Session</session>
                 <customer>EcomDev_PHPUnit_Test_Case_Helper_Customer</customer>
+                <guest>EcomDev_PHPUnit_Test_Case_Helper_Guest</guest>
             </helpers>
         </suite>
     </phpunit>
