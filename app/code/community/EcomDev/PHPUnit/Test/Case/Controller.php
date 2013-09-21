@@ -1905,8 +1905,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         $urlModel = $this->getUrlModel(null, $initialUrlParams);
         $baseUrl = $urlModel->getBaseUrl($initialUrlParams);
 
-        $this->getRequest()->reset();
-        $this->getRequest()->setBaseUrl($baseUrl);
+        $this->mockBaseUrl($baseUrl);
 
         $this->getResponse()->reset();
         $this->getLayout()->reset();

@@ -325,6 +325,23 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
         return $this->expected($arguments);
     }
 
+
+    /**
+     * Set a base url when needed in tests.
+     *
+     * This will set a base URL which is needed if you want to test some "getUrl" in a
+     * helper or block.
+     *
+     * @param string $baseUrl
+     *
+     * @return void
+     */
+    public function mockBaseUrl($baseUrl = 'http://127.0.0.1/')
+    {
+        $this->app()->getRequest()->reset();
+        $this->app()->getRequest()->setBaseUrl($baseUrl);
+    }
+
     /**
      * Replaces Magento resource by mock object
      *
