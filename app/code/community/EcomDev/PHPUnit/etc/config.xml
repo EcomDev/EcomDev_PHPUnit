@@ -147,6 +147,7 @@
                 <session>EcomDev_PHPUnit_Test_Case_Helper_Session</session>
                 <customer>EcomDev_PHPUnit_Test_Case_Helper_Customer</customer>
                 <guest>EcomDev_PHPUnit_Test_Case_Helper_Guest</guest>
+                <observer>EcomDev_PHPUnit_Test_Case_Helper_Observer</observer>
             </helpers>
         </suite>
     </phpunit>
