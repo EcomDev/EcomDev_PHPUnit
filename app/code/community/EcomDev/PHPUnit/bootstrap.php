@@ -33,3 +33,8 @@ spl_autoload_register(function ($classname) {
         . ".php";
     @include_once $classname;
 });
+
+// workaround for __autoload in Mage/Core/functions.php
+spl_autoload_register(function ($class) {
+    class_alias('Varien_Object', $class);
+});
