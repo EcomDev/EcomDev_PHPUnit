@@ -1953,6 +1953,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         $urlModel = $this->getUrlModel($route, $params);
 
         $this->app()->resetAreas();
+        $this->app()->resetRegistry();
 
         $requestUri = $urlModel->getUrl($route, $params);
         $baseUrl = $urlModel->getBaseUrl($params);

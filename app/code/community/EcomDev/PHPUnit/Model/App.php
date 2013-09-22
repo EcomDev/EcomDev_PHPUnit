@@ -340,6 +340,17 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     }
 
     /**
+     * Reset registry
+     *
+     * @return $this
+     */
+    public function resetRegistry()
+    {
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', array());
+        return $this;
+    }
+
+    /**
      * Removes event area
      *
      * @param string $code area code
