@@ -1772,6 +1772,73 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
        );
     }
 
+
+    /**
+     * Dispatch a request.
+     *
+     * @param $baseUrl
+     * @param $requestUri
+     * @param $urlModel
+     *
+     * @return $this
+     */
+    protected function _dispatch($baseUrl, $requestUri, $urlModel)
+    {
+        $this->getRequest()->resetInternalProperties();
+
+        $this->getRequest()->setBaseUrl($baseUrl)
+        ->setRequestUri($requestUri)
+        ->setPathInfo();
+
+        $customCookies = $this->getRequest()->getCookie();
+
+        $autoCookies = $this->getCookies()->getMatchingCookies($requestUri);
+
+        /* @var $cookie Zend_Http_Cookie */
+        foreach ($autoCookies as $cookie)
+        {
+            $this->getRequest()->setCookie(
+                $cookie->getName(),
+                $cookie->getValue()
+            );
+        }
+
+        if ($urlModel instanceof Mage_Adminhtml_Model_Url)
+        {
+            // Workaround for secret key in admin
+            $this->getRequest()->setParam(
+                Mage_Adminhtml_Model_Url::SECRET_KEY_PARAM_NAME,
+                $urlModel->getSecretKey()
+            );
+        }
+
+        if (!$this->getRequest()->getMethod())
+        {
+            $this->getRequest()->setMethod('GET');
+        }
+
+        // Workaround for form key
+        if ($this->getRequest()->isPost())
+        {
+            $this->getRequest()->setPost(
+                'form_key',
+                Mage::getSingleton('core/session')->getFormKey()
+            );
+        }
+
+        $this->getLayout()->reset();
+        $this->getResponse()->reset();
+
+        $this->app()->getFrontController()->dispatch();
+
+        // Unset changed cookies
+        $this->getRequest()->resetCookies();
+        $this->getRequest()->setCookies($customCookies);
+
+        return $this;
+    }
+
+
     /**
      * Set up controller params
      * (non-PHPdoc)
@@ -1941,12 +2008,32 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         return $urlModel;
     }
 
+
     /**
-     * Dispatches controller action
+     * Dispatch an URL to magento.
+     *
+     * @param string $requestUri
+     * @param array  $params
+     *
+     * @return $this
+     */
+    public function dispatchUrl($requestUri, $params = array())
+    {
+        $urlModel = $this->getUrlModel(null, $params);
+        $baseUrl  = $urlModel->getBaseUrl($params);
+
+        return $this->_dispatch($baseUrl, $requestUri, $urlModel);
+    }
+
+
+    /**
+     * Dispatches a route.
      *
      *
      * @param string $route
-     * @param array $params
+     * @param array  $params
+     *
+     * @return $this
      */
     public function dispatch($route = null, array $params = array())
     {
@@ -1957,50 +2044,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         $requestUri = $urlModel->getUrl($route, $params);
         $baseUrl = $urlModel->getBaseUrl($params);
 
-        $this->getRequest()->resetInternalProperties();
-
-        $this->getRequest()->setBaseUrl($baseUrl)
-            ->setRequestUri($requestUri)
-            ->setPathInfo();
-
-        $customCookies = $this->getRequest()->getCookie();
-
-        $autoCookies = $this->getCookies()->getMatchingCookies($requestUri);
-
-        /* @var $cookie Zend_Http_Cookie */
-        foreach ($autoCookies as $cookie) {
-            $this->getRequest()->setCookie(
-                $cookie->getName(),
-                $cookie->getValue()
-            );
-        }
-
-        if ($urlModel instanceof Mage_Adminhtml_Model_Url) {
-            // Workaround for secret key in admin
-            $this->getRequest()->setParam(
-                Mage_Adminhtml_Model_Url::SECRET_KEY_PARAM_NAME,
-                $urlModel->getSecretKey()
-            );
-        }
-
-        if (!$this->getRequest()->getMethod()) {
-            $this->getRequest()->setMethod('GET');
-        }
-
-        // Workaround for form key
-        if ($this->getRequest()->isPost()) {
-            $this->getRequest()->setPost('form_key', Mage::getSingleton('core/session')->getFormKey());
-        }
-
-        $this->getLayout()->reset();
-        $this->getResponse()->reset();
-
-        $this->app()->getFrontController()->dispatch();
-
-        // Unset changed cookies
-        $this->getRequest()->resetCookies();
-        $this->getRequest()->setCookies($customCookies);
-        return $this;
+        return $this->_dispatch($baseUrl, $requestUri, $urlModel);
     }
 
     /**
