@@ -39,7 +39,7 @@ class EcomDev_PHPUnit_Test_Case_Helper_Observer extends EcomDev_PHPUnit_Helper_A
         $observer->setEvent($event);
 
         if ($eventName) {
-            $event->setName($event);
+            $event->setName($eventName);
             $observer->setEventName($eventName);
         }
 
