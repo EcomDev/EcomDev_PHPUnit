@@ -272,6 +272,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
         if ($to !== null && version_compare($latestVersionFound, $to) === -1) {
             $expectedVersions[] = sprintf('%supgrade-%s-%s.php', $scriptPrefix, $latestVersionFound, $to);
         } elseif ($to !== null && version_compare($latestVersionFound, $to) === 1 && $expectedVersions) {
+            array_pop($actualVersions);
             array_pop($expectedVersions);
         }
 
