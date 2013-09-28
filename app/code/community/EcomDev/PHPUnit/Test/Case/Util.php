@@ -477,6 +477,8 @@ class EcomDev_PHPUnit_Test_Case_Util
     {
         if ($type === 'resource_model') {
             return self::app()->getConfig()->getResourceModelClassName($classAlias);
+        } elseif ($type === 'helper') {
+            return self::app()->getConfig()->getHelperClassName($classAlias);
         }
 
         return self::app()->getConfig()->getGroupedClassName($type, $classAlias);
