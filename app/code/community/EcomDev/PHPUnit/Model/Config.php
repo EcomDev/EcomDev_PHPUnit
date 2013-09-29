@@ -30,7 +30,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     /**
      * Scope snapshot with different levels of saving configuration
      *
-     * @var Mage_Core_Model_Config_Base
+     * @var Mage_Core_Model_Config_Base[]
      */
     protected $_scopeSnapshot = array();
 
@@ -170,6 +170,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     /**
      * Loads scope snapshot
      *
+     * @throws RuntimeException
      * @return EcomDev_PHPUnit_Model_Config
      */
     public function loadScopeSnapshot()
