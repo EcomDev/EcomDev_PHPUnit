@@ -97,7 +97,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Eav
 
         $this->getResource()->commit();
 
-        foreach ($eavLoaders as $eavLoader){
+        foreach ($eavLoaders as $eavLoader) {
             $eavLoader->runRequiredIndexers();
         }
 
