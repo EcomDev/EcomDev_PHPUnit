@@ -389,7 +389,7 @@ class EcomDev_PHPUnit_Model_Fixture
                 ->resolveFilePath($className, EcomDev_PHPUnit_Model_Yaml_Loader::TYPE_FIXTURE, $fixture);
 
             if (!$filePath) {
-                throw new RuntimeException('Unable to load fixture for test');
+                throw new RuntimeException('Unable to load fixture for test: '.$fixture);
             }
 
             $this->loadYaml($filePath);

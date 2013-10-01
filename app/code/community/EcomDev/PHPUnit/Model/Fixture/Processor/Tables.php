@@ -66,11 +66,12 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Tables
         }
 
         $this->getResource()->beginTransaction();
-        foreach ($data as $tableEntity => $tableData) {
+        foreach (array_reverse(array_keys($data)) as $tableEntity) {
             if (!in_array($tableEntity, $ignoreCleanUp)) {
                 $this->getResource()->cleanTable($tableEntity);
             }
-
+        }
+        foreach ($data as $tableEntity => $tableData) {
             if (!empty($tableData)) {
                 $this->getResource()->loadTableData($tableEntity, $tableData);
             }
@@ -102,9 +103,10 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Tables
         }
         $this->getResource()->beginTransaction();
 
-        foreach (array_keys($data) as $tableEntity) {
+        foreach (array_reverse(array_keys($data)) as $tableEntity) {
             $this->getResource()->cleanTable($tableEntity);
-
+        }
+        foreach (array_keys($data) as $tableEntity) {
             if (isset($restoreTableData[$tableEntity])) {
                 $this->getResource()->loadTableData($tableEntity, $restoreTableData[$tableEntity]);
             }

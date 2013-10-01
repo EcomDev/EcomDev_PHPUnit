@@ -349,6 +349,13 @@ class EcomDev_PHPUnit_Controller_Request_Http
     public function getHttpHost($trimPort = false)
     {
         $baseUrl = $this->getBaseUrl();
+
+        if (!$baseUrl) {
+            $baseUrl = Mage::app()->getConfig()->getNode(
+                EcomDev_PHPUnit_Model_Config::XML_PATH_UNSECURE_BASE_URL
+            );
+        }
+
         $parts = parse_url($baseUrl);
 
         if (!isset($parts['host'])) {
