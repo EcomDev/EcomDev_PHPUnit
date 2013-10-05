@@ -24,7 +24,7 @@
 abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Case
 {
     /**
-     * .
+     * Get the adminhtml menu config nodes.
      *
      * @return Varien_Simplexml_Element
      */
@@ -36,8 +36,6 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         if (!($menuNode instanceof Varien_Simplexml_Element))
         {
             self::fail('Could not load adminhtml menu');
-
-            return $menuNode;
         }
 
         return $menuNode;
@@ -96,24 +94,25 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         {
             $controllerFileName = $router->getControllerFileName($realModule, $controller);
             if (!$router->validateControllerFileName($controllerFileName))
-            {
+            { // no filename for this controller found: go on searching
                 continue;
             }
 
             $controllerClassName = $router->getControllerClassName($realModule, $controller);
             if (!$controllerClassName)
-            {
+            { // no controller found for this module: go on searching
                 continue;
             }
 
             // include controller file if needed
             if (!class_exists($controllerClassName, false))
-            {
+            { // not yet loaded: try to
                 if (!file_exists($controllerFileName))
-                {
+                { // configured but no file given: ignore bullshit and continue
                     continue;
                 }
-                include $controllerFileName;
+
+                require_once $controllerFileName;
 
                 if (!class_exists($controllerClassName, false))
                 {
@@ -127,11 +126,9 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             }
 
             if (in_array($action . 'Action', get_class_methods($controllerClassName)))
-            {
+            { // yeha found: return like "Class::methodAction"
                 return $controllerClassName . '::' . $action . 'Action';
             }
-
-            break;
         }
 
         return null;
