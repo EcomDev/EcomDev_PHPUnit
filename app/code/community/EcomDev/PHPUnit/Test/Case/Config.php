@@ -59,14 +59,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
 
         $front = $router->getFront();
 
-        // get module name
-        if (!$module)
-        {
-            $module = $front->getDefault('module');
-        }
-
-        if (!$module)
-        { // still no module? assume admin
+        if ($module == 'adminhtml')
+        { // correct adminhtml to admin, because the router only knows that
             $module = 'admin';
         }
 
@@ -74,6 +68,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
          * Searching router args by module name from route using it as key
          */
         $modules = $router->getModuleByFrontName($module);
+
+        if (!is_array($modules))
+        { // no modules? meh...
+            return null;
+        }
 
         // get controller name
         if (!$controller)
