@@ -396,7 +396,7 @@ class EcomDev_PHPUnit_Test_Case_Util
             // Try to find the module name by class name
             $moduleName = false;
             foreach (Mage::getConfig()->getNode('modules')->children() as $module) {
-                if (strpos($className, $module->getName()) === 0) {
+                if (strpos($className, $module->getName() . '_') === 0) {
                     $moduleName = $module->getName();
                     break;
                 }

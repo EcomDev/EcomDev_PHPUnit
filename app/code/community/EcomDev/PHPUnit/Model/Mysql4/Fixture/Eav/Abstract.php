@@ -61,6 +61,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
                     $process = $indexer->getProcessByCode($indexerCode);
                     if ($process) {
                         $process->reindexAll();
+                        Mage::dispatchEvent($indexerCode . '_shell_reindex_after');
                     }
                 }
             }
