@@ -20,6 +20,12 @@ if (!Mage::isInstalled()) {
 $_SERVER['SCRIPT_NAME'] = $_baseDir . DS . 'index.php';
 $_SERVER['SCRIPT_FILENAME'] = $_baseDir . DS . 'index.php';
 
+// This fix allows running Magento Unit Tests
+// from remote PHPUnit execution in vagrant box over PHPStorm
+if (!empty($_GET)) {
+    $_GET = array();
+}
+
 Mage::app('admin');
 Mage::getConfig()->init();
 

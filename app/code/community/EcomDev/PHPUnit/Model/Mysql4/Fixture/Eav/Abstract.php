@@ -57,11 +57,12 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
         if (empty($this->_options['doNotIndexAll'])) {
             $indexer = Mage::getSingleton('index/indexer');
             foreach ($this->getRequiredIndexers() as $indexerCode) {
-                if (empty($this->_options['doNotIndex'])
-                    || !in_array($indexerCode, $this->_options['doNotIndex'])) {
-                    $indexer->getProcessByCode($indexerCode)
-                        ->reindexEverything();
-                    Mage::dispatchEvent($indexerCode . '_shell_reindex_after');
+                if (empty($this->_options['doNotIndex']) || !in_array($indexerCode, $this->_options['doNotIndex'])) {
+                    $process = $indexer->getProcessByCode($indexerCode);
+                    if ($process) {
+                        $process->reindexAll();
+                        Mage::dispatchEvent($indexerCode . '_shell_reindex_after');
+                    }
                 }
             }
         }

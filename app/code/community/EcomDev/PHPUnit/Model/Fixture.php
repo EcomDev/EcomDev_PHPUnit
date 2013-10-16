@@ -36,6 +36,8 @@ class EcomDev_PHPUnit_Model_Fixture
 
 	// Configuration path for attribute loaders
     const XML_PATH_FIXTURE_ATTRIBUTE_LOADERS = 'phpunit/suite/fixture/attribute';
+    // Default attribute loader class alias
+    const DEFAULT_ATTRIBUTE_LOADER_CLASS = 'ecomdev_phpunit/fixture_attribute_default';
 
     // Default eav loader class node in loaders configuration
     /* @deprecated since 0.3.0 */
@@ -387,7 +389,7 @@ class EcomDev_PHPUnit_Model_Fixture
                 ->resolveFilePath($className, EcomDev_PHPUnit_Model_Yaml_Loader::TYPE_FIXTURE, $fixture);
 
             if (!$filePath) {
-                throw new RuntimeException('Unable to load fixture for test');
+                throw new RuntimeException('Unable to load fixture for test: '.$fixture);
             }
 
             $this->loadYaml($filePath);
@@ -737,6 +739,9 @@ class EcomDev_PHPUnit_Model_Fixture
 
         if (is_dir(Mage::getBaseDir('lib')  . DS . 'vfsStream' . DS . 'src')) {
             spl_autoload_register(array($this, 'vfsAutoload'), true, true);
+        }
+
+        if( class_exists('\org\bovigo\vfs\vfsStream') ){
             $this->_vfs = Mage::getModel('ecomdev_phpunit/fixture_vfs');
             return $this->_vfs;
         }

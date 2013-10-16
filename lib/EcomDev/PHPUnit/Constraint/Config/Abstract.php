@@ -86,7 +86,7 @@ abstract class EcomDev_PHPUnit_Constraint_Config_Abstract
     protected function getActualValue($other = null)
     {
         if (!$this->_useActualValue && $other->hasChildren()) {
-            return $this->getXmlAsDom($this->_expectedValue);
+            return $this->getXmlAsDom($other);
         } elseif (!$this->_useActualValue) {
             return (string) $other;
         }
