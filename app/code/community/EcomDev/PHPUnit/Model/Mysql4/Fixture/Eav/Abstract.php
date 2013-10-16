@@ -60,7 +60,8 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
                 if (empty($this->_options['doNotIndex'])
                     || !in_array($indexerCode, $this->_options['doNotIndex'])) {
                     $indexer->getProcessByCode($indexerCode)
-                        ->reindexAll();
+                        ->reindexEverything();
+                    Mage::dispatchEvent($indexerCode . '_shell_reindex_after');
                 }
             }
         }
