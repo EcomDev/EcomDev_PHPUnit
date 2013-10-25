@@ -47,6 +47,11 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
         return $this->_requiredIndexers;
     }
 
+    protected function _getBackendTables()
+    {
+        return array();
+    }
+
     /**
      * Run required indexers and reset to original required indexers
      *
@@ -96,6 +101,9 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
 	    /** @var $entityTypeModel Mage_Eav_Model_Entity_Type */
         $entityTypeModel = Mage::getSingleton('eav/config')->getEntityType($entityType);
         $this->cleanTable($entityTypeModel->getEntityTable());
+        foreach($this->_getBackendTables() as $backEndTable){
+            $this->cleanTable(array($entityTypeModel->getEntityTable(),$backEndTable));
+        }
         return $this;
     }
 
