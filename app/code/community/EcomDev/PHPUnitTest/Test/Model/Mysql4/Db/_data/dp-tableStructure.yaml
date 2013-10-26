@@ -1,0 +1,65 @@
+-
+  - child:
+      columns:
+        child_id:
+          SCHEMA_NAME: test
+          TABLE_NAME: child
+          COLUMN_NAME: child_id
+          COLUMN_POSITION: 0
+          DATA_TYPE: int
+          DEFAULT: ''
+          LENGTH: 10
+          UNSIGNED: true
+          PRIMARY: true
+          PRIMARY_POSITION: 0
+          IDENTITY: true
+        parent_id:
+          SCHEMA_NAME: test
+          TABLE_NAME: child
+          COLUMN_NAME: parent_id
+          COLUMN_POSITION: 0
+          DATA_TYPE: int
+          DEFAULT: ''
+          LENGTH: 10
+          UNSIGNED: true
+          PRIMARY: false
+          PRIMARY_POSITION: 0
+          IDENTITY: false
+      foreign_keys:
+        fk_mother:
+          FK_NAME: fk_mother
+          SCHEMA_NAME: test
+          TABLE_NAME: child
+          COLUMN_NAME: parent_id
+          REF_SHEMA_NAME: test
+          REF_TABLE_NAME: mother
+          REF_COLUMN_NAME: mother_id
+          ON_DELETE: ''
+          ON_UPDATE: ''
+    mother:
+      columns:
+        mother_id:
+          SCHEMA_NAME: test
+          TABLE_NAME: mother
+          COLUMN_NAME: mother_id
+          COLUMN_POSITION: 0
+          DATA_TYPE: int
+          DEFAULT: ''
+          LENGTH: 10
+          UNSIGNED: true
+          PRIMARY: true
+          PRIMARY_POSITION: 0
+          IDENTITY: true
+        name:
+          SCHEMA_NAME: test
+          TABLE_NAME: mother
+          COLUMN_NAME: name
+          COLUMN_POSITION: 0
+          DATA_TYPE: varchar
+          DEFAULT: ''
+          LENGTH: 255
+          UNSIGNED: false
+          PRIMARY: false
+          PRIMARY_POSITION: 0
+          IDENTITY: false
+      foreign_keys: [ ]

@@ -1,9 +1,14 @@
 <?php
 
+use EcomDev_Utils_Reflection as ReflectionUtil;
+
 class EcomDev_PHPUnitTest_Test_Model_Mysql4_Db_InfoTest extends EcomDev_PHPUnit_Test_Case
 {
-    /** @var EcomDev_PHPUnit_Model_Mysql4_Db_InfoInterface */
-    protected $_factory;
+    /** @var EcomDev_PHPUnit_Model_Mysql4_Db_Info */
+    protected $_info;
+    
+    /** @var  Varien_Db_Adapter_Pdo_Mysql|PHPUnit_Framework_MockObject_MockObject */
+    protected $_adapter; 
 
 
     /**
@@ -13,37 +18,58 @@ class EcomDev_PHPUnitTest_Test_Model_Mysql4_Db_InfoTest extends EcomDev_PHPUnit_
      */
     public function setUp()
     {
-        $this->_factory = new EcomDev_PHPUnit_Model_Mysql4_Db_Info();
+        $this->_info = new EcomDev_PHPUnit_Model_Mysql4_Db_Info();
+        $this->_adapter = $this->getMockBuilder('Varien_Db_Adapter_Pdo_Mysql')
+                               ->disableOriginalConstructor()
+                               ->getMock();
+        $this->_info->setAdapter($this->_adapter);
 
         parent::setUp();
     }
 
-
-    /**
-     * Tear down unit testing.
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        $this->_factory = null;
-
-        parent::tearDown();
-    }
-
-
     /**
      * Check if the model return the correct dependencies.
      *
-     * @return void
+     * @dataProvider dataProvider
+     * @dataProviderFile tableStructure
      */
-    public function testGetTheDependenciesForASpecificTable()
+    public function testGetTheDependenciesForASpecificTable($tables)
     {
-        $this->_factory->setAdapter($this->_getMockedAdapter());
-        $this->_factory->fetch();
+        $this->_stubAdapter($tables);
+        
+        $this->assertEquals(array('mother'), $this->_info->getTableDependencies('child'));
+        $this->assertEquals(null, $this->_info->getTableDependencies('some_unknown'));
+    }
 
-        $this->assertEquals(array('mother'), $this->_factory->getTableDependencies('child'));
-        $this->assertEquals(null, $this->_factory->getTableDependencies('some_unknown'));
+    /**
+     * Stubs adapter method calls
+     * 
+     * @param array $tables
+     * @return $this
+     */
+    protected function _stubAdapter($tables)
+    {
+        $this->_adapter->expects($this->any())
+            ->method('listTables')
+            ->will($this->returnValue(array_keys($tables)));
+        
+        $columnsMap = array();
+        $foreignKeyMap = array();
+        
+        foreach ($tables as $tableName => $info) {
+            $columnsMap[] = array($tableName, null, $info['columns']);
+            $foreignKeyMap[] = array($tableName, null, $info['foreign_keys']);
+        }
+        
+        $this->_adapter->expects($this->any())
+            ->method('describeTable')
+            ->will($this->returnValueMap($columnsMap));
+
+        $this->_adapter->expects($this->any())
+            ->method('getForeignKeys')
+            ->will($this->returnValueMap($foreignKeyMap));
+        
+        return $this;
     }
 
 
@@ -54,42 +80,43 @@ class EcomDev_PHPUnitTest_Test_Model_Mysql4_Db_InfoTest extends EcomDev_PHPUnit_
      */
     public function testItCanResetTheFetchedInformation()
     {
-        // write something to the field via reflection
-        $reflect  = $this->_getReflection();
-        $property = $reflect->getProperty('_information');
-        $property->setAccessible(true);
-        $property->setValue($this->_factory, array(uniqid()));
+        ReflectionUtil::setRestrictedPropertyValue(
+            $this->_info, 
+            '_information', 
+            array(uniqid())
+        );
 
-        $this->_factory->reset();
+        $this->_info->reset();
 
-        $this->assertEmpty($property->getValue($this->_factory));
+        $this->assertAttributeSame(
+            null,
+            '_information',
+            $this->_info
+        );
     }
 
 
     /**
      * Check if the fetched information about a table is correct.
      *
+     * @param $tables
      * @return void
+     * @dataProvider dataProvider
+     * @dataProviderFile tableStructure
+     * @loadExpectation fetchData
      */
-    public function testItFetchesInformationAboutATable()
+    public function testItFetchesInformationAboutATable($tables)
     {
-        $adapterMock = $this->_getMockedAdapter();
+        $this->_stubAdapter($tables);
+        $this->_info->fetch();
 
-        // check the fetched data
-        $this->_factory->setAdapter($adapterMock);
-        $this->_factory->fetch();
-
-        $reflectObject = $this->_getReflection();
-        $property      = $reflectObject->getProperty('_information');
-        $property->setAccessible(true);
-        $information = $property->getValue($this->_factory);
-
-        $this->assertEquals(array_keys($information), $adapterMock->listTables());
-
-        /** @var Varien_Object $child */
-        $child = $information['child'];
-        $this->assertNotNull($child->getDependencies());
-        $this->assertEquals(array('mother'), $child->getDependencies());
+        $information = $this->readAttribute($this->_info, '_information'); 
+        $tables = $this->expected()->getTables();
+        
+        foreach ($tables as $tableName => $data) {
+            $this->assertArrayHasKey($tableName, $information);
+            $this->assertEquals($data, $information[$tableName]->getData());
+        }
     }
 
 
@@ -97,128 +124,29 @@ class EcomDev_PHPUnitTest_Test_Model_Mysql4_Db_InfoTest extends EcomDev_PHPUnit_
      * Check whether an adapter can be set and get.
      *
      * @return null
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Adapter should be an instance of Zend_Db_Adapter_Abstract
      */
     public function testYouNeedToProvideAnAdapter()
     {
-        /** @var Varien_Db_Adapter_Interface $adapterMock */
-        $adapterMock = $this->getMock('Varien_Db_Adapter_Pdo_Mysql', array(), array(), '', false);
-        $this->assertTrue($adapterMock instanceof Varien_Db_Adapter_Pdo_Mysql);
-
-        $this->_factory->setAdapter($adapterMock);
-
-        $this->assertSame($adapterMock, $this->_factory->getAdapter());
-
-        return null;
+        $this->_info->setAdapter(null);
     }
-
 
     /**
-     * Mock the adapter without any configuration.
-     *
-     * @return Varien_Db_Adapter_Pdo_Mysql|PHPUnit_Framework_MockObject_MockObject
+     * Tests that setters and getters for adapter are working correctly
+     * 
      */
-    protected function _getMockedAdapter()
+    public function testItSetsAnAdapter()
     {
-        /** @var Varien_Db_Adapter_Pdo_Mysql|PHPUnit_Framework_MockObject_MockObject $adapterMock Mock without connecting to a server. */
-        $adapterMock = $this->getMock(
-                            'Varien_Db_Adapter_Pdo_Mysql',
-                            array(
-                                 'listTables',
-                                 'describeTable',
-                                 'getForeignKeys',
-                            ),
-                            array(),
-                            '',
-                            false // ignore original constructor
+        ReflectionUtil::setRestrictedPropertyValue(
+            $this->_info,
+            '_adapter',
+            null
         );
-
-        $this->assertTrue($adapterMock instanceof Varien_Db_Adapter_Pdo_Mysql);
-
-        // mock listTables: with two tables that depend on each other
-        $listTablesReturn = array('child', 'mother');
-        $adapterMock->expects($this->any())
-                    ->method('listTables')
-                    ->will(
-                    $this->returnValue($listTablesReturn)
-            );
-
-        $this->assertEquals($adapterMock->listTables(), $listTablesReturn);
-
-        // mock describeTable
-        $describeTableReturn = array(
-            array(
-                'SCHEMA_NAME'      => 'test',
-                'TABLE_NAME'       => 'foo',
-                'COLUMN_NAME'      => 'bar',
-                'COLUMN_POSITION'  => '0',
-                'DATA_TYPE'        => 'int',
-                'DEFAULT'          => '',
-                'NULLABLE'         => '',
-                'LENGTH'           => '',
-                'SCALE'            => '',
-                'UNSIGNED'         => true,
-                'PRIMARY'          => false,
-                'PRIMARY_POSITION' => null,
-                'IDENTITY'         => false,
-            ),
-        );
-
-        $adapterMock->expects($this->any())
-                    ->method('describeTable')
-                    ->will(
-                    $this->returnValue($describeTableReturn)
-            );
-
-        $this->assertEquals($adapterMock->describeTable('child'), $describeTableReturn);
-
-        // mock adapter::getForeignKeys
-        $getForeignKeysReturn = array(
-            'child'  => array(
-                'fk_mother' => array(
-                    'FK_NAME'         => 'idMother',
-                    'SCHEMA_NAME'     => 'test',
-                    'TABLE_NAME'      => 'child',
-                    'COLUMN_NAME'     => 'kf_mother',
-                    'REF_SHEMA_NAME'  => 'test',
-                    'REF_TABLE_NAME'  => 'mother',
-                    'REF_COLUMN_NAME' => 'idMother',
-                    'ON_DELETE'       => '',
-                    'ON_UPDATE'       => ''
-                ),
-            ),
-            'mother' => array(),
-        );
-
-        $adapterMock->expects($this->any())
-                    ->method('getForeignKeys')
-                    ->will(
-                    $this->returnCallback(
-                         function ($tableName) use ($getForeignKeysReturn)
-                         {
-                             return $getForeignKeysReturn[$tableName];
-                         }
-                    )
-            );
-
-        $this->assertEquals($adapterMock->getForeignKeys('child'), $getForeignKeysReturn['child']);
-        $this->assertEquals(
-             $adapterMock->getForeignKeys('mother'),
-             $getForeignKeysReturn['mother']
-        );
-
-        return $adapterMock;
+        
+        $this->_info->setAdapter($this->_adapter);
+        $this->assertSame($this->_adapter, $this->_info->getAdapter());
     }
 
 
-    /**
-     * Reflect the object.
-     *
-     * @return ReflectionObject
-     */
-    protected function _getReflection()
-    {
-        $reflect = new ReflectionObject($this->_factory);
-
-        return $reflect;
-    }
 } 

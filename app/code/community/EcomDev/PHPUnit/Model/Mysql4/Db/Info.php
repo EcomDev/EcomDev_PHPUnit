@@ -8,7 +8,6 @@ class EcomDev_PHPUnit_Model_Mysql4_Db_Info implements EcomDev_PHPUnit_Model_Mysq
     /** @var  array Information about the magento database [table => [...]]. */
     protected $_information;
 
-
     /**
      * Before fetching information about a table.
      *
@@ -22,25 +21,30 @@ class EcomDev_PHPUnit_Model_Mysql4_Db_Info implements EcomDev_PHPUnit_Model_Mysq
 
         // iterate over each available table
         $listTables = $this->getAdapter()->listTables();
-        foreach ($listTables as $tableName)
-        {
+        foreach ($listTables as $tableName) {
             // describe the table
             $data = new Varien_Object();
-            $data->setData($this->getAdapter()->describeTable($tableName));
+            $columns = array();
+            foreach ($this->getAdapter()->describeTable($tableName) as $column => $info) {
+                $columns[$column]['type'] = $info['DATA_TYPE'];
+                $columns[$column]['length'] = $info['LENGTH'];
+                $columns[$column]['unsigned'] = (bool)$info['UNSIGNED'];
+                $columns[$column]['primary'] = (bool)$info['PRIMARY'];
+                $columns[$column]['default'] = $info['DEFAULT'];
+            }
+            $data->setColumns($columns);
 
             $foreignKeys = $this->getAdapter()->getForeignKeys($tableName);
 
             $dependency = array();
-            if (is_array($foreignKeys))
-            {
+            if (is_array($foreignKeys)) {
                 // add each depending table
-                foreach ($foreignKeys as $keyData)
-                {
+                foreach ($foreignKeys as $keyData) {
                     $dependency[] = $keyData['REF_TABLE_NAME'];
                 }
             }
+            
             $data->setDependencies($dependency);
-
             $this->_information[$tableName] = $data;
         }
 
@@ -102,9 +106,8 @@ class EcomDev_PHPUnit_Model_Mysql4_Db_Info implements EcomDev_PHPUnit_Model_Mysq
      */
     public function setAdapter($adapter)
     {
-        if (!($adapter instanceof Zend_Db_Adapter_Abstract))
-        {
-            throw new InvalidArgumentException('Unsupported adapter ' . get_class($adapter));
+        if (!($adapter instanceof Zend_Db_Adapter_Abstract)) {
+            throw new InvalidArgumentException('Adapter should be an instance of Zend_Db_Adapter_Abstract');
         }
 
         $this->_adapter = $adapter;

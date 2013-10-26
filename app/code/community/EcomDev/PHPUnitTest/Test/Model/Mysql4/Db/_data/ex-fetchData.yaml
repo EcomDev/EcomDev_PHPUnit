@@ -1,0 +1,33 @@
+tables:
+  mother:
+    columns:
+      mother_id: 
+        type: int
+        length: 10
+        unsigned: true
+        primary: true
+        default: ''
+      name:
+        type: varchar
+        length: 255
+        unsigned: false
+        primary: false
+        default: ''
+    dependencies: []
+  child:
+    columns:
+      child_id: 
+        type: int
+        length: 10
+        unsigned: true
+        primary: true
+        default: ''
+      parent_id: 
+        type: int
+        length: 10
+        unsigned: true
+        primary: false
+        default: ''
+    dependencies: 
+      - mother
+  
