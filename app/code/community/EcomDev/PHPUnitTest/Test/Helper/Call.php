@@ -19,7 +19,7 @@
 class EcomDev_PHPUnitTest_Test_Helper_Call extends EcomDev_PHPUnit_Test_Case
 {
     /**
-     * @var EcomDev_PHPUnit_Helper_Interface|PHPUnit_Framework_MockObject_MockObject
+     * @var EcomDev_PHPUnit_HelperInterface|PHPUnit_Framework_MockObject_MockObject
      */
     protected $helper;
 
@@ -28,7 +28,7 @@ class EcomDev_PHPUnitTest_Test_Helper_Call extends EcomDev_PHPUnit_Test_Case
      */
     protected function setUp()
     {
-        $this->helper = $this->getMockForAbstractClass('EcomDev_PHPUnit_Helper_Interface');
+        $this->helper = $this->getMockForAbstractClass('EcomDev_PHPUnit_HelperInterface');
         $this->helper->expects($this->any())
             ->method('invoke')
             ->with($this->equalTo('someCustomHelper'))

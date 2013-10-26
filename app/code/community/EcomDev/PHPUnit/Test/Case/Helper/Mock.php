@@ -22,7 +22,7 @@ use EcomDev_PHPUnit_Test_Case_Util as TestUtil;
  * Mock helper for Test Case
  *
  */
-class EcomDev_PHPUnit_Test_Case_Helper_Mock extends EcomDev_PHPUnit_Helper_Abstract
+class EcomDev_PHPUnit_Test_Case_Helper_Mock extends EcomDev_PHPUnit_AbstractHelper
 {
     /**
      * Creates a mockery for a class alias of particular type

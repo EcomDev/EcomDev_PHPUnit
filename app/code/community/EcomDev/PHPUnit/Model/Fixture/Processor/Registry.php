@@ -37,7 +37,8 @@
  *     - core/url
  *
  */
-class EcomDev_PHPUnit_Model_Fixture_Processor_Registry implements EcomDev_PHPUnit_Model_Fixture_Processor_Interface
+class EcomDev_PHPUnit_Model_Fixture_Processor_Registry 
+    implements EcomDev_PHPUnit_Model_Fixture_ProcessorInterface
 {
     const STORAGE_KEY = 'registry';
 
@@ -46,12 +47,12 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Registry implements EcomDev_PHPUni
      *
      * @param array[]                                 $data
      * @param string                                  $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Registry
      * @throws RuntimeException
      */
-    public function apply(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function apply(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         $typeToKey = array(
             'singleton' => '_singleton/',
@@ -88,11 +89,11 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Registry implements EcomDev_PHPUni
      *
      * @param array[]                                 $data
      * @param string                                  $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
-     * @return EcomDev_PHPUnit_Model_Fixture_Processor_Interface
+     * @return EcomDev_PHPUnit_Model_Fixture_ProcessorInterface
      */
-    public function discard(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function discard(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         if ($fixture->getStorageData(self::STORAGE_KEY) === null) {
             return $this;
@@ -111,10 +112,10 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Registry implements EcomDev_PHPUni
     /**
      * Initializes fixture processor before applying data
      *
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Registry
      */
-    public function initialize(EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function initialize(EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         $options = $fixture->getOptions();
         $registry = array();

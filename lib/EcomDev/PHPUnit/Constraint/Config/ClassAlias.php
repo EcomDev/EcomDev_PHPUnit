@@ -5,7 +5,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Config_ClassAlias
-    extends EcomDev_PHPUnit_Constraint_Config_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
     const XML_PATH_CLASS_ALIAS = 'global/%s/%s';
 
@@ -56,6 +56,7 @@ class EcomDev_PHPUnit_Constraint_Config_ClassAlias
      * @param string $classAlias
      * @param string $expectedClassName
      * @param string $type
+     * @throws PHPUnit_Framework_Exception
      */
     public function __construct($group, $classAlias, $expectedClassName, $type = self::TYPE_CLASS_ALIAS)
     {

@@ -16,15 +16,16 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
-class EcomDev_PHPUnit_Model_Fixture_Processor_Config implements EcomDev_PHPUnit_Model_Fixture_Processor_Interface
+class EcomDev_PHPUnit_Model_Fixture_Processor_Config 
+    implements EcomDev_PHPUnit_Model_Fixture_ProcessorInterface
 {
     /**
      * Does nothing
      *
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
-     * @return EcomDev_PHPUnit_Model_Fixture_Processor_Config
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
+     * @return $this
      */
-    public function initialize(EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function initialize(EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         return $this;
     }
@@ -34,11 +35,11 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config implements EcomDev_PHPUnit_
      *
      * @param array                                   $data
      * @param string                                  $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
-     * @return EcomDev_PHPUnit_Model_Fixture_Processor_Config
+     * @return $this
      */
-    public function apply(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function apply(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         $key === 'config_xml' ? $this->_applyConfigXml($data) : $this->_applyConfig($data);
         return $this;
@@ -48,7 +49,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config implements EcomDev_PHPUnit_
      * Applies fixture configuration values into Mage_Core_Model_Config
      *
      * @param array $configuration
-     * @return EcomDev_PHPUnit_Model_Fixture_Processor_Config
+     * @return $this
      * @throws InvalidArgumentException
      */
     protected function _applyConfig($configuration)
@@ -83,7 +84,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config implements EcomDev_PHPUnit_
      * Applies raw xml data to config node
      *
      * @param array $configuration
-     * @return EcomDev_PHPUnit_Model_Fixture_Processor_Config
+     * @return $this
      * @throws InvalidArgumentException
      */
     protected function _applyConfigXml($configuration)
@@ -119,11 +120,11 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config implements EcomDev_PHPUnit_
      *
      * @param array[] $data
      * @param string $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
-     * @return EcomDev_PHPUnit_Model_Fixture_Processor_Config
+     * @return $this
      */
-    public function discard(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function discard(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         $this->_restoreConfig();
         return $this;
@@ -147,7 +148,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config implements EcomDev_PHPUnit_
      * @param string $path
      * @param string $value
      *
-     * @return EcomDev_PHPUnit_Model_Fixture_Processor_Config
+     * @return $this
      */
     protected function _setConfigNodeValue($path, $value)
     {

@@ -40,23 +40,26 @@ class EcomDev_PHPUnit_Constraint_Config extends PHPUnit_Framework_Constraint
     /**
      * Creates configuration constraint for config object
      *
-     * @param Varien_Simplexml_Config $config
+     * @param $constraint
+     * @throws PHPUnit_Framework_Exception
+     * @internal param \Varien_Simplexml_Config $config
      */
     public function __construct($constraint)
     {
-        if (!$constraint instanceof EcomDev_PHPUnit_Constraint_Config_Interface) {
+        if (!$constraint instanceof EcomDev_PHPUnit_Constraint_ConfigInterface) {
             throw PHPUnit_Util_InvalidArgumentHelper::factory(
-                1, 'EcomDev_PHPUnit_Constraint_Config_Interface'
+                1, 'EcomDev_PHPUnit_Constraint_ConfigInterface'
             );
         }
         $this->constraint = $constraint;
     }
 
     /**
+     * Failure generator
      *
-     * @param mixed   $other
-     * @param string  $description
-     * @param boolean $not
+     * @param mixed $other
+     * @param string $description
+     * @param PHPUnit_Framework_ComparisonFailure $comparisonFailure
      */
     public function fail($other, $description, PHPUnit_Framework_ComparisonFailure $comparisonFailure = NULL)
     {
@@ -69,7 +72,10 @@ class EcomDev_PHPUnit_Constraint_Config extends PHPUnit_Framework_Constraint
      * Retrives a node value from configuration by child constraint path
      *
      *
-     * @param Varien_Simplexml_Config $other
+     * @param $config
+     * @throws EcomDev_PHPUnit_Constraint_Exception
+     * @return
+     * @internal param \Varien_Simplexml_Config $other
      */
     protected function getNodeValue($config)
     {
@@ -90,6 +96,9 @@ class EcomDev_PHPUnit_Constraint_Config extends PHPUnit_Framework_Constraint
      * Evalutes constraint that is passed in the parameter
      *
      * @param Varien_Simplexml_Config $config
+     * @param string $description
+     * @param bool $returnResult
+     * @return bool
      * @see PHPUnit_Framework_Constraint::evaluate()
      */
     public function evaluate($config, $description = '', $returnResult = false)

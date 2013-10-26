@@ -23,8 +23,8 @@ use EcomDev_PHPUnit_Test_Case_Util as TestUtil;
  *
  */
 class EcomDev_PHPUnit_Test_Case_Helper_Session
-    extends EcomDev_PHPUnit_Helper_Abstract
-    implements EcomDev_PHPUnit_Helper_Listener_Interface
+    extends EcomDev_PHPUnit_AbstractHelper
+    implements EcomDev_PHPUnit_Helper_ListenerInterface
 {
     /**
      * Loaded ACL model for admin session mocks

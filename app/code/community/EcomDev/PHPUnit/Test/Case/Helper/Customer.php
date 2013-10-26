@@ -24,7 +24,7 @@ use EcomDev_PHPUnit_Test_Case_Util as TestUtil;
  *
  *
  */
-class EcomDev_PHPUnit_Test_Case_Helper_Customer extends EcomDev_PHPUnit_Helper_Abstract
+class EcomDev_PHPUnit_Test_Case_Helper_Customer extends EcomDev_PHPUnit_AbstractHelper
 {
     /**
      * Logs in as a customer by customer id and store id

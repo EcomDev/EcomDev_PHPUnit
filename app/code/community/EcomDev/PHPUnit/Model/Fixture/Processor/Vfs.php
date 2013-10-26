@@ -17,17 +17,17 @@
  */
 
 
-class EcomDev_PHPUnit_Model_Fixture_Processor_Vfs implements EcomDev_PHPUnit_Model_Fixture_Processor_Interface
+class EcomDev_PHPUnit_Model_Fixture_Processor_Vfs implements EcomDev_PHPUnit_Model_Fixture_ProcessorInterface
 {
     const STORAGE_KEY = 'vfs';
 
     /**
      * Does nothing
      *
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Cache
      */
-    public function initialize(EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function initialize(EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         return $this;
     }
@@ -37,15 +37,15 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Vfs implements EcomDev_PHPUnit_Mod
      *
      * @param array                                   $data
      * @param string                                  $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Cache
      */
-    public function apply(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function apply(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         if ($fixture->isScopeLocal()
             && ($parentData = $fixture->getStorageData(self::STORAGE_KEY,
-                                                       EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED))) {
+                                                       EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED))) {
             $data = array_merge_recursive($parentData, $data);
         }
 
@@ -60,11 +60,11 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Vfs implements EcomDev_PHPUnit_Mod
      *
      * @param array[] $data
      * @param string $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Cache
      */
-    public function discard(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function discard(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         $fixture->getVfs()->discard();
         $fixture->setStorageData(self::STORAGE_KEY, null);

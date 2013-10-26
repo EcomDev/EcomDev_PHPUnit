@@ -21,7 +21,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Controller_Response_Header
-    extends EcomDev_PHPUnit_Constraint_Controller_Response_Abstract
+    extends EcomDev_PHPUnit_Constraint_Controller_AbstractResponse
 {
     const TYPE_CONSTRAINT = 'constraint';
     const TYPE_SENT = 'sent';
@@ -39,6 +39,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Response_Header
      * @param string $headerName
      * @param string $type
      * @param PHPUnit_Framework_Constraint $constraint
+     * @throws PHPUnit_Framework_Exception
      */
     public function __construct($headerName, $type, PHPUnit_Framework_Constraint $constraint = null)
     {
@@ -57,8 +58,8 @@ class EcomDev_PHPUnit_Constraint_Controller_Response_Header
     /**
      * Evaluates controller response header is sent
      *
-     *
-     * @param EcomDev_PHPUnit_Controller_Response_Interface $other
+     * @param EcomDev_PHPUnit_Controller_ResponseInterface $other
+     * @return bool
      */
     protected function evaluateSent($other)
     {
@@ -80,7 +81,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Response_Header
      * Evaluates controller response header is evaluated by constraint
      *
      *
-     * @param EcomDev_PHPUnit_Controller_Response_Interface $other
+     * @param EcomDev_PHPUnit_Controller_ResponseInterface $other
      */
     protected function evaluateConstraint($other)
     {

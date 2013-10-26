@@ -33,10 +33,9 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
     protected $suiteName = null;
 
     /**
-     * Contructor adds test groups defined on global level
+     * Constructor adds test groups defined on global level
      * and adds additional logic for test names retrieval
      *
-     * (non-PHPdoc)
      * @see PHPUnit_Framework_TestSuite::__construct()
      */
     public function __construct($theClass = '', $groups = array())
@@ -66,8 +65,8 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
             if ($test instanceof PHPUnit_Framework_TestSuite) {
                 /* @todo
                  * Post an issue into PHPUnit bugtracker for
-                 * impossiblity for specifying group by parent test case
-                 * Becuase it is a very dirty hack :(
+                 * impossibility for specifying group by parent test case
+                 * Because it is a very dirty hack :(
                  **/
                 $testGroups = array();
                 foreach ($groups as $group) {
@@ -80,7 +79,7 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
             }
         }
 
-        // Remove ungrouped tests group, if it exists
+        // Remove un grouped tests group, if it exists
         if (isset($this->groups[self::NO_GROUP_KEYWORD])) {
             unset($this->groups[self::NO_GROUP_KEYWORD]);
         }
@@ -89,7 +88,6 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
     /**
      * Outputs test suite name from annotations
      *
-     * (non-PHPdoc)
      * @see PHPUnit_Framework_TestSuite::toString()
      */
     public function toString()

@@ -25,7 +25,7 @@
  */
 class EcomDev_PHPUnit_Model_Fixture
     extends Varien_Object
-    implements EcomDev_PHPUnit_Model_Fixture_Interface
+    implements EcomDev_PHPUnit_Model_FixtureInterface
 {
     // Configuration path for eav loaders
     /* @deprecated since 0.3.0 */
@@ -80,7 +80,7 @@ class EcomDev_PHPUnit_Model_Fixture
      *        'node/path' => 'value'
      *    ),
      *    'table' => array(
-     *        'tablename' => array(
+     *        'table/name' => array(
      *            array(
      *                'column1' => 'value'
      *                'column2' => 'value'
@@ -125,7 +125,7 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Processors list
      *
-     * @var EcomDev_PHPUnit_Model_Fixture_Processor_Interface[]
+     * @var EcomDev_PHPUnit_Model_Fixture_ProcessorInterface[]
      */
     protected $_processors = array();
 
@@ -253,7 +253,7 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Sets current fixture scope
      *
-     * @param string $scope EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL|EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED
+     * @param string $scope EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_LOCAL|EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED
      * @return EcomDev_PHPUnit_Model_Fixture
      */
     public function setScope($scope)
@@ -421,7 +421,7 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Returns list of available processors for fixture
      *
-     * @return EcomDev_PHPUnit_Model_Fixture_Processor_Interface[]
+     * @return EcomDev_PHPUnit_Model_Fixture_ProcessorInterface[]
      */
     public function getProcessors()
     {
@@ -429,7 +429,7 @@ class EcomDev_PHPUnit_Model_Fixture
             $processorsNode = Mage::getConfig()->getNode(self::XML_PATH_FIXTURE_PROCESSORS);
             foreach ($processorsNode->children() as $code => $processorAlias) {
                 $processor = Mage::getSingleton((string)$processorAlias);
-                if ($processor instanceof EcomDev_PHPUnit_Model_Fixture_Processor_Interface) {
+                if ($processor instanceof EcomDev_PHPUnit_Model_Fixture_ProcessorInterface) {
                     $this->_processors[$code] = $processor;
                 }
             }
@@ -613,7 +613,7 @@ class EcomDev_PHPUnit_Model_Fixture
      * Retrieves eav loader for a particular entity type
      *
      * @param string $entityType
-     * @return EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
+     * @return EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
      * @deprecated since 0.3.0
      */
     protected function _getEavLoader($entityType)
@@ -636,7 +636,7 @@ class EcomDev_PHPUnit_Model_Fixture
 		    throw new InvalidArgumentException('Must specify a data type for the loader');
 	    }
 
-	    $reflection = EcomDev_Utils_Reflection::getRelflection($this);
+	    $reflection = EcomDev_Utils_Reflection::getReflection($this);
 
         $loaders = Mage::getConfig()->getNode($reflection->getConstant("XML_PATH_FIXTURE_{$dataType}_LOADERS"));
 

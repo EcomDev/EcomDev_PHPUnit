@@ -9,7 +9,7 @@ class EcomDev_PHPUnit_Helper
     /**
      * Helpers container
      *
-     * @var EcomDev_PHPUnit_Helper_Interface[]
+     * @var EcomDev_PHPUnit_HelperInterface[]
      */
     protected static $helpers = array();
 
@@ -19,12 +19,12 @@ class EcomDev_PHPUnit_Helper
      * If $position is specified, it will use value
      * from before or after key as related helper
      *
-     * @param EcomDev_PHPUnit_Helper_Interface $helper
+     * @param EcomDev_PHPUnit_HelperInterface $helper
      * @param bool|array                       $position
      *
      * @throws RuntimeException
      */
-    public static function add(EcomDev_PHPUnit_Helper_Interface $helper, $position = false)
+    public static function add(EcomDev_PHPUnit_HelperInterface $helper, $position = false)
     {
         if ($position === false) {
             self::$helpers[] = $helper;
@@ -54,9 +54,9 @@ class EcomDev_PHPUnit_Helper
     /**
      * Removes helper by instance
      *
-     * @param EcomDev_PHPUnit_Helper_Interface $helper
+     * @param EcomDev_PHPUnit_HelperInterface $helper
      */
-    public static function remove(EcomDev_PHPUnit_Helper_Interface $helper)
+    public static function remove(EcomDev_PHPUnit_HelperInterface $helper)
     {
         $helperPosition = array_search($helper, self::$helpers, true);
         if ($helperPosition !== false) {
@@ -82,7 +82,7 @@ class EcomDev_PHPUnit_Helper
      * if helper for action was not found it returns false
      *
      * @param $action
-     * @return bool|EcomDev_PHPUnit_Helper_Interface
+     * @return bool|EcomDev_PHPUnit_HelperInterface
      */
     public static function getByAction($action)
     {
@@ -153,13 +153,13 @@ class EcomDev_PHPUnit_Helper
 
     /**
      * Calls setUp method on helper,
-     * that implements EcomDev_PHPUnit_Helper_Listener_Interface
+     * that implements EcomDev_PHPUnit_Helper_ListenerInterface
      *
      */
     public static function setUp()
     {
         foreach (self::$helpers as $helper) {
-            if ($helper instanceof EcomDev_PHPUnit_Helper_Listener_Interface) {
+            if ($helper instanceof EcomDev_PHPUnit_Helper_ListenerInterface) {
                 $helper->setUp();
             }
         }
@@ -167,13 +167,13 @@ class EcomDev_PHPUnit_Helper
 
     /**
      * Calls tearDown method on helper,
-     * that implements EcomDev_PHPUnit_Helper_Listener_Interface
+     * that implements EcomDev_PHPUnit_Helper_ListenerInterface
      *
      */
     public static function tearDown()
     {
         foreach (self::$helpers as $helper) {
-            if ($helper instanceof EcomDev_PHPUnit_Helper_Listener_Interface) {
+            if ($helper instanceof EcomDev_PHPUnit_Helper_ListenerInterface) {
                 $helper->tearDown();
             }
         }

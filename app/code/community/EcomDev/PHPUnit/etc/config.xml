@@ -63,7 +63,7 @@
                     <global>ecomdev_phpunit/yaml_loader_global</global>
                 </loaders>
             </yaml>
-            <!-- The names of directories inside Test for recognizion of tests per group -->
+            <!-- The names of directories inside Test for recognition of tests per group -->
             <groups>
                 <models>Model</models>
                 <helpers>Helper</helpers>

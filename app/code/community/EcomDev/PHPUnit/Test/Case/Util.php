@@ -142,8 +142,8 @@ class EcomDev_PHPUnit_Test_Case_Util
 
         $fixture = Mage::getSingleton(self::$fixtureModelAlias);
 
-        if (!$fixture instanceof EcomDev_PHPUnit_Model_Fixture_Interface) {
-            throw new RuntimeException('Fixture model should implement EcomDev_PHPUnit_Model_Fixture_Interface interface');
+        if (!$fixture instanceof EcomDev_PHPUnit_Model_FixtureInterface) {
+            throw new RuntimeException('Fixture model should implement EcomDev_PHPUnit_Model_FixtureInterface interface');
         }
 
         $storage = Mage::registry(EcomDev_PHPUnit_Model_App::REGISTRY_PATH_SHARED_STORAGE);
@@ -317,7 +317,7 @@ class EcomDev_PHPUnit_Test_Case_Util
 
         $annotation = array();
 
-        // Walkthrough sources for annotation retrieval
+        // Iterate over sources for annotation retrieval
         foreach ($sources as $source) {
             if (isset($allAnnotations[$source][$name])) {
                 $annotation = array_merge(
@@ -418,9 +418,8 @@ class EcomDev_PHPUnit_Test_Case_Util
      * @param string $type
      * @param string $classAlias
      * @param PHPUnit_Framework_MockObject_MockObject|PHPUnit_Framework_MockObject_MockBuilder $mock
+     * @throws PHPUnit_Framework_Exception
      * @return void
-     *
-     * @throws InvalidArgumentException
      */
     public static function replaceByMock($type, $classAlias, $mock)
     {

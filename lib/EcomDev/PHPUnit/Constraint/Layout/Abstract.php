@@ -17,35 +17,11 @@
  */
 
 /**
- * Base for all layout constraints
+ * @deprecated since 0.4.0
  *
  */
-abstract class EcomDev_PHPUnit_Constraint_Layout_Abstract extends EcomDev_PHPUnit_Constraint_Abstract
+abstract class EcomDev_PHPUnit_Constraint_Layout_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractLayout
 {
-    /**
-     * Custom failure description for showing layout related errors
-     * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
-     */
-    protected function customFailureDescription($other)
-    {
-        return sprintf(
-            'layout %s.',
-            $this->toString()
-        );
-    }
-
-    /**
-     * For layout, actual value should be always set
-     * (non-PHPdoc)
-     * @see EcomDev_PHPUnit_Constraint_Abstract::getActualValue()
-     */
-    protected function getActualValue($other = null)
-    {
-        if ($this->_useActualValue) {
-            return parent::getActualValue($other);
-        }
-
-        return '';
-    }
+    
 }

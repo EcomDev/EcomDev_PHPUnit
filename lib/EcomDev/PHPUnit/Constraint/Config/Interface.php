@@ -17,10 +17,10 @@
  */
 
 /**
- * Interface for configuration constraints
- *
+ * @deprecated since 0.4.0
  */
-interface EcomDev_PHPUnit_Constraint_Config_Interface
+interface EcomDev_PHPUnit_Constraint_Config_Interface 
+    extends EcomDev_PHPUnit_Constraint_ConfigInterface
 {
-    public function getNodePath();
+
 }

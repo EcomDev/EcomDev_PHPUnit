@@ -26,7 +26,6 @@ class EcomDev_PHPUnit_Controller_Front extends Mage_Core_Controller_Varien_Front
      * Resets initialized routers before front controller re-initialization
      * on test cases
      *
-     * (non-PHPdoc)
      * @see Mage_Core_Controller_Varien_Front::init()
      */
     public function init()

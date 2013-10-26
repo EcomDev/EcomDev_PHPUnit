@@ -5,7 +5,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Config_TableAlias
-    extends EcomDev_PHPUnit_Constraint_Config_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
     const XML_PATH_MODELS = 'global/models';
 
@@ -32,6 +32,7 @@ class EcomDev_PHPUnit_Constraint_Config_TableAlias
      * @param string $tableAlias
      * @param string $expectedTableName
      * @param string $type
+     * @throws PHPUnit_Framework_Exception
      */
     public function __construct($tableAlias, $expectedTableName, $type = self::TYPE_TABLE_ALIAS)
     {

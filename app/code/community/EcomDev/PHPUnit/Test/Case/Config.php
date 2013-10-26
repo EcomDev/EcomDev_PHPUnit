@@ -26,12 +26,12 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     /**
      * Returns a new instance of EcomDev_PHPUnit_Constraint_Config
      *
-     * @param EcomDev_PHPUnit_Constraint_Config_Interface $configContstraint
+     * @param EcomDev_PHPUnit_Constraint_ConfigInterface $configConstraint
      * @return EcomDev_PHPUnit_Constraint_Config
      */
-    public static function config($configContstraint)
+    public static function config($configConstraint)
     {
-        return new EcomDev_PHPUnit_Constraint_Config($configContstraint);
+        return new EcomDev_PHPUnit_Constraint_Config($configConstraint);
     }
 
     /**
@@ -173,7 +173,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @return EcomDev_PHPUnit_Constraint_Config
      */
     public static function configEventObserver($area, $eventName, $observerClassAlias, $observerMethod,
-        $type = EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINDED, $observerName = null)
+        $type = EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINED, $observerName = null)
     {
         return self::config(
             new EcomDev_PHPUnit_Constraint_Config_EventObserver($area, $eventName, $observerClassAlias, $observerMethod, $type, $observerName)
@@ -385,8 +385,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string|null $from
      * @param string|null $to
      * @param string|null $moduleName
-     * @param string|null $moduleName
-     * @param mixed $expectedResourceName
+     * @param string|null $resourceName
      * @param string $message
      */
     public static function assertSchemeSetupScriptVersions($from = null, $to = null,
@@ -402,8 +401,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      * @param string|null $from
      * @param string|null $to
      * @param string|null $moduleName
-     * @param string|null $moduleName
-     * @param mixed $expectedResourceName
+     * @param string|null $resourceName
      * @param string $message
      */
     public static function assertDataSetupScriptVersions($from = null, $to = null,
@@ -1200,6 +1198,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
      *
      * @param string $area (frontend|adminhtml)
      * @param string $expectedFileName
+     * @param string $theme
+     * @param string|null $designPackage
      * @param string $message
      */
     public static function assertLayoutFileExistsInTheme($area, $expectedFileName, $theme,
@@ -1236,7 +1236,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         self::assertThatConfig(
             self::configEventObserver(
                 $area, $eventName, $observerClassAlias, $observerMethod,
-                EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINDED,
+                EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINED,
                 $observerName
             ),
             $message
@@ -1262,7 +1262,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             self::logicalNot(
                 self::configEventObserver(
                     $area, $eventName, $observerClassAlias, $observerMethod,
-                    EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINDED,
+                    EcomDev_PHPUnit_Constraint_Config_EventObserver::TYPE_DEFINED,
                     $observerName
                 )
             ),

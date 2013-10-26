@@ -21,7 +21,7 @@
 
 class EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
     extends Mage_Core_Model_Abstract
-    implements EcomDev_PHPUnit_Model_Fixture_Processor_Interface
+    implements EcomDev_PHPUnit_Model_Fixture_ProcessorInterface
 {
 
     const STORAGE_KEY = 'entities';
@@ -45,10 +45,10 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
     /**
      * Does nothing
      *
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
      */
-    public function initialize(EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function initialize(EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         return $this;
     }
@@ -80,11 +80,11 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
      *
      * @param array                                   $data
      * @param string                                  $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
      */
-    public function apply(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function apply(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         $attributeLoaders = array();
 
@@ -112,20 +112,20 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
      *
      * @param array[] $data
      * @param string $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Attributes
      */
-    public function discard(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function discard(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         $ignoreCleanUp = array();
 
         // Ignore cleaning of entities if shared fixture loaded something for them
         if ($fixture->isScopeLocal()
             && $fixture->getStorageData(self::STORAGE_KEY,
-                                        EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)) {
+                                        EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED)) {
             $ignoreCleanUp = $fixture->getStorageData(self::STORAGE_KEY,
-                                                      EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED);
+                                                      EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED);
         }
 
         $this->getResource()->beginTransaction();

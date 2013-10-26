@@ -24,8 +24,8 @@
  */
 class EcomDev_PHPUnit_Model_Layout
     extends Mage_Core_Model_Layout
-    implements EcomDev_PHPUnit_Constraint_Layout_Logger_Interface,
-               EcomDev_PHPUnit_Isolation_Interface
+    implements EcomDev_PHPUnit_Constraint_Layout_LoggerInterface,
+               EcomDev_PHPUnit_IsolationInterface
 {
     /**
      * List of replaced blocks creation
@@ -35,7 +35,7 @@ class EcomDev_PHPUnit_Model_Layout
     protected $_replaceBlockCreation = array();
 
     /**
-     * Records for gethering information about all,
+     * Records for gathering information about all,
      * the actions that was performed
      *
      *
@@ -83,8 +83,8 @@ class EcomDev_PHPUnit_Model_Layout
     }
 
     /**
-     * Overriden for possibility of replacing a block by mock object
-     * (non-PHPdoc)
+     * Overridden for possibility of replacing a block by mock object
+     * 
      * @see Mage_Core_Model_Layout::_getBlockInstance()
      */
     protected function _getBlockInstance($block, array $attributes=array())
@@ -182,6 +182,7 @@ class EcomDev_PHPUnit_Model_Layout
      * @param string $action
      * @param string $target
      * @param array $parameters
+     * @param string $searchType
      * @return boolean
      */
     public function findByParameters($action, $target, array $parameters, $searchType = self::SEARCH_TYPE_AND)
@@ -280,7 +281,6 @@ class EcomDev_PHPUnit_Model_Layout
     /**
      * Records action call
      * 
-     * (non-PHPdoc)
      * @see Mage_Core_Model_Layout::_generateAction()
      */
     protected function _generateAction($node, $parent)
@@ -355,7 +355,7 @@ class EcomDev_PHPUnit_Model_Layout
 
     /**
      * Records information about new block creation
-     * (non-PHPdoc)
+     * 
      * @see Mage_Core_Model_Layout::_generateBlock()
      */
     protected function _generateBlock($node, $parent)
@@ -392,7 +392,7 @@ class EcomDev_PHPUnit_Model_Layout
 
     /**
      * Collects block creation
-     * (non-PHPdoc)
+     * 
      * @see Mage_Core_Model_Layout::addBlock()
      */
     public function addBlock($block, $blockName)
@@ -499,6 +499,8 @@ class EcomDev_PHPUnit_Model_Layout
      * Returns block property by getter
      *
      * @param string $block
+     * @param $property
+     * @throws RuntimeException
      * @return mixed
      */
     public function getBlockProperty($block, $property)

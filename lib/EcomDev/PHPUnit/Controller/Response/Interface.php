@@ -17,39 +17,10 @@
  */
 
 /**
- * Interface for response object, that will be asserted
  *
+ * @deprecated since 0.4.0
  */
-interface EcomDev_PHPUnit_Controller_Response_Interface
+interface EcomDev_PHPUnit_Controller_Response_Interface 
+    extends EcomDev_PHPUnit_Controller_ResponseInterface
 {
-    /**
-     * Returns rendered headers array that was sent,
-     * if headers was not sent, then returns null
-     *
-     * @return array|null
-     */
-    public function getSentHeaders();
-
-    /**
-     * Returns a particular header that was sent
-     *
-     * @param string $headerName
-     * @return string|false
-     */
-    public function getSentHeader($headerName);
-
-    /**
-     * Returns rendered response, if response was not sent,
-     * then it returns null
-     *
-     * @return string|null
-     */
-    public function getSentResponse();
-
-    /**
-     * Returns rendered body output
-     *
-     * @return string
-     */
-    public function getOutputBody();
 }

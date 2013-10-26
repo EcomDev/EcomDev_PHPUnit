@@ -135,6 +135,7 @@ class EcomDev_PHPUnit_Mock_Proxy
     /**
      * Returns invocation mocker for
      *
+     * @throws RuntimeException
      * @return PHPUnit_Framework_MockObject_InvocationMocker
      */
     public function __phpunit_getInvocationMocker()
@@ -146,6 +147,9 @@ class EcomDev_PHPUnit_Mock_Proxy
     }
 
     /**
+     * Returns static invocation mocker
+     * 
+     * @throws RuntimeException
      * @return PHPUnit_Framework_MockObject_InvocationMocker
      */
     public static function __phpunit_getStaticInvocationMocker()

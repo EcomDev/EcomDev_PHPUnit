@@ -31,14 +31,14 @@ class EcomDev_PHPUnit_Model_Yaml_Loader
     /**
      * YAML file loaders
      *
-     * @var EcomDev_PHPUnit_Model_Yaml_Loader_Interface[]
+     * @var EcomDev_PHPUnit_Model_Yaml_LoaderInterface[]
      */
     protected $_loaders = array();
 
     /**
      * Returns arrays of loaders
      *
-     * @return EcomDev_PHPUnit_Model_Yaml_Loader_Interface[]
+     * @return EcomDev_PHPUnit_Model_Yaml_LoaderInterface[]
      */
     public function getLoaders()
     {
@@ -50,12 +50,12 @@ class EcomDev_PHPUnit_Model_Yaml_Loader
     }
 
     /**
-     * Adds a loader to list of loders
+     * Adds a loader to list of loaders
      *
-     * @param EcomDev_PHPUnit_Model_Yaml_Loader_Interface $loader
+     * @param EcomDev_PHPUnit_Model_Yaml_LoaderInterface $loader
      * @return EcomDev_PHPUnit_Model_Yaml_Loader
      */
-    public function addLoader(EcomDev_PHPUnit_Model_Yaml_Loader_Interface $loader)
+    public function addLoader(EcomDev_PHPUnit_Model_Yaml_LoaderInterface $loader)
     {
         $this->_loaders[] = $loader;
         return $this;

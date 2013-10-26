@@ -118,9 +118,8 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     }
 
     /**
-     * Overriden for test case model instance creation mocking
+     * Overridden for test case model instance creation mocking
      *
-     * (non-PHPdoc)
      * @see Mage_Core_Model_Config::getModelInstance()
      */
     public function getModelInstance($modelClass='', $constructArguments=array())
@@ -133,7 +132,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     }
 
     /**
-     * Overriden for test case model instance creation mocking
+     * Overridden for test case model instance creation mocking
      *
      * (non-PHPdoc)
      * @see Mage_Core_Model_Config::getModelInstance()
@@ -170,6 +169,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     /**
      * Loads scope snapshot
      *
+     * @throws RuntimeException
      * @return EcomDev_PHPUnit_Model_Config
      */
     public function loadScopeSnapshot()

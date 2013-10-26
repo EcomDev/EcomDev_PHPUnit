@@ -21,7 +21,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Config_Layout
-    extends EcomDev_PHPUnit_Constraint_Config_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
     const XML_PATH_LAYOUT = '%s/layout/updates';
 
@@ -61,7 +61,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
     /**
      * Model for assertion of the data
      *
-     * @var EcomDev_PHPUnit_Constraint_Config_Design_Package_Interface
+     * @var EcomDev_PHPUnit_Constraint_Config_Design_PackageInterface
      */
     protected static $_designPackageModel = null;
 
@@ -100,9 +100,9 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
     /**
      * Sets design package model for assertions
      *
-     * @param EcomDev_PHPUnit_Design_Package_Interface $model
+     * @param EcomDev_PHPUnit_Design_PackageInterface $model
      */
-    public static function setDesignPackageModel(EcomDev_PHPUnit_Design_Package_Interface $model)
+    public static function setDesignPackageModel(EcomDev_PHPUnit_Design_PackageInterface $model)
     {
         self::$_designPackageModel = $model;
     }
@@ -110,7 +110,7 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
     /**
      * Retrieves design package model that was set before
      *
-     * @return EcomDev_PHPUnit_Design_Package_Interface
+     * @return EcomDev_PHPUnit_Design_PackageInterface
      */
     public static function getDesignPackageModel()
     {
@@ -165,7 +165,6 @@ class EcomDev_PHPUnit_Constraint_Config_Layout
     /**
      * Evaluates layout file existance
      *
-     * @param Varien_Simplexml_Element $other
      * @return boolean
      */
     protected function evaluateLayoutFile()
