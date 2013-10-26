@@ -20,7 +20,7 @@
  * Constraint for checking JSON values
  *
  */
-class EcomDev_PHPUnit_Constraint_Json extends EcomDev_PHPUnit_Constraint_Abstract
+class EcomDev_PHPUnit_Constraint_Json extends EcomDev_PHPUnit_AbstractConstraint
 {
     const TYPE_VALID = 'valid';
     const TYPE_MATCH = 'match';

@@ -45,7 +45,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Constraint_Config_Resource_Script extends Eco
 
     /**
      *
-     * @param $directory
+     * @param $directories
      * @dataProvider dataProvider
      */
     public function testParseVersions($directories)

@@ -24,7 +24,7 @@
 
 class EcomDev_PHPUnit_Model_App_Area
     extends Mage_Core_Model_App_Area
-    implements EcomDev_PHPUnit_Isolation_Interface
+    implements EcomDev_PHPUnit_IsolationInterface
 {
     const AREA_TEST = 'test';
     const AREA_ADMINHTML = 'adminhtml';

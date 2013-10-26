@@ -24,7 +24,7 @@ use EcomDev_PHPUnit_Test_Case_Util as TestUtil;
  *
  *
  */
-class EcomDev_PHPUnit_Test_Case_Helper_Guest extends EcomDev_PHPUnit_Helper_Abstract
+class EcomDev_PHPUnit_Test_Case_Helper_Guest extends EcomDev_PHPUnit_AbstractHelper
 {
     /**
      * Start session as guest.

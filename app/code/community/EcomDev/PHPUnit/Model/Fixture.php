@@ -25,7 +25,7 @@
  */
 class EcomDev_PHPUnit_Model_Fixture
     extends Varien_Object
-    implements EcomDev_PHPUnit_Model_Fixture_Interface
+    implements EcomDev_PHPUnit_Model_FixtureInterface
 {
     // Configuration path for eav loaders
     /* @deprecated since 0.3.0 */
@@ -80,7 +80,7 @@ class EcomDev_PHPUnit_Model_Fixture
      *        'node/path' => 'value'
      *    ),
      *    'table' => array(
-     *        'tablename' => array(
+     *        'table/name' => array(
      *            array(
      *                'column1' => 'value'
      *                'column2' => 'value'
@@ -125,7 +125,7 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Processors list
      *
-     * @var EcomDev_PHPUnit_Model_Fixture_Processor_Interface[]
+     * @var EcomDev_PHPUnit_Model_Fixture_ProcessorInterface[]
      */
     protected $_processors = array();
 
@@ -253,7 +253,7 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Sets current fixture scope
      *
-     * @param string $scope EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL|EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED
+     * @param string $scope EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_LOCAL|EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED
      * @return EcomDev_PHPUnit_Model_Fixture
      */
     public function setScope($scope)
@@ -410,7 +410,7 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Returns list of available processors for fixture
      *
-     * @return EcomDev_PHPUnit_Model_Fixture_Processor_Interface[]
+     * @return EcomDev_PHPUnit_Model_Fixture_ProcessorInterface[]
      */
     public function getProcessors()
     {
@@ -418,7 +418,7 @@ class EcomDev_PHPUnit_Model_Fixture
             $processorsNode = Mage::getConfig()->getNode(self::XML_PATH_FIXTURE_PROCESSORS);
             foreach ($processorsNode->children() as $code => $processorAlias) {
                 $processor = Mage::getSingleton((string)$processorAlias);
-                if ($processor instanceof EcomDev_PHPUnit_Model_Fixture_Processor_Interface) {
+                if ($processor instanceof EcomDev_PHPUnit_Model_Fixture_ProcessorInterface) {
                     $this->_processors[$code] = $processor;
                 }
             }

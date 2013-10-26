@@ -25,7 +25,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
      * Preserved array of already set helpers,
      * to return them back when test case finished its run
      *
-     * @var EcomDev_PHPUnit_Helper_Interface[]
+     * @var EcomDev_PHPUnit_HelperInterface[]
      */
     protected $initializedHelpers;
 
@@ -54,15 +54,15 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
      *
      * @param int $count
      * @param bool $setThem
-     * @return EcomDev_PHPUnit_Helper_Interface[]|PHPUnit_Framework_MockObject_MockObject[]
+     * @return EcomDev_PHPUnit_HelperInterface[]|PHPUnit_Framework_MockObject_MockObject[]
      */
     protected function getHelpersForTest($count = 2, $setThem = false)
     {
         $result = array();
 
         $helperInterfaces = array(
-            true => 'EcomDev_PHPUnit_Helper_Interface',
-            false => 'EcomDev_PHPUnit_Helper_Listener_Interface'
+            true => 'EcomDev_PHPUnit_HelperInterface',
+            false => 'EcomDev_PHPUnit_Helper_ListenerInterface'
         );
 
         for ($i = 0; $i < $count; $i ++) {
@@ -261,7 +261,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
     /**
      * Creates invoke method tests stub
      *
-     * @return EcomDev_PHPUnit_Helper_Interface[]|PHPUnit_Framework_MockObject_MockObject[]
+     * @return EcomDev_PHPUnit_HelperInterface[]|PHPUnit_Framework_MockObject_MockObject[]
      */
     protected function invokeStub()
     {

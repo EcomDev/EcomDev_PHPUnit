@@ -31,8 +31,8 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
 
 
     /**
-     * Overridden to fix issue with flat tables existance mark
-     * (non-PHPdoc)
+     * Overridden to fix issue with flat tables existence mark
+     * 
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::loadEntity()
      */
     public function loadEntity($entityType, $values)
@@ -49,7 +49,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
 
     /**
      * Overridden to add easy fixture loading for websites and categories associations
-     * (non-PHPdoc)
+     * 
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::_getCustomTableRecords()
      */
     protected function _getCustomTableRecords($row, $entityTypeModel)
@@ -66,8 +66,11 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
 
     /**
      * Changed to support price attribute type multi-scope
-     * (non-PHPdoc)
+     *
+     * @param array $row
      * @param Mage_Eav_Model_Entity_Attribute $attribute
+     * @param array $tableColumns
+     * @return array
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Abstract::_getAttributeRecords()
      */
     protected function _getAttributeRecords($row, $attribute, $tableColumns)
@@ -123,8 +126,8 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
      *
      * @param array $row
      * @param Mage_Eav_Model_Entity_Type $entityTypeModel
+     * @throws Exception
      * @return array
-     * @throws RuntimeException
      */
     protected function _getProductSuperRelations($row, $entityTypeModel)
     {
@@ -282,7 +285,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Product extends EcomDev_P
     /**
      * Adding enabled and visibility indexes
      *
-     * (non-PHPdoc)
+     * 
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::_customEntityAction()
      */
     protected function _customEntityAction($entity, $entityTypeModel)

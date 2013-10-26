@@ -16,18 +16,18 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
-class EcomDev_PHPUnitTest_Test_Lib_Helper_Abstract extends PHPUnit_Framework_TestCase
+class EcomDev_PHPUnitTest_Test_Lib_AbstractHelper extends PHPUnit_Framework_TestCase
 {
     /**
      *
      *
-     * @var EcomDev_PHPUnit_Helper_Abstract|PHPUnit_Framework_MockObject_MockObject
+     * @var EcomDev_PHPUnit_AbstractHelper|PHPUnit_Framework_MockObject_MockObject
      */
     protected $helper = null;
 
     protected function setUp()
     {
-        $this->helper = $this->getMockBuilder('EcomDev_PHPUnit_Helper_Abstract')
+        $this->helper = $this->getMockBuilder('EcomDev_PHPUnit_AbstractHelper')
             ->setMethods(array('hasMethod', 'callMethod'))
             ->enableArgumentCloning()
             ->getMockForAbstractClass();

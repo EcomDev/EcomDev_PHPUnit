@@ -1,6 +1,6 @@
 <?php
 
-class EcomDev_PHPUnitTest_Test_Lib_Constraint_Abstract extends PHPUnit_Framework_TestCase
+class EcomDev_PHPUnitTest_Test_Lib_AbstractConstraint extends PHPUnit_Framework_TestCase
 {
     /**
      * Test compare values functionality for constraint
@@ -14,9 +14,9 @@ class EcomDev_PHPUnitTest_Test_Lib_Constraint_Abstract extends PHPUnit_Framework
     public function testCompareValues($expectedValue, $actualValue, $expectedResult)
     {
         /**
-         * @var $constraint EcomDev_PHPUnit_Constraint_Abstract
+         * @var $constraint EcomDev_PHPUnit_AbstractConstraint
          */
-        $constraint = $this->getMockForAbstractClass('EcomDev_PHPUnit_Constraint_Abstract', array(), '', false);
+        $constraint = $this->getMockForAbstractClass('EcomDev_PHPUnit_AbstractConstraint', array(), '', false);
         $this->assertSame(
             $expectedResult,
             $constraint->compareValues($expectedValue, $actualValue)

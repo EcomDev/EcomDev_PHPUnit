@@ -16,16 +16,11 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
-interface EcomDev_PHPUnit_Model_Yaml_Loader_Interface
+/**
+ * @deprecated since 0.4.0 
+ */
+interface EcomDev_PHPUnit_Model_Yaml_Loader_Interface 
+    extends EcomDev_PHPUnit_Model_Yaml_LoaderInterface
 {
-    /**
-     * Resolves YAML file path based on its filename,
-     * if file is not found, it should return false
-     *
-     * @param string $fileName name of the file
-     * @param string $relatedClassName class name from which load of yaml file is invoked
-     * @param string $type type of Yaml file (provider, fixture, expectation)
-     * @return string|bool
-     */
-    public function resolveFilePath($fileName, $relatedClassName, $type);
+
 }

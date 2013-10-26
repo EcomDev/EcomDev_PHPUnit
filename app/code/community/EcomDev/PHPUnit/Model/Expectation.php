@@ -1,7 +1,7 @@
 <?php
 
 class EcomDev_PHPUnit_Model_Expectation
-    implements EcomDev_PHPUnit_Model_Expectation_Interface
+    implements EcomDev_PHPUnit_Model_ExpectationInterface
 {
     /**
      * List of created data object ids by path format
@@ -38,7 +38,7 @@ class EcomDev_PHPUnit_Model_Expectation
     /**
      * Retrieves data object for a particular path format
      *
-     * @see EcomDev_PHPUnit_Model_Expectation_Interface::getDataObject()
+     * @see EcomDev_PHPUnit_Model_ExpectationInterface::getDataObject()
      */
     public function getDataObject($pathFormat = null, $args = array())
     {
@@ -77,7 +77,7 @@ class EcomDev_PHPUnit_Model_Expectation
     /**
      * Applies loaded data
      *
-     * @see EcomDev_PHPUnit_Model_Test_Loadable_Interface::apply()
+     * @see EcomDev_PHPUnit_Model_Test_LoadableInterface::apply()
      */
     public function apply()
     {
@@ -89,7 +89,7 @@ class EcomDev_PHPUnit_Model_Expectation
      * Removes objects created in object cache
      * Clears loaded data property
      *
-     * @see EcomDev_PHPUnit_Model_Test_Loadable_Interface::discard()
+     * @see EcomDev_PHPUnit_Model_Test_LoadableInterface::discard()
      */
     public function discard()
     {
@@ -116,7 +116,7 @@ class EcomDev_PHPUnit_Model_Expectation
     /**
      * Loads expected data from test case annotations
      *
-     * @see EcomDev_PHPUnit_Model_Test_Loadable_Interface::loadByTestCase()
+     * @see EcomDev_PHPUnit_Model_Test_LoadableInterface::loadByTestCase()
      */
     public function loadByTestCase(PHPUnit_Framework_TestCase $testCase)
     {

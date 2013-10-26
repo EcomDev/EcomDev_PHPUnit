@@ -32,11 +32,11 @@ class EcomDev_PHPUnit_Model_Observer
             if ($helperClass && class_exists($helperClass)) {
                 $helper = new $helperClass();
 
-                if (!$helper instanceof EcomDev_PHPUnit_Helper_Interface) {
+                if (!$helper instanceof EcomDev_PHPUnit_HelperInterface) {
                     throw new RuntimeException(
                         sprintf(
                             'Test helpers should implement %s, but %s is not implementing it.',
-                            'EcomDev_PHPUnit_Helper_Interface',
+                            'EcomDev_PHPUnit_HelperInterface',
                             $helperClass
                         )
                     );

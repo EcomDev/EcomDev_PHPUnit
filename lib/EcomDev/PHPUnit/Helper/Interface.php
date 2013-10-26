@@ -17,33 +17,10 @@
  */
 
 /**
- * Interface for PHPUnit Test Helpers
+ * @deprecated since 0.4.0
  */
-interface EcomDev_PHPUnit_Helper_Interface
+interface EcomDev_PHPUnit_Helper_Interface 
+    extends EcomDev_PHPUnit_HelperInterface
 {
-    /**
-     * Checks if helper has action for invocation
-     *
-     * @param string $action
-     * @return bool
-     */
-    public function has($action);
-
-    /**
-     * Invokes helper action
-     *
-     * @param string $action
-     * @param array $args
-     *
-     * @return mixed
-     */
-    public function invoke($action, array $args);
-
-    /**
-     * Sets test case for usage in helper
-     *
-     * @param PHPUnit_Framework_TestCase $testCase
-     * @return $this
-     */
-    public function setTestCase(PHPUnit_Framework_TestCase $testCase);
+    
 }

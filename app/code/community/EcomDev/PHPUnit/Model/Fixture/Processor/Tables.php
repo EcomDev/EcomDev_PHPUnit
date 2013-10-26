@@ -19,7 +19,7 @@
 
 class EcomDev_PHPUnit_Model_Fixture_Processor_Tables
     extends Mage_Core_Model_Abstract
-    implements EcomDev_PHPUnit_Model_Fixture_Processor_Interface
+    implements EcomDev_PHPUnit_Model_Fixture_ProcessorInterface
 {
 
     const STORAGE_KEY = 'tables';
@@ -35,10 +35,10 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Tables
     /**
      * Does nothing
      *
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Tables
      */
-    public function initialize(EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function initialize(EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         return $this;
     }
@@ -48,11 +48,11 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Tables
      *
      * @param array                                   $data
      * @param string                                  $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Tables
      */
-    public function apply(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function apply(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
 
         $ignoreCleanUp = array();
@@ -60,9 +60,9 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Tables
         // Ignore cleaning of tables if shared fixture loaded something
         if ($fixture->isScopeLocal()
             && $fixture->getStorageData(self::STORAGE_KEY,
-                                        EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)) {
+                                        EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED)) {
             $ignoreCleanUp = array_keys($fixture->getStorageData(self::STORAGE_KEY,
-                                        EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED));
+                                        EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED));
         }
 
         $this->getResource()->beginTransaction();
@@ -86,20 +86,20 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Tables
      *
      * @param array[] $data
      * @param string $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Tables
      */
-    public function discard(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function discard(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         $restoreTableData = array();
 
         // Data for tables used in shared fixture
         if ($fixture->isScopeLocal()
             && $fixture->getStorageData(self::STORAGE_KEY,
-                                        EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)) {
+                                        EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED)) {
             $restoreTableData = $fixture->getStorageData(self::STORAGE_KEY,
-                                                         EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED);
+                                                         EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED);
         }
         $this->getResource()->beginTransaction();
 

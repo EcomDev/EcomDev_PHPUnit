@@ -22,11 +22,11 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Config_EventObserver
-    extends EcomDev_PHPUnit_Constraint_Config_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
     const XML_PATH_EVENTS = '%s/events';
 
-    const TYPE_DEFINDED = 'defined';
+    const TYPE_DEFINED = 'defined';
 
     const OBSERVER_TYPE_DISABLED = 'disabled';
     const OBSERVER_TYPE_SINGLETON = 'singleton';
@@ -75,9 +75,11 @@ class EcomDev_PHPUnit_Constraint_Config_EventObserver
      * @param string $eventName
      * @param string $observerClassAlias
      * @param string $observerMethod
+     * @param string $type
      * @param string|null $observerName
+     * @throws PHPUnit_Framework_Exception
      */
-    public function __construct($area, $eventName, $observerClassAlias, $observerMethod, $type = self::TYPE_DEFINDED, $observerName = null)
+    public function __construct($area, $eventName, $observerClassAlias, $observerMethod, $type = self::TYPE_DEFINED, $observerName = null)
     {
         if (empty($area) || !is_string($area)) {
             throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string', $area);

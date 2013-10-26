@@ -16,7 +16,7 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
-class EcomDev_PHPUnit_Model_Yaml_Loader_Global extends EcomDev_PHPUnit_Model_Yaml_Loader_Abstract
+class EcomDev_PHPUnit_Model_Yaml_Loader_Global extends EcomDev_PHPUnit_Model_Yaml_AbstractLoader
 {
     /**
      * Returns processed file path

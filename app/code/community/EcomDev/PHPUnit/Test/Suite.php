@@ -93,6 +93,7 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
      * @param string $searchPath path for searching files with tests
      * @param string $moduleCodeDir path where the module files are placed (e.g. app/code/local),
      *                              used for determining the class name
+     * @return array
      */
     protected static function _loadTestCases($searchPath, $moduleCodeDir)
     {

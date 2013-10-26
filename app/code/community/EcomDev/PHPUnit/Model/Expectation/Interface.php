@@ -18,27 +18,10 @@
  */
 
 /**
- * Interface for fixture model
- * Can be used for creation of
- * absolutely different implementation of fixture,
- * then current one.
+ * @deprecated since 0.4.0 
  *
  */
-interface EcomDev_PHPUnit_Model_Expectation_Interface extends EcomDev_PHPUnit_Model_Test_Loadable_Interface
+interface EcomDev_PHPUnit_Model_Expectation_Interface
+    extends EcomDev_PHPUnit_Model_ExpectationInterface
 {
-    /**
-     * Returns data object with expectations
-     *
-     * @param string $pathFormat
-     * @param array $args arguments for format function
-     * @return EcomDev_PHPUnit_Model_Expectation_Object
-     */
-    public function getDataObject($pathFormat = null, $args = array());
-
-    /**
-     * Check is expectation loaded
-     *
-     * @return boolean
-     */
-    public function isLoaded();
 }

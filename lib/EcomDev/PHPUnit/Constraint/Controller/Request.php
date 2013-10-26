@@ -17,10 +17,10 @@
  */
 
 /**
- * Constraint for controller request assetions
+ * Constraint for controller request assertions
  *
  */
-class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Constraint_Abstract
+class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_AbstractConstraint
 {
     const TYPE_ROUTE = 'route';
     const TYPE_ROUTE_NAME = 'route_name';
@@ -92,7 +92,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Cons
     /**
      * Evaluates that current controller route is equal to expected
      *
-     * @param EcomDev_PHPUnit_Controller_Request_Interface $other
+     * @param EcomDev_PHPUnit_Controller_RequestInterface $other
      * @return boolean
      */
     protected function evaluateRoute($other)
@@ -127,7 +127,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Cons
     /**
      * Evaluates that before forwarding controller route is equal to expected
      *
-     * @param EcomDev_PHPUnit_Controller_Request_Interface $other
+     * @param EcomDev_PHPUnit_Controller_RequestInterface $other
      * @return boolean
      */
     protected function evaluateBeforeForwardRoute($other)
@@ -166,7 +166,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Cons
     /**
      * Evaluates that request was forwarded
      *
-     * @param EcomDev_PHPUnit_Controller_Request_Interface $other
+     * @param EcomDev_PHPUnit_Controller_RequestInterface $other
      * @return boolean
      */
     protected function evaluateForwarded($other)
@@ -187,7 +187,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Cons
     /**
      * Evaluates that request was forwarded
      *
-     * @param EcomDev_PHPUnit_Controller_Request_Interface $other
+     * @param EcomDev_PHPUnit_Controller_RequestInterface $other
      * @return boolean
      */
     protected function evaluateDispatched($other)
@@ -208,7 +208,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Cons
     /**
      * Evaluates that request route name is equal to expected
      *
-     * @param EcomDev_PHPUnit_Controller_Request_Interface $other
+     * @param EcomDev_PHPUnit_Controller_RequestInterface $other
      * @return boolean
      */
     protected function evaluateRouteName($other)
@@ -230,7 +230,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Cons
     /**
      * Evaluates that request controller name is equal to expected
      *
-     * @param EcomDev_PHPUnit_Controller_Request_Interface $other
+     * @param EcomDev_PHPUnit_Controller_RequestInterface $other
      * @return boolean
      */
     protected function evaluateControllerName($other)
@@ -252,7 +252,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Cons
     /**
      * Evaluates that request controller module is equal to expected
      *
-     * @param EcomDev_PHPUnit_Controller_Request_Interface $other
+     * @param EcomDev_PHPUnit_Controller_RequestInterface $other
      * @return boolean
      */
     protected function evaluateControllerModule($other)
@@ -274,7 +274,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Cons
     /**
      * Evaluates that request action name is equal to expected
      *
-     * @param EcomDev_PHPUnit_Controller_Request_Interface $other
+     * @param EcomDev_PHPUnit_Controller_RequestInterface $other
      * @return boolean
      */
     protected function evaluateActionName($other)

@@ -17,7 +17,7 @@ class EcomDev_PHPUnitTest_Test_Helper_Session extends EcomDev_PHPUnit_Test_Case_
     }
 
     /**
-     * Tests stubing of admin session
+     * Tests stub of admin session
      *
      */
     public function testAdminSessionAllRights()

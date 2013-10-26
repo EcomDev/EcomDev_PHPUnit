@@ -21,7 +21,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Config_Resource
-    extends EcomDev_PHPUnit_Constraint_Config_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
     const XML_PATH_RESOURCES_NODE = 'global/resources';
 
@@ -46,10 +46,12 @@ class EcomDev_PHPUnit_Constraint_Config_Resource
     /**
      * Constraint for evaluation of module config node
      *
-     * @param string $nodePath
+     * @param string $moduleName
      * @param string $type
      * @param string $moduleDirectory
      * @param mixed $expectedValue
+     * @throws PHPUnit_Framework_Exception
+     * @internal param string $nodePath
      */
     public function __construct($moduleName, $type, $moduleDirectory = null, $expectedValue = null)
     {
@@ -96,11 +98,12 @@ class EcomDev_PHPUnit_Constraint_Config_Resource
         
         return $resourcesForModule;
     }
-    
+
     /**
      * Checks definition of expected resource name
      *
      * @param Varien_Simplexml_Element $other
+     * @return bool
      */
     protected function evaluateSetupDefined($other)
     {
@@ -156,11 +159,12 @@ class EcomDev_PHPUnit_Constraint_Config_Resource
         
         return $this;
     }
-    
+
     /**
      * Checks existence and definition of expected resource name schema directory
      *
      * @param Varien_Simplexml_Element $other
+     * @return bool
      */
     protected function evaluateSetupSchemeExists($other)
     {
@@ -188,11 +192,12 @@ class EcomDev_PHPUnit_Constraint_Config_Resource
         return sprintf(' schema directory is created for %s module with %s name',
                        $this->_moduleName, $this->_expectedValue);
     }
-    
+
     /**
      * Checks existence and definition of expected resource name data directory
      *
      * @param Varien_Simplexml_Element $other
+     * @return bool
      */
     protected function evaluateSetupDataExists($other)
     {

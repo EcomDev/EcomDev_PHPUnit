@@ -86,7 +86,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     }
 
     /**
-     * Layout handle functionality constaint
+     * Layout handle functionality constraint
      *
      * @param string $handle handle name
      * @param string $type
@@ -112,7 +112,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     }
 
     /**
-     * Layout block action calls functionality constaint
+     * Layout block action calls functionality constraint
      *
      * @param string $blockName
      * @param string $method
@@ -197,7 +197,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     }
 
     /**
-     * Assert that controller request doesn't matches assertion type
+     * Assert that controller request does not matches assertion type
      *
      * @param string $type type of assertion
      * @param string|null $expectedValue
@@ -437,7 +437,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert shortcut for response assertions
      *
-     * @param EcomDev_PHPUnit_Constraint_Controller_Response_Abstract $constraint
+     * @param PHPUnit_Framework_Constraint $constraint
      * @param string $message
      */
     public static function assertThatResponse(PHPUnit_Framework_Constraint $constraint, $message)
@@ -779,7 +779,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param array $expectedValue
      * @param string $message
-     * @param strign $matchType
+     * @param string $matchType
      */
     public static function assertResponseBodyJsonMatch(array $expectedValue, $message = '',
         $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
@@ -797,7 +797,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param array $expectedValue
      * @param string $message
-     * @param strign $matchType
+     * @param string $matchType
      */
     public static function assertResponseBodyJsonNotMatch(array $expectedValue, $message = '',
         $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
@@ -813,6 +813,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert HTTP response code value
      *
      * @param int $code
+     * @param string $message
      */
     public static function assertResponseHttpCode($code, $message = '')
     {
@@ -828,7 +829,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert that controller response is redirect
      *
      * @param string $message
-     * @param int|null $code
+     * @param int|null $responseCode
+     * @internal param int|null $code
      */
     public static function assertRedirect($message = '', $responseCode = null)
     {
@@ -860,7 +862,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * to a specific url
      *
      * @param string $route route path
-     * @param string $params route params
+     * @param array $params route params
      * @param string $message
      */
     public static function assertRedirectTo($route, array $params = array(), $message = '')
@@ -937,8 +939,9 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert shortcut for layout constaints
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Abstract|PHPUnit_Framework_Constraint $constaint
+     * @param PHPUnit_Framework_Constraint $constraint
      * @param string $message
+     * @internal param \EcomDev_PHPUnit_Constraint_AbstractLayout|\PHPUnit_Framework_Constraint $constaint
      */
     public static function assertThatLayout(PHPUnit_Framework_Constraint $constraint, $message)
     {
@@ -1042,6 +1045,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      *
      * @param string $handle
+     * @param string $after
      * @param string $message
      */
     public static function assertLayoutHandleLoadedAfter($handle, $after, $message = '')
@@ -1061,6 +1065,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      *
      * @param string $handle
+     * @param string $before
      * @param string $message
      */
     public static function assertLayoutHandleLoadedBefore($handle, $before, $message = '')
@@ -1427,8 +1432,9 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $blockName
      * @param string $method
      * @param string $message
-     * @param array|null $params
+     * @param array $arguments
      * @param string $searchType
+     * @internal param array|null $params
      */
     public static function assertLayoutBlockActionInvoked($blockName, $method, $message = '',
         array $arguments = null, $searchType = EcomDev_PHPUnit_Constraint_Layout_Block_Action::SEARCH_TYPE_AND)
@@ -1450,7 +1456,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $blockName
      * @param string $method
      * @param string $message
-     * @param array|null $params
+     * @param array|null $arguments
      * @param string $searchType
      */
     public static function assertLayoutBlockActionNotInvoked($blockName, $method, $message = '',
@@ -1474,18 +1480,20 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param string $blockName
      * @param string $method
+     * @param int $invocationCount
      * @param string $message
-     * @param array|null $params
+     * @param array $arguments
      * @param string $searchType
+     * @internal param array|null $params
      */
-    public static function assertLayoutBlockActionInvokedAtLeast($blockName, $method, $invokationCount,
+    public static function assertLayoutBlockActionInvokedAtLeast($blockName, $method, $invocationCount,
         $message = '', array $arguments = null,
         $searchType = EcomDev_PHPUnit_Constraint_Layout_Block_Action::SEARCH_TYPE_AND)
     {
         self::assertThatLayout(
             self::layoutBlockAction(
                 $blockName, $method,
-                EcomDev_PHPUnit_Constraint_Layout_Block_Action::TYPE_INVOKED_AT_LEAST, $invokationCount,
+                EcomDev_PHPUnit_Constraint_Layout_Block_Action::TYPE_INVOKED_AT_LEAST, $invocationCount,
                 $arguments, $searchType
             ),
             $message
@@ -1498,18 +1506,20 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param string $blockName
      * @param string $method
+     * @param int $invocationCount
      * @param string $message
-     * @param array|null $params
+     * @param array $arguments
      * @param string $searchType
+     * @internal param array|null $params
      */
-    public static function assertLayoutBlockActionInvokedExactly($blockName, $method, $invokationCount,
+    public static function assertLayoutBlockActionInvokedExactly($blockName, $method, $invocationCount,
         $message = '', array $arguments = null,
         $searchType = EcomDev_PHPUnit_Constraint_Layout_Block_Action::SEARCH_TYPE_AND)
     {
         self::assertThatLayout(
             self::layoutBlockAction(
                 $blockName, $method,
-                EcomDev_PHPUnit_Constraint_Layout_Block_Action::TYPE_INVOKED_EXACTLY, $invokationCount,
+                EcomDev_PHPUnit_Constraint_Layout_Block_Action::TYPE_INVOKED_EXACTLY, $invocationCount,
                 $arguments, $searchType
             ),
             $message
@@ -1559,7 +1569,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $propertyName
      * @param mixed $expectedValue
      * @param string $message
-     * @param float  $delta
+     * @param float|int $delta
      * @param integer $maxDepth
      * @param boolean $canonicalize
      * @param boolean $ignoreCase
@@ -1582,7 +1592,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $propertyName
      * @param mixed $expectedValue
      * @param string $message
-     * @param float  $delta
+     * @param float|int $delta
      * @param integer $maxDepth
      * @param boolean $canonicalize
      * @param boolean $ignoreCase
@@ -1950,6 +1960,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * A callback that is invoked when a cookie is deleted
      *
+     * @param string $name
+     * @param string $path
+     * @param string $domain
+     * @param int $secure
+     * @param int $httponly
      * @return EcomDev_PHPUnit_Test_Case_Controller
      */
     public function deleteCookieCallback($name, $path = null, $domain = null, $secure = null, $httponly = null)

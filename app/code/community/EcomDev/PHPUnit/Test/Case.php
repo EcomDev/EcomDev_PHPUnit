@@ -239,13 +239,13 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Assert that JSON string doesn't matches expected value,
+     * Assert that JSON string does not matches expected value,
      * Can accept different match type for matching logic.
      *
      * @param string $string
      * @param array $expectedValue
      * @param string $message
-     * @param strign $matchType
+     * @param string $matchType
      */
     public static function assertJsonNotMatch($string, array $expectedValue, $message = '',
         $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
@@ -334,6 +334,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $type
      * @param string $classAlias
      * @param PHPUnit_Framework_MockObject_MockObject|PHPUnit_Framework_MockObject_MockBuilder $mock
+     * @return $this
      */
     protected function replaceByMock($type, $classAlias, $mock)
     {
@@ -533,6 +534,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @param string $type block/model/helper/resource_model
      * @param string $classAlias
+     * @return string
      */
     protected function getGroupedClassName($type, $classAlias)
     {
@@ -678,7 +680,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $type type of YAML data (fixtures,expectations,dataproviders)
      * @param string $name the file name for loading
      * @return string|boolean
-     * @depracated since 0.3.0
+     * @deprecated since 0.3.0
      */
     public static function getYamlFilePathByClass($className, $type, $name)
     {

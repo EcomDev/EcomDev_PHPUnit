@@ -21,7 +21,7 @@
  *
  *
  */
-class EcomDev_PHPUnit_Test_Case_Helper_Observer extends EcomDev_PHPUnit_Helper_Abstract
+class EcomDev_PHPUnit_Test_Case_Helper_Observer extends EcomDev_PHPUnit_AbstractHelper
 {
     /**
      * Generates observer object

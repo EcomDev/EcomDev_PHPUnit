@@ -38,8 +38,7 @@ class EcomDev_PHPUnit_Model_Fixture_Vfs
     /**
      * Applies VFS directory structure
      *
-     * @param      $data
-     * @param bool $cloneCurrent
+     * @param array $data
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Vfs
      */

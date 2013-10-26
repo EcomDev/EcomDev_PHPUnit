@@ -2,14 +2,10 @@
 
 
 /**
- * Interface for helpers that support setUp() and tearDown() methods
- *
- * These methods are invoked when test setUp() or tearDown() is executed
- *
+ * @deprecated after 0.4.0
  */
-interface EcomDev_PHPUnit_Helper_Listener_Interface extends EcomDev_PHPUnit_Helper_Interface
+interface EcomDev_PHPUnit_Helper_Listener_Interface 
+    extends EcomDev_PHPUnit_Helper_ListenerInterface
 {
-    public function setUp();
-
-    public function tearDown();
+    
 }

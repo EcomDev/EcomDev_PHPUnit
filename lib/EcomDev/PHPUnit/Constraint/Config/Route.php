@@ -21,7 +21,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Config_Route
-    extends EcomDev_PHPUnit_Constraint_Config_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
     const XML_PATH_ROUTE_NODE = '%s/routers/%s';
 

@@ -28,7 +28,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Category extends EcomDev_
     );
 
     /**
-     * Overriden to add easy fixture loading for product associations
+     * Overridden to add easy fixture loading for product associations
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::_getCustomTableRecords()
      */

@@ -21,19 +21,19 @@
  *
  *
  */
-abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Abstract extends EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
+abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Abstract 
+    extends EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
 {
     const SCOPE_TYPE_STORE = 'stores';
     const SCOPE_TYPE_WEBSITE = 'websites';
 
     /**
-     * Overriden to add GWS implementation for attribute records
+     * Overridden to add GWS implementation for attribute records
      *
      * @param array $row
      * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
      * @param array $tableColumns
      * @return array
-     * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::_getAttributeRecords()
      */
     protected function _getAttributeRecords($row, $attribute, $tableColumns)
@@ -43,7 +43,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Abstract extends
         // If the attribute is not global,
         // then walk over all websites and stores scopes for attribute value
         if ($attribute->isScopeStore() || $attribute->isScopeWebsite()) {
-            // Search for website values and fullfil data per website's store
+            // Search for website values and populate data per website's store
             $storeValues = array();
             foreach ($this->_getGwsCodes($row, self::SCOPE_TYPE_WEBSITE) as $websiteCode) {
                 $website = Mage::app()->getWebsite($websiteCode);
@@ -96,6 +96,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Abstract extends
      *
      * @param array $row
      * @param string $scopeType
+     * @return array
      */
     protected function _getGwsCodes($row, $scopeType = self::SCOPE_TYPE_STORE)
     {
@@ -130,8 +131,8 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Abstract extends
     }
 
     /**
-     * Overriden to add default store id
-     * (non-PHPdoc)
+     * Overridden to add default store id
+     * 
      * @see EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract::_getAttributeValueInfo()
      */
     protected function _getAttributeValueInfo($row, $attribute)
