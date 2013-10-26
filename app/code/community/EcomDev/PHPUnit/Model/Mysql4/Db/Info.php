@@ -16,8 +16,9 @@ class EcomDev_PHPUnit_Model_Mysql4_Db_Info implements EcomDev_PHPUnit_Model_Mysq
      */
     public function fetch()
     {
-        // reset information
-        $this->reset();
+        if ($this->_information !== null) {
+            return $this;
+        }
 
         // iterate over each available table
         $listTables = $this->getAdapter()->listTables();
@@ -42,6 +43,8 @@ class EcomDev_PHPUnit_Model_Mysql4_Db_Info implements EcomDev_PHPUnit_Model_Mysq
 
             $this->_information[$tableName] = $data;
         }
+
+        return $this;
     }
 
 
@@ -65,6 +68,8 @@ class EcomDev_PHPUnit_Model_Mysql4_Db_Info implements EcomDev_PHPUnit_Model_Mysq
      */
     public function getTableDependencies($tableName)
     {
+        $this->fetch();
+
         if (isset($this->_information[$tableName])
             && $this->_information[$tableName] instanceof Varien_Object
         )
@@ -83,7 +88,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Db_Info implements EcomDev_PHPUnit_Model_Mysq
      */
     public function reset()
     {
-        $this->_information = array();
+        $this->_information = null;
     }
 
 
