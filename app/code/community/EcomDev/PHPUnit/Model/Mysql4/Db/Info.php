@@ -97,7 +97,7 @@ class EcomDev_PHPUnit_Model_Mysql4_Db_Info implements EcomDev_PHPUnit_Model_Mysq
      */
     public function setAdapter($adapter)
     {
-        if (!($adapter instanceof Varien_Db_Adapter_Interface))
+        if (!($adapter instanceof Zend_Db_Adapter_Abstract))
         {
             throw new InvalidArgumentException('Unsupported adapter ' . get_class($adapter));
         }
