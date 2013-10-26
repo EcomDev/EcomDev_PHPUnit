@@ -61,4 +61,32 @@ class EcomDev_PHPUnit_Model_Fixture_Loader_Container
     {
         return isset($this->_loaders[$code]);
     }
+
+
+    /**
+     * Flush all loader in this container.
+     *
+     * @return void
+     */
+    public function flush()
+    {
+        foreach ($this->_loaders as $loader)
+        {
+            $loader->flush();
+        }
+    }
+
+
+    /**
+     * Restore all loader in this container.
+     *
+     * @return void
+     */
+    public function restore()
+    {
+        foreach ($this->_loaders as $loader)
+        {
+            $loader->restore();
+        }
+    }
 }

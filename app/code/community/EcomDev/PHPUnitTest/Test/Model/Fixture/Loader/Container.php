@@ -9,7 +9,7 @@ class EcomDev_PHPUnitTest_Test_Model_Fixture_Loader_Container
      * @var EcomDev_PHPUnit_Model_Fixture_Loader_Container
      */
     protected $_factory;
-    
+
     protected function setUp()
     {
         $this->_factory = new EcomDev_PHPUnit_Model_Fixture_Loader_Container();
@@ -76,6 +76,45 @@ class EcomDev_PHPUnitTest_Test_Model_Fixture_Loader_Container
     {
         $this->assertFalse(
             $this->_factory->get('my_loader_1')
+        );
+    }
+
+    /**
+     * Check if the methods are forwarded by the collection to it's elements.
+     *
+     * @dataProvider getMethods
+     *
+     * @param string $methodName
+     * @param array  $args []
+     *
+     * @return void
+     */
+    public function testFlushAndRestoreWillBeForwardedToEachLoader($methodName, $args)
+    {
+        $loaderSet = $this->_stubLoaders(2);
+
+        foreach ($loaderSet as $loader)
+        {
+            /** @var PHPUnit_Framework_MockObject_MockObject $loader */
+            $loader->expects($this->exactly(1))->method($methodName);
+        }
+
+        $this->_factory->$methodName();
+    }
+
+
+    /**
+     * Data provider for methods to check forwarding with.
+     *
+     * @see testFlushAndRestoreWillBeForwardedToEachLoader
+     *
+     * @return array
+     */
+    public function getMethods()
+    {
+        return array(
+            array('flush', array()),
+            array('restore', array()),
         );
     }
 
