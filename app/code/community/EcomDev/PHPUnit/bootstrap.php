@@ -7,7 +7,6 @@ if (version_compare(PHP_VERSION, '5.3', '<')) {
 
 $_baseDir = getcwd();
 
-
 // Include Mage file by detecting app root
 require_once $_baseDir . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
 
@@ -29,13 +28,25 @@ if (!empty($_GET)) {
 Mage::app('admin');
 Mage::getConfig()->init();
 
+// Removing Varien Autoload, to prevent errors with PHPUnit components
 spl_autoload_unregister(array(\Varien_Autoload::instance(), 'autoload'));
 
-spl_autoload_register(function ($classname) {
-    $classname = ltrim($classname, "\\");
-    preg_match('/^(.+)?([^\\\\]+)$/U', $classname, $match);
-    $classname = str_replace("\\", "/", $match[1])
-        . str_replace(array("\\", "_"), "/", $match[2])
-        . ".php";
-    @include_once $classname;
-});
+// It is possible to include custom bootstrap file by specifying env variable shell
+// or in server
+if (isset($_SERVER['ECOMDEV_PHPUNIT_CUSTOM_BOOTSTRAP'])) {
+    include $_SERVER['ECOMDEV_PHPUNIT_CUSTOM_BOOTSTRAP'];
+}
+
+if (!defined('ECOMDEV_PHPUNIT_NO_AUTOLOADER')) {
+    spl_autoload_register(function ($className) {
+        $filePath = strtr(
+            ltrim($className, '\\'),
+            array(
+                '\\' => '/',
+                '_'  => '/'
+            )
+        );
+
+        @include $filePath . '.php';
+    });
+}

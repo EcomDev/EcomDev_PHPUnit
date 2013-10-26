@@ -36,14 +36,6 @@ class EcomDev_PHPUnit_Model_Fixture_Vfs
     protected $_currentRoot = array();
 
     /**
-     * Initializes VFS stream wrapper/
-     */
-    public function __construct()
-    {
-        Stream::setup();
-    }
-
-    /**
      * Applies VFS directory structure
      *
      * @param      $data
@@ -53,8 +45,10 @@ class EcomDev_PHPUnit_Model_Fixture_Vfs
      */
     public function apply($data)
     {
-        $this->_currentRoot[] = StreamWrapper::getRoot();
-        Stream::create($data);
+        if (StreamWrapper::getRoot()) {
+            $this->_currentRoot[] = StreamWrapper::getRoot();
+        }
+        Stream::setup('root', null, $data);
         return $this;
     }
 
@@ -97,6 +91,10 @@ class EcomDev_PHPUnit_Model_Fixture_Vfs
      */
     public function url($path)
     {
+        if (strpos($path, StreamWrapper::getRoot()->getName()) === false) {
+            $path = StreamWrapper::getRoot()->getName() . '/' . $path;
+        }
+
         return Stream::url($path);
     }
 }

@@ -140,7 +140,6 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
             )
         );
 
-
         if (!is_dir($directory)) {
             return $versions;
         }

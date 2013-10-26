@@ -737,7 +737,8 @@ class EcomDev_PHPUnit_Model_Fixture
             return $this->_vfs;
         }
 
-        if (is_dir(Mage::getBaseDir('lib')  . DS . 'vfsStream' . DS . 'src')) {
+        if (!class_exists('\org\bovigo\vfs\vfsStream')
+            && is_dir(Mage::getBaseDir('lib')  . DS . 'vfsStream' . DS . 'src')) {
             spl_autoload_register(array($this, 'vfsAutoload'), true, true);
         }
 

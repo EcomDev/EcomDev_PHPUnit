@@ -1,6 +1,7 @@
 {
     "require": {
-        "ecomdev/mage-ci": "*"
+        "ecomdev/mage-ci": "*",
+        "mikey179/vfsStream": "*"
     },
     "config": {
         "bin-dir": "bin"
