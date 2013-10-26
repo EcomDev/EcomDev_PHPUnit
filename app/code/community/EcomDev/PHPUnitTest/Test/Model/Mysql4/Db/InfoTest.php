@@ -101,8 +101,8 @@ class EcomDev_PHPUnitTest_Test_Model_Mysql4_Db_InfoTest extends EcomDev_PHPUnit_
     public function testYouNeedToProvideAnAdapter()
     {
         /** @var Varien_Db_Adapter_Interface $adapterMock */
-        $adapterMock = $this->getMock('Varien_Db_Adapter_Interface');
-        $this->assertTrue($adapterMock instanceof Varien_Db_Adapter_Interface);
+        $adapterMock = $this->getMock('Varien_Db_Adapter_Pdo_Mysql', array(), array(), '', false);
+        $this->assertTrue($adapterMock instanceof Varien_Db_Adapter_Pdo_Mysql);
 
         $this->_factory->setAdapter($adapterMock);
 
@@ -119,7 +119,7 @@ class EcomDev_PHPUnitTest_Test_Model_Mysql4_Db_InfoTest extends EcomDev_PHPUnit_
      */
     protected function _getMockedAdapter()
     {
-        /** @var Varien_Db_Adapter_Pdo_Mysql $adapterMock Mock without connecting to a server. */
+        /** @var Varien_Db_Adapter_Pdo_Mysql|PHPUnit_Framework_MockObject_MockObject $adapterMock Mock without connecting to a server. */
         $adapterMock = $this->getMock(
                             'Varien_Db_Adapter_Pdo_Mysql',
                             array(
