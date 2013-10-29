@@ -5,6 +5,8 @@ lib/EcomDev/*                           lib/EcomDev/
 lib/Spyc                                lib/Spyc
 lib/vfsStream                           lib/vfsStream
 shell/*.php                             shell/
+phpunit.xml.dist                        phpunit.xml.dist
+app/etc/local.xml.phpunit               app/etc/local.xml.phpunit
 
 # Run shell installer
 @shell  cd $PROJECT/shell && php -f ecomdev-phpunit.php -- --action install
