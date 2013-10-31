@@ -371,6 +371,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
      */
     public function getBaseUrl()
     {
+        empty($this->_baseUrl) && $this->setBaseUrl(Mage::getStoreConfig('web/unsecure/base_url'));
         return $this->_baseUrl;
     }
 
