@@ -1,3 +1,23 @@
+scope:
+  website: # Initialize websites
+    - website_id: 1
+      code: base
+      name: Default Website
+      default_group_id: 1
+  group: # Initializes store groups
+    - group_id: 1
+      website_id: 1
+      name: Default Store Group
+      default_store_id: 1
+      root_category_id: 2 # Default Category
+  store: # Initializes store views
+    - store_id: 1
+      website_id: 1
+      group_id: 1
+      code: default
+      name: Default Store
+      is_active: 1
+
 eav:
   customer:
     - entity_id: 1 # Customer with default billing and shipping addresses
