@@ -140,7 +140,7 @@ class EcomDev_PHPUnit_Test_Case_Helper_Session
         // Fix for EE gws functionality
         $userRole = Mage::getModel('admin/roles');
         $userRole->setGwsIsAll(1);
-        $user = EcomDev_PHPUnit_Helper::invoke('mockModel', 'admin/user', array('reload'));
+        $user = EcomDev_PHPUnit_Helper::invoke('mockModel', 'admin/user', array('reload'))->getMockInstance();
         $user->setId($userId);
         EcomDev_Utils_Reflection::setRestrictedPropertyValue($user, '_role', $userRole);
         return $user;
