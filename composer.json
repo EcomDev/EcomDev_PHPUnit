@@ -10,7 +10,7 @@
     },
     "replace": {
         "ivanchepurnyi/ecomdev_phpunit":"*"
-    }
+    },
     "authors":[
         {
             "name":"Ivan Chepurnyi"
