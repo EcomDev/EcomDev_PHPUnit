@@ -68,9 +68,18 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
                  * impossibility for specifying group by parent test case
                  * Because it is a very dirty hack :(
                  **/
-                $testGroups = array();
+                $testGroups = EcomDev_Utils_Reflection::getRestrictedPropertyValue($test, 'groups');
+
                 foreach ($groups as $group) {
-                    $testGroups[$group] = $test->tests();
+                    if(!isset($testGroups[$group])) {
+                        $testGroups[$group] = $test->tests();
+                    } else {
+                        foreach($test->tests() as $subTest) {
+                            if(!in_array($subTest, $testGroups[$group], true)) {
+                                $testGroups[$group][] = $subTest;
+                            }
+                        }
+                    }
                 }
 
                 EcomDev_Utils_Reflection::setRestrictedPropertyValue(
