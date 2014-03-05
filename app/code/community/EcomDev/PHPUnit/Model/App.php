@@ -59,16 +59,11 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     const XML_PATH_CONTROLLER_RESPONSE = 'phpunit/suite/controller/response/class';
 
     /**
-     * Old test scope data to be returned back after unit tests are finished
+     * Test scope data to be returned back after unit tests are finished
      *
      * @var array
      */
-    protected static $_oldTestScope = array(
-        'app'      => null,
-        'config'   => null,
-        'events'   => null,
-        'registry' => null,
-    );
+    protected static $_testScopeStack = array();
 
     /**
      * Configuration model class name for unit tests
@@ -124,10 +119,12 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     public static function applyTestScope()
     {
         // Save old environment variables
-        self::$_oldTestScope['app'] = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_app');
-        self::$_oldTestScope['config'] = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config');
-        self::$_oldTestScope['events'] = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events');
-        self::$_oldTestScope['registry'] = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry');
+        self::$_testScopeStack[] = array(
+            'app'      => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_app'),
+            'config'   => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config'),
+            'events'   => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events'),
+            'registry' => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry'),
+        );
 
 
         // Setting environment variables for unit tests
@@ -415,11 +412,17 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
      */
     public static function discardTestScope()
     {
+        if(empty(self::$_testScopeStack)) {
+            throw new RuntimeException('No test scope to discard');
+        }
+
+        $previousScope = array_pop(self::$_testScopeStack);
+
         // Setting environment variables for unit tests
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', self::$_oldTestScope['app']);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', self::$_oldTestScope['config']);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', self::$_oldTestScope['events']);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', self::$_oldTestScope['registry']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', $previousScope['app']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', $previousScope['config']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', $previousScope['events']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', $previousScope['registry']);
     }
 
     /**
