@@ -263,4 +263,8 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
         // No action is required
     }
 
+    public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time) {
+
+    }
+
 }
