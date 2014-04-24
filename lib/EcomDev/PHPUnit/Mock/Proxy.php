@@ -161,6 +161,19 @@ class EcomDev_PHPUnit_Mock_Proxy
     }
 
     /**
+     * @param $originalObject
+     * @return PHPUnit_Framework_MockObject_InvocationMocker
+     * @since  Method available since Release 2.0.0
+     */
+    public function __phpunit_setOriginalObject($originalObject)
+    {
+        throw new RuntimeException(
+            'Mock object proxy cannot be used for retrieving invocation mockers, '
+            . 'use getMockInstance method for real mock object'
+        );
+    }
+
+    /**
      * Verifies that the current expectation is valid. If everything is OK the
      * code should just return, if not it must throw an exception.
      *
