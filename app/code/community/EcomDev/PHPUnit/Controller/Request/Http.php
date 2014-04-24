@@ -158,6 +158,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
         // From Http request
         $this->_paramSources = array('_GET', '_POST');
         $this->_requestUri = null;
+        $this->_params = null;
         $this->_baseUrl = null;
         $this->_basePath = null;
         $this->_pathInfo = '';
