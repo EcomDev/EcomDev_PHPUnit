@@ -1,11 +1,10 @@
 <?php
-
+/**
+ * @loadSharedFixture testFixtureArrayMerge.yaml
+ */
 class EcomDev_PHPUnitTest_Test_Model_Fixture extends EcomDev_PHPUnit_Test_Case
 {
 
-    /**
-     * @loadFixture testFixtureArrayMerge.yaml
-     */
     public function testFixtureArrayMerge()
     {
         require_once($this->_getVfsUrl('app/code/community/EcomDev/PHPUnit/Test/Model/ExampleClass.php'));
