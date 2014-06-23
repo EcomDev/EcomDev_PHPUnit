@@ -23,7 +23,7 @@ class EcomDev_PHPUnitTest_Test_Lib_AbstractConstraint extends PHPUnit_Framework_
         );
 
         if (!$expectedResult) {
-            $this->assertAttributeInstanceOf('PHPUnit_Framework_ComparisonFailure', '_comparisonFailure', $constraint);
+            $this->assertAttributeInstanceOf('\SebastianBergmann\Comparator\ComparisonFailure', '_comparisonFailure', $constraint);
         }
     }
 

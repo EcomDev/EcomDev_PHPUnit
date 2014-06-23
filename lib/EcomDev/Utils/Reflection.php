@@ -40,6 +40,13 @@ class EcomDev_Utils_Reflection
         }
 
         $reflectionObject = self::getReflection($object);
+        while (!$reflectionObject->hasProperty($property)) {
+            if (!$reflectionObject->getParentClass()) {
+                break;
+            }
+            $reflectionObject = $reflectionObject->getParentClass();
+        }
+
         $reflectionProperty = $reflectionObject->getProperty($property);
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue((is_string($object) ? null : $object), $value);
@@ -78,6 +85,15 @@ class EcomDev_Utils_Reflection
         }
 
         $reflectionObject = self::getReflection($object);
+        
+        while (!$reflectionObject->hasProperty($property)) {
+            if ($reflectionObject->getParentClass()) {
+                $reflectionObject = $reflectionObject->getParentClass();
+            } else {
+                break;
+            }
+        }
+        
         $reflectionProperty = $reflectionObject->getProperty($property);
         $reflectionProperty->setAccessible(true);
         return $reflectionProperty->getValue((is_string($object) ? null : $object));
@@ -154,5 +170,20 @@ class EcomDev_Utils_Reflection
         else {
             throw new InvalidArgumentException('$object should be a valid class name or object instance');
         }
+    }
+
+    /**
+     * Creates a new instance of object, without calling original constructor
+     * 
+     * @param string $className
+     * @param array $properties
+     * @return object
+     */
+    public static function createObject($className, array $properties = array())
+    {
+        $reflection = self::getReflection($className);
+        $object = $reflection->newInstanceWithoutConstructor();
+        self::setRestrictedPropertyValues($object, $properties);
+        return $object;
     }
 }

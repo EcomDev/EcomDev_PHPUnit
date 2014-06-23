@@ -258,7 +258,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
             throw new RuntimeException(sprintf(
                 'Config node "%s" is not a string of comma separated values, passed expected value: %s',
                 $this->_nodePath,
-                PHPUnit_Util_Type::export($this->_expectedValue)
+                self::getExporter()->export($this->_expectedValue)
             ));
         }
 
@@ -279,7 +279,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
     protected function textContainValues()
     {
         return sprintf('contains "%s" in comma separated value list',
-                       PHPUnit_Util_Type::export($this->_expectedValue));
+                       self::getExporter()->export($this->_expectedValue));
     }
 
     /**

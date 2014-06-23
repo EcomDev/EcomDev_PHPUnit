@@ -5,7 +5,11 @@ if (version_compare(PHP_VERSION, '5.3', '<')) {
     exit(1);
 }
 
-$_baseDir = getcwd();
+if (isset($_SERVER['MAGENTO_DIRECTORY'])) {
+    $_baseDir = $_SERVER['MAGENTO_DIRECTORY'];
+} else {
+    $_baseDir = getcwd();
+}
 
 // Include Mage file by detecting app root
 require_once $_baseDir . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';

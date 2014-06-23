@@ -25,6 +25,20 @@ abstract class EcomDev_PHPUnit_AbstractConstraint
     extends PHPUnit_Framework_Constraint
 {
     /**
+     * Comparator factory
+     * 
+     * @var \SebastianBergmann\Comparator\Factory
+     */
+    static protected $_comparatorFactory;
+
+    /**
+     * String exporter for variables
+     * 
+     * @var \SebastianBergmann\Exporter\Exporter
+     */
+    static protected $_exporter;
+    
+    /**
      * List of validation rules for expected value
      * It is an associative array with key as type and value
      * as an array of rules.
@@ -76,7 +90,7 @@ abstract class EcomDev_PHPUnit_AbstractConstraint
     /**
      * Comparison failure for nice failure messages
      *
-     * @var PHPUnit_Framework_ComparisonFailure
+     * @var \SebastianBergmann\Comparator\ComparisonFailure
      */
     protected $_comparisonFailure = null;
 
@@ -127,6 +141,35 @@ abstract class EcomDev_PHPUnit_AbstractConstraint
         $this->_type = $type;
         $this->_expectedValue = $expectedValue;
     }
+
+    /**
+     * Comparator factory instance
+     * 
+     * @return \SebastianBergmann\Comparator\Factory
+     */
+    public static function getComparatorFactory()
+    {
+        if (self::$_comparatorFactory === null) {
+            self::$_comparatorFactory = new \SebastianBergmann\Comparator\Factory();
+        }
+        
+        return self::$_comparatorFactory;
+    }
+
+    /**
+     * Exporter instance for variables
+     * 
+     * @return \SebastianBergmann\Exporter\Exporter
+     */
+    public static function getExporter()
+    {
+        if (self::$_exporter === null) {
+            self::$_exporter = new \SebastianBergmann\Exporter\Exporter();
+        }
+
+        return self::$_exporter;
+    }
+
 
     /**
      * Set actual value that will be used in the fail message
@@ -190,7 +233,7 @@ abstract class EcomDev_PHPUnit_AbstractConstraint
      * (non-PHPdoc)
      * @see PHPUnit_Framework_Constraint::fail()
      */
-    public function fail($other, $description, PHPUnit_Framework_ComparisonFailure $comparisonFailure = NULL)
+    public function fail($other, $description, \SebastianBergmann\Comparator\ComparisonFailure $comparisonFailure = NULL)
     {
         $failureDescription = sprintf('Failed asserting that %s', $this->failureDescription($other));
 
@@ -269,12 +312,12 @@ abstract class EcomDev_PHPUnit_AbstractConstraint
         if (is_array($value) && preg_match('/^\d+$/', implode('', array_keys($value)))) {
             $stringValue = '';
             foreach ($value as $val) {
-                $stringValue .= (is_string($val) ? $val : PHPUnit_Util_Type::export($val)) . "\n";
+                $stringValue .= (is_string($val) ? $val : self::getExporter()->export($val)) . "\n";
             }
 
             return $stringValue;
         } else {
-            return PHPUnit_Util_Type::export($value);
+            return self::getExporter()->export($value);
         }
     }
 
@@ -287,7 +330,7 @@ abstract class EcomDev_PHPUnit_AbstractConstraint
      */
     public function compareValues($expectedValue, $actualValue)
     {
-        $comparatorFactory = PHPUnit_Framework_ComparatorFactory::getDefaultInstance();
+        $comparatorFactory = self::getComparatorFactory();
 
         try {
             $comparator = $comparatorFactory->getComparatorFor(
@@ -300,7 +343,7 @@ abstract class EcomDev_PHPUnit_AbstractConstraint
             );
         }
 
-        catch (PHPUnit_Framework_ComparisonFailure $f) {
+        catch (\SebastianBergmann\Comparator\ComparisonFailure $f) {
             $this->_comparisonFailure = $f;
             return false;
         }
@@ -316,7 +359,7 @@ abstract class EcomDev_PHPUnit_AbstractConstraint
      * @param mixed $expectedValue
      * @param mixed $actualValue
      *
-     * @return PHPUnit_Framework_ComparisonFailure
+     * @return \SebastianBergmann\Comparator\ComparisonFailure
      */
     public function getComparisonFailure($expectedValue, $actualValue)
     {
@@ -326,7 +369,7 @@ abstract class EcomDev_PHPUnit_AbstractConstraint
             return $failure;
         }
 
-        return new PHPUnit_Framework_ComparisonFailure(
+        return new \SebastianBergmann\Comparator\ComparisonFailure(
             $expectedValue,
             $actualValue,
             $this->exportAsString($expectedValue),

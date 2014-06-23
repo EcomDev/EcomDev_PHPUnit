@@ -22,6 +22,9 @@
         <EcomDev_PHPUnitTest>
             <codePool>community</codePool>
             <active>true</active>
+            <depends>
+                <EcomDev_PHPUnit />
+            </depends>
         </EcomDev_PHPUnitTest>
     </modules>
 </config>

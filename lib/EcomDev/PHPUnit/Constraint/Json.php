@@ -73,7 +73,7 @@ class EcomDev_PHPUnit_Constraint_Json extends EcomDev_PHPUnit_AbstractConstraint
             $this->setActualValue($decodedJson);
         } catch (Zend_Json_Exception $e) {
             $this->setActualValue(
-                PHPUnit_Util_Type::shortenedString($other)
+                self::getExporter()->shortenedExport($other)
                 . "\n" . $e->__toString()
             );
             return false;

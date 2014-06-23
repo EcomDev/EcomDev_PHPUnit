@@ -59,9 +59,9 @@ class EcomDev_PHPUnit_Constraint_Config extends PHPUnit_Framework_Constraint
      *
      * @param mixed $other
      * @param string $description
-     * @param PHPUnit_Framework_ComparisonFailure $comparisonFailure
+     * @param \SebastianBergmann\Comparator\ComparisonFailure $comparisonFailure
      */
-    public function fail($other, $description, PHPUnit_Framework_ComparisonFailure $comparisonFailure = NULL)
+    public function fail($other, $description, \SebastianBergmann\Comparator\ComparisonFailure $comparisonFailure = NULL)
     {
         $nodeValue = $this->getNodeValue($other);
 

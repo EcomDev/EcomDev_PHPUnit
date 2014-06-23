@@ -73,6 +73,6 @@ class EcomDev_PHPUnitTest_Test_Lib_Constraint_Config_Node extends EcomDev_PHPUni
 
         $this->assertFalse($constraint->evaluate($actualValue, '', true));
         $this->assertAttributeNotEmpty('_comparisonFailure', $constraint);
-        $this->assertAttributeInstanceOf('PHPUnit_Framework_ComparisonFailure', '_comparisonFailure', $constraint);
+        $this->assertAttributeInstanceOf('\SebastianBergmann\Comparator\ComparisonFailure', '_comparisonFailure', $constraint);
     }
 }
