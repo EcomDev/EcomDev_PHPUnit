@@ -26,7 +26,7 @@ class EcomDev_PHPUnitTest_Test_Helper_Mock extends EcomDev_PHPUnit_Test_Case
         );
 
         $this->assertInstanceOf('EcomDev_PHPUnit_Mock_Proxy', $mock);
-        $this->assertAttributeEquals($this->getGroupedClassName('model', 'catalog/product'), 'className', $mock);
+        $this->assertAttributeEquals($this->getGroupedClassName('model', 'catalog/product'), 'type', $mock);
         $this->assertAttributeContains('getId', 'methods', $mock);
         $this->assertAttributeContains(array('entity_id' => 1), 'constructorArgs', $mock);
     }
@@ -39,7 +39,7 @@ class EcomDev_PHPUnitTest_Test_Helper_Mock extends EcomDev_PHPUnit_Test_Case
         );
 
         $this->assertInstanceOf('EcomDev_PHPUnit_Mock_Proxy', $mock);
-        $this->assertAttributeEquals($this->getGroupedClassName('model', 'catalog/product'), 'className', $mock);
+        $this->assertAttributeEquals($this->getGroupedClassName('model', 'catalog/product'), 'type', $mock);
         $this->assertAttributeContains('getId', 'methods', $mock);
         $this->assertAttributeContains(array('entity_id' => 1), 'constructorArgs', $mock);
     }
@@ -52,7 +52,7 @@ class EcomDev_PHPUnitTest_Test_Helper_Mock extends EcomDev_PHPUnit_Test_Case
         );
 
         $this->assertInstanceOf('EcomDev_PHPUnit_Mock_Proxy', $mock);
-        $this->assertAttributeEquals($this->getGroupedClassName('block', 'catalog/product_view'), 'className', $mock);
+        $this->assertAttributeEquals($this->getGroupedClassName('block', 'catalog/product_view'), 'type', $mock);
         $this->assertAttributeContains('getTemplate', 'methods', $mock);
         $this->assertAttributeContains(array('product_id' => 1), 'constructorArgs', $mock);
     }
@@ -65,7 +65,7 @@ class EcomDev_PHPUnitTest_Test_Helper_Mock extends EcomDev_PHPUnit_Test_Case
         );
 
         $this->assertInstanceOf('EcomDev_PHPUnit_Mock_Proxy', $mock);
-        $this->assertAttributeEquals($this->getGroupedClassName('block', 'catalog/category'), 'className', $mock);
+        $this->assertAttributeEquals($this->getGroupedClassName('block', 'catalog/category'), 'type', $mock);
         $this->assertAttributeContains('getStoreCategories', 'methods', $mock);
         $this->assertAttributeContains('some_value', 'constructorArgs', $mock);
     }
