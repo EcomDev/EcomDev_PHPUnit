@@ -59,6 +59,8 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
                 $this->getAppReflection()->getMethod('applyTestScope')->invoke(null);
             }
 
+
+
             $this->firstLevelTestSuite = $suite;
             Mage::dispatchEvent('phpunit_suite_start_after', array(
                 'suite' => $suite,
@@ -72,7 +74,7 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
                 'listener' => $this
             ));
             EcomDev_PHPUnit_Test_Case_Util::getFixture($suite->getName())
-                ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
+                ->setScope(EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED)
                 ->loadForClass($suite->getName());
 
             $annotations = PHPUnit_Util_Test::parseTestMethodAnnotations(
@@ -102,7 +104,7 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
                 'listener' => $this
             ));
             EcomDev_PHPUnit_Test_Case_Util::getFixture($suite->getName())
-                ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED)
+                ->setScope(EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED)
                 ->discard();
             Mage::dispatchEvent('phpunit_test_case_end_after', array(
                 'suite' => $suite,
@@ -139,8 +141,9 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
             'listener' => $this
         ));
         if ($test instanceof PHPUnit_Framework_TestCase) {
+            EcomDev_PHPUnit_Helper::setTestCase($test);
             EcomDev_PHPUnit_Test_Case_Util::getFixture(get_class($test))
-                ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
+                ->setScope(EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_LOCAL)
                 ->loadByTestCase($test);
             $annotations = $test->getAnnotations();
             EcomDev_PHPUnit_Test_Case_Util::getFixture()
@@ -148,6 +151,7 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
                 ->apply();
 
             EcomDev_PHPUnit_Test_Case_Util::setUp();
+            EcomDev_PHPUnit_Helper::setUp();
         }
         Mage::dispatchEvent('phpunit_test_start_after', array(
             'test' => $test,
@@ -170,7 +174,7 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
 
         if ($test instanceof PHPUnit_Framework_TestCase) {
             EcomDev_PHPUnit_Test_Case_Util::getFixture(get_class($test))
-                ->setScope(EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_LOCAL)
+                ->setScope(EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_LOCAL)
                 ->discard(); // Clear applied fixture
 
             if (EcomDev_PHPUnit_Test_Case_Util::getExpectation(get_class($test))->isLoaded()) {
@@ -178,6 +182,7 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
             }
 
             EcomDev_PHPUnit_Test_Case_Util::tearDown();
+            EcomDev_PHPUnit_Helper::tearDown();
         }
 
         Mage::dispatchEvent('phpunit_test_end_after', array(
@@ -258,4 +263,23 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
         // No action is required
     }
 
+
+    /**
+     * Risky test.
+     *
+     * @param PHPUnit_Framework_Test $test
+     * @param Exception $e
+     * @param float $time
+     * @since  Method available since Release 4.0.0
+     */
+    public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    {
+        Mage::dispatchEvent('phpunit_test_risky', array(
+            'test' => $test,
+            'exception' => $e,
+            'time' => $time,
+            'listener' => $this
+        ));
+        // No action required
+    }
 }

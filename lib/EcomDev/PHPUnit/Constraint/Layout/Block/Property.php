@@ -21,7 +21,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Layout_Block_Property
-    extends EcomDev_PHPUnit_Constraint_Layout_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractLayout
 {
     const TYPE_CONSTRAINT = 'constraint';
 
@@ -42,7 +42,11 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Property
     /**
      * Block property constraint
      *
-     * @return boolean
+     * @param string $blockName
+     * @param mixed|null $propertyName
+     * @param PHPUnit_Framework_Constraint $constraint
+     * @param string $type
+     * @throws PHPUnit_Framework_Exception
      */
     public function __construct($blockName, $propertyName, PHPUnit_Framework_Constraint $constraint,
         $type = self::TYPE_CONSTRAINT)
@@ -75,7 +79,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Property
     /**
      * Returning user friendly actual value
      * (non-PHPdoc)
-     * @see EcomDev_PHPUnit_Constraint_Abstract::getActualValue()
+     * @see EcomDev_PHPUnit_ConstraintAbstract::getActualValue()
      */
     protected function getActualValue($other)
     {
@@ -95,7 +99,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Property
     /**
      * Evaluates a property constraint
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateConstraint($other)

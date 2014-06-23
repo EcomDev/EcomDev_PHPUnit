@@ -26,8 +26,8 @@
  */
 class EcomDev_PHPUnit_Controller_Response_Http
     extends Mage_Core_Controller_Response_Http
-    implements EcomDev_PHPUnit_Isolation_Interface,
-               EcomDev_PHPUnit_Controller_Response_Interface
+    implements EcomDev_PHPUnit_IsolationInterface,
+               EcomDev_PHPUnit_Controller_ResponseInterface
 {
     const LINE_ENDING = "\r\n";
 
@@ -39,7 +39,7 @@ class EcomDev_PHPUnit_Controller_Response_Http
     protected $_sentHeaders = null;
 
     /**
-     * Response that was sent via sendRespose()
+     * Response that was sent via sendResponse()
      * or sendHeaders() or outputBody() methods
      *
      * @var string
@@ -80,7 +80,6 @@ class EcomDev_PHPUnit_Controller_Response_Http
     /**
      * Implementation of sending the headers to output
      *
-     * (non-PHPdoc)
      * @see Mage_Core_Controller_Response_Http::sendHeaders()
      */
     public function sendHeaders()
@@ -91,6 +90,7 @@ class EcomDev_PHPUnit_Controller_Response_Http
         $this->_sentHeaders[null] = 'HTTP/1.1 ' . $this->_httpResponseCode;
 
         foreach ($this->_headersRaw as $headerRaw) {
+            if (strpos($headerRaw, ':') === false) { continue; }
             list($headerName, $headerValue) = explode(':', $headerRaw, 2);
             $headerName = $this->_normalizeHeader($headerName);
             if (isset($this->_sentHeaders[$headerName])) {
@@ -155,7 +155,7 @@ class EcomDev_PHPUnit_Controller_Response_Http
 
     /**
      * Implementation of sending response for test case
-     * (non-PHPdoc)
+     * 
      * @see Mage_Core_Controller_Response_Http::sendResponse()
      */
     public function sendResponse()
@@ -212,7 +212,7 @@ class EcomDev_PHPUnit_Controller_Response_Http
     /**
      * Can send headers implementation for test case
      *
-     * (non-PHPdoc)
+     * 
      * @see Zend_Controller_Response_Abstract::canSendHeaders()
      */
     public function canSendHeaders($throw = false)

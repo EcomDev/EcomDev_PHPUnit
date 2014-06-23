@@ -26,8 +26,8 @@
  */
 class EcomDev_PHPUnit_Controller_Request_Http
     extends Mage_Core_Controller_Request_Http
-    implements EcomDev_PHPUnit_Isolation_Interface,
-               EcomDev_PHPUnit_Controller_Request_Interface
+    implements EcomDev_PHPUnit_IsolationInterface,
+               EcomDev_PHPUnit_Controller_RequestInterface
 {
     /**
      * List of $_SERVER variable changes
@@ -47,7 +47,6 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Initializes forward data
      *
-     * (non-PHPdoc)
      * @see Mage_Core_Controller_Request_Http::initForward()
      */
     public function initForward()
@@ -63,7 +62,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
 
     /**
      * Returns only request uri that was set before
-     * (non-PHPdoc)
+     * 
      * @see Zend_Controller_Request_Http::getRequestUri()
      */
     public function getRequestUri()
@@ -119,7 +118,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     }
 
     /**
-     * Resets $_POST superglobal for test request
+     * Resets $_POST super global for test request
      *
      * @return EcomDev_PHPUnit_Controller_Request_Http
      */
@@ -225,7 +224,6 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Returns header from test request parameters
      *
-     * (non-PHPdoc)
      * @see Zend_Controller_Request_Http::getHeader()
      */
     public function getHeader($header)
@@ -261,7 +259,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     }
 
     /**
-     * Sets value for a particular $_SERVER superglobal array key for test request
+     * Sets value for a particular $_SERVER super global array key for test request
      *
      * Saves original value for returning it back
      *
@@ -281,7 +279,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     }
 
     /**
-     * Sets multiple values for $_SERVER superglobal in test request
+     * Sets multiple values for $_SERVER super global in test request
      *
      * @param array $values
      * @return EcomDev_PHPUnit_Controller_Request_Http
@@ -295,7 +293,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
     }
 
     /**
-     * Resets $_SERVER superglobal to previous state
+     * Resets $_SERVER super global to previous state
      *
      * @return EcomDev_PHPUnit_Controller_Request_Http
      */
@@ -306,7 +304,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
                 $_SERVER[$name] = $value;
             } elseif (isset($_SERVER[$name])) {
                 // If original value was not set,
-                // then unsetting the changed value
+                // then unset the changed value
                 unset($_SERVER[$name]);
             }
         }
@@ -343,12 +341,18 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Returns HTTP host from base url that were set in the controller
      *
-     * (non-PHPdoc)
      * @see Mage_Core_Controller_Request_Http::getHttpHost()
      */
     public function getHttpHost($trimPort = false)
     {
         $baseUrl = $this->getBaseUrl();
+
+        if (!$baseUrl) {
+            $baseUrl = Mage::app()->getConfig()->getNode(
+                EcomDev_PHPUnit_Model_Config::XML_PATH_UNSECURE_BASE_URL
+            );
+        }
+
         $parts = parse_url($baseUrl);
 
         if (!isset($parts['host'])) {
@@ -366,7 +370,6 @@ class EcomDev_PHPUnit_Controller_Request_Http
     /**
      * Returns only base url that was set before
      *
-     * (non-PHPdoc)
      * @see Mage_Core_Controller_Request_Http::getBaseUrl()
      */
     public function getBaseUrl()

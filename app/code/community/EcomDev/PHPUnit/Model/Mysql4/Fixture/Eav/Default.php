@@ -21,7 +21,7 @@
  *
  *
  */
-class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Default extends EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Abstract
+class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Default extends EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
 {
 
 }

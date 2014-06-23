@@ -18,7 +18,7 @@
  */
 
 class EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Default
-	extends EcomDev_PHPUnit_Model_Mysql4_Fixture_Attribute_Abstract
+	extends EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractAttribute
 {
 
 }

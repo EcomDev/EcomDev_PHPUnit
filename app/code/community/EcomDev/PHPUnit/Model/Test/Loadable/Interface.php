@@ -17,30 +17,11 @@
  */
 
 /**
- * Interface for loadable test environment data
  *
+ * @deprecated since 0.4.0
  */
-interface EcomDev_PHPUnit_Model_Test_Loadable_Interface
+interface EcomDev_PHPUnit_Model_Test_LoadableInterface 
+    extends EcomDev_PHPUnit_Model_LoadableInterface
 {
-    /**
-     * Loads external data by test case instance
-     *
-     * @param PHPUnit_Framework_TestCase $testCase
-     * @return EcomDev_PHPUnit_Model_Test_Loadable_Interface
-     */
-    public function loadByTestCase(PHPUnit_Framework_TestCase $testCase);
 
-    /**
-     * Applies external data
-     *
-     * @return EcomDev_PHPUnit_Model_Test_Loadable_Interface
-     */
-    public function apply();
-
-    /**
-     * Reverts applied data
-     *
-     * @return EcomDev_PHPUnit_Model_Test_Loadable_Interface
-     */
-    public function discard();
 }

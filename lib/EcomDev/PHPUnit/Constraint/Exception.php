@@ -27,7 +27,7 @@ class EcomDev_PHPUnit_Constraint_Exception extends PHPUnit_Framework_Expectation
 
     public function __construct($description, $diff = '', $message = '')
     {
-        if (!$diff instanceof PHPUnit_Framework_ComparisonFailure) {
+        if (!$diff instanceof \SebastianBergmann\Comparator\ComparisonFailure) {
             if (!is_scalar($diff)) {
                 $diff = print_r($diff, true);
             }

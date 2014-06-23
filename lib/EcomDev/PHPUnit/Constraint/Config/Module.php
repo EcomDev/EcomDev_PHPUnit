@@ -21,7 +21,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Config_Module
-    extends EcomDev_PHPUnit_Constraint_Config_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
     const XML_PATH_MODULE_NODE = 'modules/%s';
 
@@ -40,11 +40,12 @@ class EcomDev_PHPUnit_Constraint_Config_Module
     protected $_moduleName = null;
 
     /**
-     * Contraint for evaluation of module config node
+     * Constraint for evaluation of module config node
      *
-     * @param string $nodePath
+     * @param string $moduleName
      * @param string $type
      * @param mixed $expectedValue
+     * @internal param string $nodePath
      */
     public function __construct($moduleName, $type, $expectedValue)
     {
@@ -205,6 +206,7 @@ class EcomDev_PHPUnit_Constraint_Config_Module
      *
      * @param Varien_Simplexml_Element $other
      * @param string $operator
+     * @return bool
      */
     protected function compareVersion($other, $operator)
     {

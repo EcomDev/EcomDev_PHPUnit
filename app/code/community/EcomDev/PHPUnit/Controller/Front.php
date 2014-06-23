@@ -23,18 +23,17 @@
 class EcomDev_PHPUnit_Controller_Front extends Mage_Core_Controller_Varien_Front
 {
     /**
-     * Overriden for getting rid
-     * of initialization of routers for each test case
+     * Resets initialized routers before front controller re-initialization
+     * on test cases
      *
-     * (non-PHPdoc)
      * @see Mage_Core_Controller_Varien_Front::init()
      */
     public function init()
     {
-        if (!$this->_routers) {
-            parent::init();
+        if ($this->_routers) {
+            $this->_routers = array();
         }
 
-        return $this;
+        return parent::init();
     }
 }

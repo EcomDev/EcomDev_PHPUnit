@@ -17,11 +17,11 @@
  */
 
 /**
- * Configuration node constaint
+ * Configuration node constraint
  *
  */
 class EcomDev_PHPUnit_Constraint_Config_Node
-    extends EcomDev_PHPUnit_Constraint_Config_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
     const TYPE_EQUALS_STRING = 'equals_string';
     const TYPE_EQUALS_BOOLEAN = 'equals_boolean';
@@ -36,7 +36,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
     /**
      * Contraint for evaluation of config node
      *
-     * @param string $moduleName
+     * @param string $nodePath
      * @param string $type
      * @param mixed $expectedValue
      */
@@ -65,6 +65,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      * Check that node value is equal to string
      *
      * @param Varien_Simplexml_Element $other
+     * @return bool
      */
     protected function evaluateEqualsString($other)
     {
@@ -85,6 +86,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      * Check that node value is equal to number
      *
      * @param Varien_Simplexml_Element $other
+     * @return bool
      */
     protected function evaluateEqualsNumber($other)
     {
@@ -105,6 +107,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      * Check that node value is a string with such properties
      *
      * @param Varien_Simplexml_Element $other
+     * @return bool
      */
     protected function evaluateLessThan($other)
     {
@@ -125,6 +128,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      * Check that node value is a string with such properties
      *
      * @param Varien_Simplexml_Element $other
+     * @return bool
      */
     protected function evaluateGreaterThan($other)
     {
@@ -146,6 +150,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      * Checks that string is not false value of a config flag
      *
      * @param Varien_Simplexml_Element $other
+     * @return bool
      */
     protected function evaluateEqualsBoolean($other)
     {
@@ -167,6 +172,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      * Checks expected xml value with current configuration
      *
      * @param Varien_Simplexml_Element $other
+     * @return bool
      * @throws RuntimeException if expected value is a valid xml object
      */
     protected function evaluateEqualsXml($other)
@@ -243,6 +249,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
      * Values are comma separated string
      *
      * @param Varien_Simplexml_Element $other
+     * @throws RuntimeException
      * @return boolean
      */
     protected function evaluateContainValues($other)
@@ -251,7 +258,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
             throw new RuntimeException(sprintf(
                 'Config node "%s" is not a string of comma separated values, passed expected value: %s',
                 $this->_nodePath,
-                PHPUnit_Util_Type::export($this->_expectedValue)
+                self::getExporter()->export($this->_expectedValue)
             ));
         }
 
@@ -272,7 +279,7 @@ class EcomDev_PHPUnit_Constraint_Config_Node
     protected function textContainValues()
     {
         return sprintf('contains "%s" in comma separated value list',
-                       PHPUnit_Util_Type::export($this->_expectedValue));
+                       self::getExporter()->export($this->_expectedValue));
     }
 
     /**

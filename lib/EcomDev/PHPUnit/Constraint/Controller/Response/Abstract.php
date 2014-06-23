@@ -17,22 +17,11 @@
  */
 
 /**
- * Abstract constraint for controller response assetions
+ * @deprecated since 0.4.0
  *
  */
 abstract class EcomDev_PHPUnit_Constraint_Controller_Response_Abstract
-    extends EcomDev_PHPUnit_Constraint_Abstract
+    extends EcomDev_PHPUnit_Constraint_Controller_AbstractResponse
 {
-    /**
-     * Custom failure description for showing response related errors
-     * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
-     */
-    protected function customFailureDescription($other)
-    {
-        return sprintf(
-            'request %s.',
-            $this->toString()
-        );
-    }
+    
 }

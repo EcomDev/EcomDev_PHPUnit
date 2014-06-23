@@ -21,7 +21,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Controller_Response_Body
-    extends EcomDev_PHPUnit_Constraint_Controller_Response_Abstract
+    extends EcomDev_PHPUnit_Constraint_Controller_AbstractResponse
 {
     const TYPE_CONSTRAINT = 'constraint';
 
@@ -44,7 +44,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Response_Body
      * Evaluates controller response body is evaluated by constraint
      *
      *
-     * @param EcomDev_PHPUnit_Controller_Response_Interface $other
+     * @param EcomDev_PHPUnit_Controller_ResponseInterface $other
      */
     protected function evaluateConstraint($other)
     {

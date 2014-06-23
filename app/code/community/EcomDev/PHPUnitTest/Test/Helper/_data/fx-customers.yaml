@@ -1,0 +1,39 @@
+eav:
+  customer:
+    - entity_id: 1 # Customer with default billing and shipping addresses
+      attribute_set_id: 0 # Fix issue with customer entity
+      website_id: 1
+      store_id: 1
+      created_in: Default Store
+      group_id: 1
+      firstname: John
+      lastname: Doe
+      email: john@doe.com
+      pasword_hash: d1bcc360d05a6bdd7484784f43660c88:hG
+      default_billing: 1
+      default_shipping: 1
+    - entity_id: 2 # Customer without addresses
+      attribute_set_id: 0 # Fix issue with customer entity
+      website_id: 1
+      store_id: 1
+      created_in: Default Store
+      group_id: 1
+      firstname: Jane
+      lastname: Doe
+      email: jane@doe.com
+      pasword_hash: d1bcc360d05a6bdd7484784f43660c88:hG
+  customer_address:
+    - entity_id: 1 # Let him to be a guy from Nevada
+      attribute_set_id: 0 # Fix issue with customer address entity
+      customer_id: 1
+      parent_id: 1
+      firstname: John
+      lastname: Doe
+      country_id: US
+      region_id: 39
+      region_code: NV
+      region: Nevada
+      postcode: 89001
+      city: Alamo
+      telephone: 555-55-55
+      street: Address 123

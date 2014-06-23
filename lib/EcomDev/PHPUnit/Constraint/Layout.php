@@ -20,12 +20,13 @@
  * Constraint for main layout functionality
  *
  */
-class EcomDev_PHPUnit_Constraint_Layout extends EcomDev_PHPUnit_Constraint_Layout_Abstract
+class EcomDev_PHPUnit_Constraint_Layout 
+    extends EcomDev_PHPUnit_Constraint_AbstractLayout
 {
     const TYPE_LOADED = 'loaded';
     const TYPE_RENDERED = 'rendered';
 
-    const ACTION_RENDER = EcomDev_PHPUnit_Constraint_Layout_Logger_Interface::ACTION_RENDER;
+    const ACTION_RENDER = EcomDev_PHPUnit_Constraint_Layout_LoggerInterface::ACTION_RENDER;
 
     /**
      * Constraint for main layout functions
@@ -42,7 +43,7 @@ class EcomDev_PHPUnit_Constraint_Layout extends EcomDev_PHPUnit_Constraint_Layou
      * Evaluates that layout was loaded
      *
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateLoaded($other)
@@ -64,7 +65,7 @@ class EcomDev_PHPUnit_Constraint_Layout extends EcomDev_PHPUnit_Constraint_Layou
      * Evaluates that layout was rendered
      *
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateRendered($other)

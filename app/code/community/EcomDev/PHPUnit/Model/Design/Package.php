@@ -2,13 +2,13 @@
 
 class EcomDev_PHPUnit_Model_Design_Package
     extends Mage_Core_Model_Design_Package
-    implements EcomDev_PHPUnit_Design_Package_Interface,
-               EcomDev_PHPUnit_Isolation_Interface
+    implements EcomDev_PHPUnit_Design_PackageInterface,
+               EcomDev_PHPUnit_IsolationInterface
 
 {
     /**
-     * Asserts layout file existance in design packages,
-     * and returns actual and expected filenames as result
+     * Asserts layout file existence in design packages,
+     * and returns actual and expected file names as result
      *
      * @param string $fileName
      * @param string $area

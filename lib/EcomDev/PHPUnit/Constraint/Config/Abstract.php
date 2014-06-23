@@ -17,113 +17,11 @@
  */
 
 /**
- * Abstract class for constraints based on configuration
+ * @deprecated since 0.4.0
  *
  */
-abstract class EcomDev_PHPUnit_Constraint_Config_Abstract
-    extends EcomDev_PHPUnit_Constraint_Abstract
-    implements EcomDev_PHPUnit_Constraint_Config_Interface
+abstract class EcomDev_PHPUnit_Constraint_Config_Abstract 
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
-    /**
-     * Config node path defined in the constructor
-     *
-     * @var string
-     */
-    protected $_nodePath = null;
 
-    /**
-     * Constraint constructor
-     *
-     * @param string $nodePath
-     * @param string $type
-     * @param mixed $expectedValue
-     */
-    public function __construct($nodePath, $type, $expectedValue = null)
-    {
-        if (empty($nodePath) || !is_string($nodePath)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string', $type);
-        }
-
-        $this->_nodePath = $nodePath;
-        parent::__construct($type, $expectedValue);
-    }
-
-    /**
-     * Returns node path for checking
-     *
-     * (non-PHPdoc)
-     * @see EcomDev_PHPUnit_Constraint_Config_Interface::getNodePath()
-     */
-    public function getNodePath()
-    {
-        return $this->_nodePath;
-    }
-
-    /**
-     * Automatically evaluate to false if the node was not found
-     *
-     * (non-PHPdoc)
-     * @see EcomDev_PHPUnit_Constraint_Abstract::evaluate()
-     */
-    public function evaluate($other, $description = '', $returnResult = false)
-    {
-        if ($other === false) {
-            // If node was not found, than evaluation fails
-            return false;
-        }
-
-        return parent::evaluate($other, $description, $returnResult);
-    }
-
-
-    /**
-     * Returns a scalar representation of actual value,
-     * Returns $other if internal acutal value is not set
-     *
-     * @param Varien_Simplexml_Element $other
-     * @return scalar
-     */
-    protected function getActualValue($other = null)
-    {
-        if (!$this->_useActualValue && $other->hasChildren()) {
-            return $this->getXmlAsDom($this->_expectedValue);
-        } elseif (!$this->_useActualValue) {
-            return (string) $other;
-        }
-
-        return parent::getActualValue($other);
-    }
-
-    /**
-     * Returns a scalar representation of expected value
-     *
-     * @return string
-     */
-    protected function getExpectedValue()
-    {
-        if ($this->_expectedValue instanceof Varien_Simplexml_Element) {
-            return $this->getXmlAsDom($this->_expectedValue);
-        }
-
-        return parent::getExpectedValue();
-    }
-
-    /**
-     * Converts xml to dom object
-     *
-     * @param $xmlValue
-     * @return DOMDocument
-     */
-    protected function getXmlAsDom($xmlValue)
-    {
-        if ($xmlValue instanceof SimpleXMLElement) {
-            $xmlValue = $xmlValue->asXML();
-        }
-
-        $domValue = new DOMDocument;
-        $domValue->preserveWhiteSpace = FALSE;
-        $domValue->loadXML($xmlValue);
-
-        return $domValue;
-    }
 }

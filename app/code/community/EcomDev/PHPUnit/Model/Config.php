@@ -17,7 +17,7 @@
  */
 
 /**
- * Configution model extended to make unit tests to be available
+ * Configuration model extended to make unit tests to be available
  * at separate configuration scope
  *
  */
@@ -55,6 +55,13 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
      * @var array
      */
     protected $_cacheSections = array();
+
+    /**
+     * Object containing parsed local.xml.phpunit
+     *
+     * @var null
+     */
+    protected $_localXmlForTest = null;
 
 	/**
      * Load config data from DB
@@ -111,9 +118,8 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     }
 
     /**
-     * Overriden for test case model instance creation mocking
+     * Overridden for test case model instance creation mocking
      *
-     * (non-PHPdoc)
      * @see Mage_Core_Model_Config::getModelInstance()
      */
     public function getModelInstance($modelClass='', $constructArguments=array())
@@ -126,7 +132,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     }
 
     /**
-     * Overriden for test case model instance creation mocking
+     * Overridden for test case model instance creation mocking
      *
      * (non-PHPdoc)
      * @see Mage_Core_Model_Config::getModelInstance()
@@ -163,6 +169,7 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     /**
      * Loads scope snapshot
      *
+     * @throws RuntimeException
      * @return EcomDev_PHPUnit_Model_Config
      */
     public function loadScopeSnapshot()
@@ -216,6 +223,33 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
     }
 
     /**
+     * Define if module is allowed
+     *
+     * Magento core allows use of a whitelist of modules supplied via the
+     * addAllowedModules method.  EcomDev_PHPUnit extends this to allow a
+     * blacklist of modules to be supplied via local.xml.phpunit.
+     *
+     * @see Mage_Core_Model_Config::_isAllowedModule()
+     * @param  string $moduleName
+     * @return bool
+     */
+    protected function _isAllowedModule($moduleName)
+    {
+        if (!parent::_isAllowedModule($moduleName)) {
+            return false;
+        }
+
+        $localXml = $this->_loadLocalXmlForTest();
+        if ($localXml) {
+            $node = $localXml->getNode("phpunit/disable_modules/$moduleName");
+            return $node === false;
+        }
+
+        return true;
+    }
+
+
+    /**
      * (non-PHPdoc)
      * @see Mage_Core_Model_Config::loadModules()
      */
@@ -235,10 +269,8 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
      */
     protected function _loadTestConfig()
     {
-        $merge = clone $this->_prototype;
-
         try {
-            if ($merge->loadFile($this->_getLocalXmlForTest())) {
+            if ($merge = $this->_loadLocalXmlForTest()) {
                 $this->_checkDbCredentialForDuplicate($this, $merge);
                 $this->_checkBaseUrl($this, $merge);
                 $this->extend($merge);
@@ -251,6 +283,20 @@ class EcomDev_PHPUnit_Model_Config extends Mage_Core_Model_Config
         }
 
         return $this;
+    }
+
+    /**
+     * Parse the phpunit specific local configuration.  This may be loaded by
+     * and used by _isAllowedModule before it's merged into the merged config.
+     *
+     * @return Mage_Core_Model_Config_Base|null
+     */
+    protected function _loadLocalXmlForTest() {
+        if ($this->_localXmlForTest === null) {
+            $this->_localXmlForTest = clone $this->_prototype;
+            $this->_localXmlForTest->loadFile($this->_getLocalXmlForTest());
+        }
+        return $this->_localXmlForTest;
     }
 
     /**

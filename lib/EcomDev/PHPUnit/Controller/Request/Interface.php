@@ -17,50 +17,10 @@
  */
 
 /**
- * Interface for request object, that will be asserted
- *
+ * @deprecated since 0.4.0
  */
-interface EcomDev_PHPUnit_Controller_Request_Interface
+interface EcomDev_PHPUnit_Controller_Request_Interface 
+    extends EcomDev_PHPUnit_Controller_RequestInterface
 {
-    /**
-     * Returns current route name
-     *
-     * @return string
-     */
-    public function getRouteName();
-
-    /**
-     * Returns current controller name
-     *
-     * @return string
-     */
-    public function getControllerName();
-
-    /**
-     * Returns current controller module
-     *
-     * @return string
-     */
-    public function getControllerModule();
-
-    /**
-     * Returns current controller action name
-     *
-     * @return string
-     */
-    public function getActionName();
-
-    /**
-     * Retrieve property's value which was before forward call.
-     *
-     * @param string $name
-     * @return array|string|null
-     */
-    public function getBeforeForwardInfo($name = null);
-
-    /**
-     * Check whether request was dispatched
-     *
-     */
-    public function isDispatched();
+   
 }

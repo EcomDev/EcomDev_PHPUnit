@@ -17,10 +17,10 @@
  */
 
 /**
- * Constaint related to main layout block functionality
+ * Constraint related to main layout block functionality
  *
  */
-class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint_Layout_Abstract
+class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint_AbstractLayout
 {
     const TYPE_CREATED = 'created';
     const TYPE_REMOVED = 'removed';
@@ -33,9 +33,9 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     const TYPE_PARENT_NAME = 'parent_name';
     const TYPE_ROOT_LEVEL = 'root_level';
 
-    const ACTION_BLOCK_CREATED = EcomDev_PHPUnit_Constraint_Layout_Logger_Interface::ACTION_BLOCK_CREATED;
-    const ACTION_BLOCK_RENDERED = EcomDev_PHPUnit_Constraint_Layout_Logger_Interface::ACTION_BLOCK_RENDERED;
-    const ACTION_BLOCK_REMOVED = EcomDev_PHPUnit_Constraint_Layout_Logger_Interface::ACTION_BLOCK_REMOVED;
+    const ACTION_BLOCK_CREATED = EcomDev_PHPUnit_Constraint_Layout_LoggerInterface::ACTION_BLOCK_CREATED;
+    const ACTION_BLOCK_RENDERED = EcomDev_PHPUnit_Constraint_Layout_LoggerInterface::ACTION_BLOCK_RENDERED;
+    const ACTION_BLOCK_REMOVED = EcomDev_PHPUnit_Constraint_Layout_LoggerInterface::ACTION_BLOCK_REMOVED;
 
     /**
      * Block name for constraint
@@ -45,11 +45,12 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     protected $_blockName = null;
 
     /**
-     * Constaint related to main layout block functionality
+     * Constraint related to main layout block functionality
      *
      * @param string $blockName
      * @param string $type
      * @param string|null $expectedValue
+     * @throws PHPUnit_Framework_Exception
      */
     public function __construct($blockName, $type, $expectedValue = null)
     {
@@ -78,7 +79,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block was created
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateCreated($other)
@@ -99,7 +100,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block was rendered
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateRendered($other)
@@ -120,7 +121,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block rendered is evaluated by expected constraint
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateRenderedContent($other)
@@ -150,7 +151,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block was removed
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateRemoved($other)
@@ -177,7 +178,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block was placed after expected one
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateAfter($other)
@@ -200,7 +201,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block was placed before expected one
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateBefore($other)
@@ -223,7 +224,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block is a type of expected
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateType($other)
@@ -251,7 +252,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block is an instance of expected class/interface
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateInstanceOf($other)
@@ -281,7 +282,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block is a root level block
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateRootLevel($other)
@@ -307,7 +308,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
     /**
      * Evaluates that layout block is a child block of expected one
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateParentName($other)

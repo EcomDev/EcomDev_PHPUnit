@@ -17,20 +17,20 @@
  */
 
 /**
- * Constaint related to main layout block action calls functionality
+ * Constraint related to main layout block action calls functionality
  *
  */
-class EcomDev_PHPUnit_Constraint_Layout_Block_Action extends EcomDev_PHPUnit_Constraint_Layout_Abstract
+class EcomDev_PHPUnit_Constraint_Layout_Block_Action extends EcomDev_PHPUnit_Constraint_AbstractLayout
 {
     const TYPE_INVOKED = 'invoked';
     const TYPE_INVOKED_AT_LEAST = 'invoked_at_least';
     const TYPE_INVOKED_EXACTLY = 'invoked_exactly';
 
-    const ACTION_BLOCK_ACTION = EcomDev_PHPUnit_Constraint_Layout_Logger_Interface::ACTION_BLOCK_ACTION;
+    const ACTION_BLOCK_ACTION = EcomDev_PHPUnit_Constraint_Layout_LoggerInterface::ACTION_BLOCK_ACTION;
 
-    const SEARCH_TYPE_OR = EcomDev_PHPUnit_Constraint_Layout_Logger_Interface::SEARCH_TYPE_OR;
-    const SEARCH_TYPE_EXACT = EcomDev_PHPUnit_Constraint_Layout_Logger_Interface::SEARCH_TYPE_EXACT;
-    const SEARCH_TYPE_AND = EcomDev_PHPUnit_Constraint_Layout_Logger_Interface::SEARCH_TYPE_AND;
+    const SEARCH_TYPE_OR = EcomDev_PHPUnit_Constraint_Layout_LoggerInterface::SEARCH_TYPE_OR;
+    const SEARCH_TYPE_EXACT = EcomDev_PHPUnit_Constraint_Layout_LoggerInterface::SEARCH_TYPE_EXACT;
+    const SEARCH_TYPE_AND = EcomDev_PHPUnit_Constraint_Layout_LoggerInterface::SEARCH_TYPE_AND;
 
     /**
      * Block name for the action
@@ -74,8 +74,9 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Action extends EcomDev_PHPUnit_Con
      * @param string $method
      * @param string $type
      * @param int|null $invocationCount
-     * @param array|null $parameters
+     * @param array $arguments
      * @param string $searchType
+     * @throws PHPUnit_Framework_Exception
      */
     public function __construct($blockName, $method, $type, $invocationCount = null,
         array $arguments = null, $searchType = self::SEARCH_TYPE_AND)
@@ -108,7 +109,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Action extends EcomDev_PHPUnit_Con
     /**
      * Finds records in layout logger history
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return array
      */
     protected function findRecords($other)
@@ -128,7 +129,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Action extends EcomDev_PHPUnit_Con
     /**
      * Evaluates that method was invoked at least once
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateInvoked($other)
@@ -158,7 +159,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Action extends EcomDev_PHPUnit_Con
      * Evaluates that method was invoked
      * at least expected number of times
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateInvokedAtLeast($other)
@@ -181,7 +182,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Action extends EcomDev_PHPUnit_Con
      * Evaluates that method was invoked
      * exactly expected number of times
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateInvokedExactly($other)

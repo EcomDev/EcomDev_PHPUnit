@@ -21,7 +21,7 @@
  *
  */
 class EcomDev_PHPUnit_Constraint_Config_Resource_Script
-    extends EcomDev_PHPUnit_Constraint_Config_Abstract
+    extends EcomDev_PHPUnit_Constraint_AbstractConfig
 {
     const XML_PATH_RESOURCES_NODE = 'global/resources';
 
@@ -58,12 +58,16 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
     protected $_resourceName = null;
 
     /**
-     * Contraint for evaluation of module config node
+     * Constraint for evaluation of module config node
      *
-     * @param string $nodePath
+     * @param string $moduleName
      * @param string $type
      * @param string $moduleDirectory
-     * @param mixed $expectedValue
+     * @param null|string $resourceName
+     * @param null|string $expectedVersions
+     * @throws PHPUnit_Framework_Exception
+     * @internal param string $nodePath
+     * @internal param mixed $expectedValue
      */
     public function __construct($moduleName, $type, $moduleDirectory, $resourceName = null, $expectedVersions = null)
     {
@@ -102,12 +106,12 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
         
         return false;
     }
-    
+
     /**
      * Returns list of scripts that are presented in resource directory
      *
      * @param string|array $directory
-     * @param string $fromVersion
+     * @return array
      */
     protected function parseVersions($directory)
     {
@@ -139,7 +143,6 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
                 'upgrade' => array()
             )
         );
-
 
         if (!is_dir($directory)) {
             return $versions;
@@ -272,6 +275,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
         if ($to !== null && version_compare($latestVersionFound, $to) === -1) {
             $expectedVersions[] = sprintf('%supgrade-%s-%s.php', $scriptPrefix, $latestVersionFound, $to);
         } elseif ($to !== null && version_compare($latestVersionFound, $to) === 1 && $expectedVersions) {
+            array_pop($actualVersions);
             array_pop($expectedVersions);
         }
 
@@ -349,7 +353,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource_Script
     /**
      * Text represetnation of scheme setup scripts versions chain
      *
-     * @return
+     * @return string
      */
     public function textScriptData()
     {

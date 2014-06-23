@@ -20,13 +20,13 @@
  * Constraint for testing layout handles load priority
  *
  */
-class EcomDev_PHPUnit_Constraint_Layout_Handle extends EcomDev_PHPUnit_Constraint_Layout_Abstract
+class EcomDev_PHPUnit_Constraint_Layout_Handle extends EcomDev_PHPUnit_Constraint_AbstractLayout
 {
     const TYPE_LOADED = 'loaded';
     const TYPE_LOADED_AFTER = 'loaded_after';
     const TYPE_LOADED_BEFORE = 'loaded_before';
 
-    const ACTION_HANDLE_LOADED =  EcomDev_PHPUnit_Constraint_Layout_Logger_Interface::ACTION_HANDLE_LOADED;
+    const ACTION_HANDLE_LOADED =  EcomDev_PHPUnit_Constraint_Layout_LoggerInterface::ACTION_HANDLE_LOADED;
 
     /**
      * Position element of layout handle,
@@ -50,6 +50,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Handle extends EcomDev_PHPUnit_Constrain
      * @param string $handle layout handle name
      * @param string $type
      * @param string|null $position layout handle position
+     * @throws PHPUnit_Framework_Exception
      */
     public function __construct($handle, $type, $position = null)
     {
@@ -78,7 +79,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Handle extends EcomDev_PHPUnit_Constrain
      * Evaluates that layout handle was loaded
      *
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateLoaded($other)
@@ -111,7 +112,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Handle extends EcomDev_PHPUnit_Constrain
     /**
      * Evaluates that layout handle was loaded after another
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateLoadedAfter($other)
@@ -156,7 +157,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Handle extends EcomDev_PHPUnit_Constrain
     /**
      * Evaluates that layout handle was loaded after another
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Logger_Interface $other
+     * @param EcomDev_PHPUnit_Constraint_Layout_LoggerInterface $other
      * @return boolean
      */
     protected function evaluateLoadedBefore($other)

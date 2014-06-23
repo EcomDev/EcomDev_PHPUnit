@@ -16,7 +16,17 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
+
 require_once 'abstract.php';
+
+// Only this workaround fixes Magento core issue in 1.8 :(
+$abstractShell = new ReflectionClass('Mage_Shell_Abstract');
+
+define('PHPUNIT_MAGE_PATH', dirname(dirname($abstractShell->getFileName())));
+
+$appFile = PHPUNIT_MAGE_PATH . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
+
+require_once $appFile;
 
 /**
  * Shell script for autoinstalling of required files for phpunit extension
@@ -27,6 +37,7 @@ class EcomDev_PHPUnit_Install extends Mage_Shell_Abstract
 {
     const FILE_LOCAL_XML = 'app/etc/local.xml.phpunit';
     const FILE_PHPUNIT_XML = 'phpunit.xml.dist';
+    const FILE_CONFIG_XML = 'app/code/community/EcomDev/PHPUnit/etc/config.xml';
 
     const OLD_FILE_MATCH = '/\\<file\\>UnitTests.php\\<\\/file\\>/';
 
@@ -109,10 +120,14 @@ Defined actions:
     --db-pwd      <string>   Changes test DB password
     --same-db     <bool>     Changes same db usage flag for unit tests
     --url-rewrite <bool>     Changes use of url rewrites for unit tests
-    --base_url    <string>   Changes base url for controller tests
+    --base-url    <string>   Changes base url for controller tests
+
+  show-version               Shows current version of the module
 
   change-status              Changes status of EcomDev_PHPUnitTest module, that contains built in supplied tests
     --enable                 Used to determine the status of it. If not specified, it will be disabled
+
+  fix-autoloader             Patches Varien_Autoload class to suppress include warning, that breaks class_exists().
 
 USAGE;
     }
@@ -122,15 +137,12 @@ USAGE;
      */
     public function run()
     {
-        // We need only include mage, but not run app
-        require_once $this->_getRootPath() . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
-
         if (!$this->getArg('action') && !$this->getArg('a')) {
             die($this->usageHelp());
         }
 
         $this->_args['module'] = dirname(dirname(__FILE__));
-        $this->_args['project'] = dirname(getcwd());
+        $this->_args['project'] = PHPUNIT_MAGE_PATH;
 
         $action = $this->getArg('action') ?: $this->getArg('a');
         switch ($action) {
@@ -155,6 +167,14 @@ USAGE;
                 $this->_changeBuiltInTestStatus($this->getArg('enable'));
                 $this->_cleanCache();
                 echo "EcomDev_PHPUnitTest module status was changed\n";
+                break;
+            case 'fix-autoloader':
+                $this->_fixAutoloader();
+                break;
+            case 'show-version':
+                $version = $this->_retrieveVersion();
+                $this->_cleanCache();
+                echo "EcomDev_PHPUnit module version is {$version} \n";
                 break;
             default:
                 $this->_showHelp();
@@ -298,6 +318,51 @@ USAGE;
             $localXmlConfig->asNiceXml($localXml);
             printf("Saved updated configuration at %s\n", $localXml);
         }
+    }
+
+    /**
+     * Fixes Varien_Autoloader problem on phpunit test cases
+     *
+     *
+     */
+    protected function _fixAutoloader()
+    {
+        $autoloaderFile = $this->getArg('project') . DIRECTORY_SEPARATOR . 'lib/Varien/Autoload.php';
+
+        file_put_contents(
+            $autoloaderFile,
+            str_replace(
+                'return include $classFile;',
+                'return @include $classFile;',
+                file_get_contents($autoloaderFile)
+            )
+        );
+
+        echo "Varien_Autoloader was patched\n";
+    }
+
+    /**
+     * Retrieve current module version from the config.xml file
+     *
+     * @return string
+     */
+    protected function _retrieveVersion()
+    {
+        if (!file_exists($this->getArg('project') . DS . self::FILE_CONFIG_XML)) {
+            die('Cannot find module config file!');
+        }
+
+        $configFilePath = $this->getArg('project') . DS . self::FILE_CONFIG_XML;
+
+        /** @var $moduleConfigXml Varien_Simplexml_Element */
+        $moduleConfigXml = simplexml_load_file($configFilePath,  'Varien_Simplexml_Element');
+
+        if (!isset($moduleConfigXml->modules->EcomDev_PHPUnit->version)) {
+            die('Cannot retrieve module version!');
+        }
+        $version = $moduleConfigXml->modules->EcomDev_PHPUnit->version;
+
+        return $version;
     }
 }
 

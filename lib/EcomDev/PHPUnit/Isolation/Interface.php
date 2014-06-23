@@ -17,15 +17,14 @@
  */
 
 /**
- * Isolation interface,
- * should be implemented on resetable Magento entities,
- * that should be isolated during the test
- *
+ * 
+ * @deprecated after 0.4.0
  */
-interface EcomDev_PHPUnit_Isolation_Interface
+interface EcomDev_PHPUnit_Isolation_Interface 
+    extends EcomDev_PHPUnit_IsolationInterface
 {
     /**
-     * Unified method for reseting data
+     * Unified method for data reset
      * in currently isolated object
      *
      */

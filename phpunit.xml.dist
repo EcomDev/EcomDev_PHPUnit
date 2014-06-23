@@ -35,6 +35,7 @@
             <!-- Exclude Varien & Zend libraries -->
             <directory suffix=".php">lib/Varien</directory>
             <directory suffix=".php">lib/Zend</directory>
+            <directory suffix=".php">lib/Magento</directory>
        </blacklist>  
    </filter>
    <logging>

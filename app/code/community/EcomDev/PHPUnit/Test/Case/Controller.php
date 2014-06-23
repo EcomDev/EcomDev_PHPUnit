@@ -86,7 +86,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     }
 
     /**
-     * Layout handle functionality constaint
+     * Layout handle functionality constraint
      *
      * @param string $handle handle name
      * @param string $type
@@ -112,7 +112,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     }
 
     /**
-     * Layout block action calls functionality constaint
+     * Layout block action calls functionality constraint
      *
      * @param string $blockName
      * @param string $method
@@ -197,7 +197,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     }
 
     /**
-     * Assert that controller request doesn't matches assertion type
+     * Assert that controller request does not matches assertion type
      *
      * @param string $type type of assertion
      * @param string|null $expectedValue
@@ -437,7 +437,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert shortcut for response assertions
      *
-     * @param EcomDev_PHPUnit_Constraint_Controller_Response_Abstract $constraint
+     * @param PHPUnit_Framework_Constraint $constraint
      * @param string $message
      */
     public static function assertThatResponse(PHPUnit_Framework_Constraint $constraint, $message)
@@ -779,7 +779,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param array $expectedValue
      * @param string $message
-     * @param strign $matchType
+     * @param string $matchType
      */
     public static function assertResponseBodyJsonMatch(array $expectedValue, $message = '',
         $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
@@ -797,7 +797,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param array $expectedValue
      * @param string $message
-     * @param strign $matchType
+     * @param string $matchType
      */
     public static function assertResponseBodyJsonNotMatch(array $expectedValue, $message = '',
         $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
@@ -813,6 +813,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert HTTP response code value
      *
      * @param int $code
+     * @param string $message
      */
     public static function assertResponseHttpCode($code, $message = '')
     {
@@ -828,7 +829,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert that controller response is redirect
      *
      * @param string $message
-     * @param int|null $code
+     * @param int|null $responseCode
+     * @internal param int|null $code
      */
     public static function assertRedirect($message = '', $responseCode = null)
     {
@@ -860,7 +862,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * to a specific url
      *
      * @param string $route route path
-     * @param string $params route params
+     * @param array $params route params
      * @param string $message
      */
     public static function assertRedirectTo($route, array $params = array(), $message = '')
@@ -937,8 +939,9 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert shortcut for layout constaints
      *
-     * @param EcomDev_PHPUnit_Constraint_Layout_Abstract|PHPUnit_Framework_Constraint $constaint
+     * @param PHPUnit_Framework_Constraint $constraint
      * @param string $message
+     * @internal param \EcomDev_PHPUnit_Constraint_AbstractLayout|\PHPUnit_Framework_Constraint $constaint
      */
     public static function assertThatLayout(PHPUnit_Framework_Constraint $constraint, $message)
     {
@@ -1042,6 +1045,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      *
      * @param string $handle
+     * @param string $after
      * @param string $message
      */
     public static function assertLayoutHandleLoadedAfter($handle, $after, $message = '')
@@ -1061,6 +1065,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      *
      * @param string $handle
+     * @param string $before
      * @param string $message
      */
     public static function assertLayoutHandleLoadedBefore($handle, $before, $message = '')
@@ -1427,8 +1432,9 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $blockName
      * @param string $method
      * @param string $message
-     * @param array|null $params
+     * @param array $arguments
      * @param string $searchType
+     * @internal param array|null $params
      */
     public static function assertLayoutBlockActionInvoked($blockName, $method, $message = '',
         array $arguments = null, $searchType = EcomDev_PHPUnit_Constraint_Layout_Block_Action::SEARCH_TYPE_AND)
@@ -1450,7 +1456,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $blockName
      * @param string $method
      * @param string $message
-     * @param array|null $params
+     * @param array|null $arguments
      * @param string $searchType
      */
     public static function assertLayoutBlockActionNotInvoked($blockName, $method, $message = '',
@@ -1474,18 +1480,20 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param string $blockName
      * @param string $method
+     * @param int $invocationCount
      * @param string $message
-     * @param array|null $params
+     * @param array $arguments
      * @param string $searchType
+     * @internal param array|null $params
      */
-    public static function assertLayoutBlockActionInvokedAtLeast($blockName, $method, $invokationCount,
+    public static function assertLayoutBlockActionInvokedAtLeast($blockName, $method, $invocationCount,
         $message = '', array $arguments = null,
         $searchType = EcomDev_PHPUnit_Constraint_Layout_Block_Action::SEARCH_TYPE_AND)
     {
         self::assertThatLayout(
             self::layoutBlockAction(
                 $blockName, $method,
-                EcomDev_PHPUnit_Constraint_Layout_Block_Action::TYPE_INVOKED_AT_LEAST, $invokationCount,
+                EcomDev_PHPUnit_Constraint_Layout_Block_Action::TYPE_INVOKED_AT_LEAST, $invocationCount,
                 $arguments, $searchType
             ),
             $message
@@ -1498,18 +1506,20 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param string $blockName
      * @param string $method
+     * @param int $invocationCount
      * @param string $message
-     * @param array|null $params
+     * @param array $arguments
      * @param string $searchType
+     * @internal param array|null $params
      */
-    public static function assertLayoutBlockActionInvokedExactly($blockName, $method, $invokationCount,
+    public static function assertLayoutBlockActionInvokedExactly($blockName, $method, $invocationCount,
         $message = '', array $arguments = null,
         $searchType = EcomDev_PHPUnit_Constraint_Layout_Block_Action::SEARCH_TYPE_AND)
     {
         self::assertThatLayout(
             self::layoutBlockAction(
                 $blockName, $method,
-                EcomDev_PHPUnit_Constraint_Layout_Block_Action::TYPE_INVOKED_EXACTLY, $invokationCount,
+                EcomDev_PHPUnit_Constraint_Layout_Block_Action::TYPE_INVOKED_EXACTLY, $invocationCount,
                 $arguments, $searchType
             ),
             $message
@@ -1559,7 +1569,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $propertyName
      * @param mixed $expectedValue
      * @param string $message
-     * @param float  $delta
+     * @param float|int $delta
      * @param integer $maxDepth
      * @param boolean $canonicalize
      * @param boolean $ignoreCase
@@ -1582,7 +1592,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * @param string $propertyName
      * @param mixed $expectedValue
      * @param string $message
-     * @param float  $delta
+     * @param float|int $delta
      * @param integer $maxDepth
      * @param boolean $canonicalize
      * @param boolean $ignoreCase
@@ -1772,6 +1782,73 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
        );
     }
 
+
+    /**
+     * Dispatch a request.
+     *
+     * @param $baseUrl
+     * @param $requestUri
+     * @param $urlModel
+     *
+     * @return $this
+     */
+    protected function _dispatch($baseUrl, $requestUri, $urlModel)
+    {
+        $this->getRequest()->resetInternalProperties();
+
+        $this->getRequest()->setBaseUrl($baseUrl)
+        ->setRequestUri($requestUri)
+        ->setPathInfo();
+
+        $customCookies = $this->getRequest()->getCookie();
+
+        $autoCookies = $this->getCookies()->getMatchingCookies($requestUri);
+
+        /* @var $cookie Zend_Http_Cookie */
+        foreach ($autoCookies as $cookie)
+        {
+            $this->getRequest()->setCookie(
+                $cookie->getName(),
+                $cookie->getValue()
+            );
+        }
+
+        if ($urlModel instanceof Mage_Adminhtml_Model_Url)
+        {
+            // Workaround for secret key in admin
+            $this->getRequest()->setParam(
+                Mage_Adminhtml_Model_Url::SECRET_KEY_PARAM_NAME,
+                $urlModel->getSecretKey()
+            );
+        }
+
+        if (!$this->getRequest()->getMethod())
+        {
+            $this->getRequest()->setMethod('GET');
+        }
+
+        // Workaround for form key
+        if ($this->getRequest()->isPost())
+        {
+            $this->getRequest()->setPost(
+                'form_key',
+                Mage::getSingleton('core/session')->getFormKey()
+            );
+        }
+
+        $this->getLayout()->reset();
+        $this->getResponse()->reset();
+
+        $this->app()->getFrontController()->dispatch();
+
+        // Unset changed cookies
+        $this->getRequest()->resetCookies();
+        $this->getRequest()->setCookies($customCookies);
+
+        return $this;
+    }
+
+
     /**
      * Set up controller params
      * (non-PHPdoc)
@@ -1808,7 +1885,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
                 array($this, 'deleteCookieCallback')
             ));
 
-        $this->replaceByMock('singleton', 'core/cookie', $cookie);
+        $this->replaceByMock('model', 'core/cookie', $cookie);
         return $this;
     }
 
@@ -1883,6 +1960,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * A callback that is invoked when a cookie is deleted
      *
+     * @param string $name
+     * @param string $path
+     * @param string $domain
+     * @param int $secure
+     * @param int $httponly
      * @return EcomDev_PHPUnit_Test_Case_Controller
      */
     public function deleteCookieCallback($name, $path = null, $domain = null, $secure = null, $httponly = null)
@@ -1941,12 +2023,32 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         return $urlModel;
     }
 
+
     /**
-     * Dispatches controller action
+     * Dispatch an URL to magento.
+     *
+     * @param string $requestUri
+     * @param array  $params
+     *
+     * @return $this
+     */
+    public function dispatchUrl($requestUri, $params = array())
+    {
+        $urlModel = $this->getUrlModel(null, $params);
+        $baseUrl  = $urlModel->getBaseUrl($params);
+
+        return $this->_dispatch($baseUrl, $requestUri, $urlModel);
+    }
+
+
+    /**
+     * Dispatches a route.
      *
      *
      * @param string $route
-     * @param array $params
+     * @param array  $params
+     *
+     * @return $this
      */
     public function dispatch($route = null, array $params = array())
     {
@@ -1957,50 +2059,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         $requestUri = $urlModel->getUrl($route, $params);
         $baseUrl = $urlModel->getBaseUrl($params);
 
-        $this->getRequest()->resetInternalProperties();
-
-        $this->getRequest()->setBaseUrl($baseUrl)
-            ->setRequestUri($requestUri)
-            ->setPathInfo();
-
-        $customCookies = $this->getRequest()->getCookie();
-
-        $autoCookies = $this->getCookies()->getMatchingCookies($requestUri);
-
-        /* @var $cookie Zend_Http_Cookie */
-        foreach ($autoCookies as $cookie) {
-            $this->getRequest()->setCookie(
-                $cookie->getName(),
-                $cookie->getValue()
-            );
-        }
-
-        if ($urlModel instanceof Mage_Adminhtml_Model_Url) {
-            // Workaround for secret key in admin
-            $this->getRequest()->setParam(
-                Mage_Adminhtml_Model_Url::SECRET_KEY_PARAM_NAME,
-                $urlModel->getSecretKey()
-            );
-        }
-
-        if (!$this->getRequest()->getMethod()) {
-            $this->getRequest()->setMethod('GET');
-        }
-
-        // Workaround for form key
-        if ($this->getRequest()->isPost()) {
-            $this->getRequest()->setPost('form_key', Mage::getSingleton('core/session')->getFormKey());
-        }
-
-        $this->getLayout()->reset();
-        $this->getResponse()->reset();
-
-        $this->app()->getFrontController()->dispatch();
-
-        // Unset changed cookies
-        $this->getRequest()->resetCookies();
-        $this->getRequest()->setCookies($customCookies);
-        return $this;
+        return $this->_dispatch($baseUrl, $requestUri, $urlModel);
     }
 
     /**
@@ -2027,7 +2086,22 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
             array('login', 'getId', 'save', 'authenticate', 'getRole')
         );
 
-        $adminRoleMock = $this->getModelMock('admin/roles', array('getGwsIsAll'));
+        $adminRoleMock = $this->getModelMock(
+            'admin/roles',
+            array('getGwsIsAll', 'getGwsStores', 'getGwsStoreGroups', 'getGwsRelevantWebsites')
+        );
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsStores')
+            ->will($this->returnValue(array_keys(Mage::app()->getStores(true))));
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsStoreGroups')
+            ->will($this->returnValue(array_keys(Mage::app()->getGroups(true))));
+
+        $adminRoleMock->expects($this->any())
+            ->method('getGwsRelevantWebsites')
+            ->will($this->returnValue(array_keys(Mage::app()->getWebsites(true))));
 
         $adminRoleMock->expects($this->any())
             ->method('getGwsIsAll')

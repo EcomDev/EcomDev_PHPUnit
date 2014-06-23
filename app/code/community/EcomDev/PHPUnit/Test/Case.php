@@ -17,11 +17,20 @@
  */
 
 use EcomDev_PHPUnit_Test_Case_Util as TestUtil;
+use EcomDev_PHPUnit_Helper as TestHelper;
 
 /**
- * Basic test case class
+ * Basic test case class, implements test helpers for easy working with Magento
  *
- *
+ * @method EcomDev_PHPUnit_Mock_Proxy mockClassAlias(string $type, $classAlias, array $methods = array(), array $constructorArgs = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy mockModel($classAlias, array $methods = array(), array $constructorArgs = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy mockBlock($classAlias, array $methods = array(), array $constructorArgs = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy mockHelper($classAlias, array $methods = array(), array $constructorArgs = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy mockSession($classAlias, array $methods = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy adminSession(array $resources = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy customerSession(int $customerId)
+ * @method EcomDev_PHPUnit_Mock_Proxy guestSession()
+ * @method Varien_Event_Observer generateObserver(array $eventData, string $eventName = null)
  */
 abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
 {
@@ -230,13 +239,13 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Assert that JSON string doesn't matches expected value,
+     * Assert that JSON string does not matches expected value,
      * Can accept different match type for matching logic.
      *
      * @param string $string
      * @param array $expectedValue
      * @param string $message
-     * @param strign $matchType
+     * @param string $matchType
      */
     public static function assertJsonNotMatch($string, array $expectedValue, $message = '',
         $matchType = EcomDev_PHPUnit_Constraint_Json::MATCH_AND)
@@ -325,6 +334,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $type
      * @param string $classAlias
      * @param PHPUnit_Framework_MockObject_MockObject|PHPUnit_Framework_MockObject_MockBuilder $mock
+     * @return $this
      */
     protected function replaceByMock($type, $classAlias, $mock)
     {
@@ -372,20 +382,18 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @param string $type block|model|helper
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getGroupedClassMockBuilder($type, $classAlias)
     {
-        $className = $this->getGroupedClassName($type, $classAlias);
-
-        return $this->getMockBuilder($className);
+        return TestUtil::getGroupedClassMockBuilder($this, $type, $classAlias);
     }
 
     /**
      * Retrieves a mock builder for a block class alias
      *
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getBlockMockBuilder($classAlias)
     {
@@ -396,7 +404,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * Retrieves a mock builder for a model class alias
      *
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getModelMockBuilder($classAlias)
     {
@@ -407,7 +415,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * Retrieves a mock builder for a resource model class alias
      *
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getResourceModelMockBuilder($classAlias)
     {
@@ -418,7 +426,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * Retrieves a mock builder for a helper class alias
      *
      * @param string $classAlias
-     * @return PHPUnit_Framework_MockObject_MockBuilder
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getHelperMockBuilder($classAlias)
     {
@@ -436,7 +444,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callOriginalConstructor
      * @param  boolean $callOriginalClone
      * @param  boolean $callAutoload
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getModelMock($classAlias, $methods = array(), $isAbstract = false,
                                  array $constructorArguments = array(),
@@ -460,7 +468,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callOriginalConstructor
      * @param  boolean $callOriginalClone
      * @param  boolean $callAutoload
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getResourceModelMock($classAlias, $methods = array(), $isAbstract = false,
                                  array $constructorArguments = array(),
@@ -484,7 +492,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callOriginalConstructor
      * @param  boolean $callOriginalClone
      * @param  boolean $callAutoload
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getHelperMock($classAlias, $methods = array(), $isAbstract = false,
                                  array $constructorArguments = array(),
@@ -508,7 +516,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param  boolean $callOriginalConstructor
      * @param  boolean $callOriginalClone
      * @param  boolean $callAutoload
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return EcomDev_PHPUnit_Mock_Proxy
      */
     public function getBlockMock($classAlias, $methods = array(), $isAbstract = false,
                                  array $constructorArguments = array(),
@@ -526,14 +534,11 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @param string $type block/model/helper/resource_model
      * @param string $classAlias
+     * @return string
      */
     protected function getGroupedClassName($type, $classAlias)
     {
-        if ($type === 'resource_model') {
-            return $this->app()->getConfig()->getResourceModelClassName($classAlias);
-        }
-
-        return $this->app()->getConfig()->getGroupedClassName($type, $classAlias);
+        return TestUtil::getGroupedClassName($type, $classAlias);
     }
 
     /**
@@ -675,7 +680,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $type type of YAML data (fixtures,expectations,dataproviders)
      * @param string $name the file name for loading
      * @return string|boolean
-     * @depracated since 0.3.0
+     * @deprecated since 0.3.0
      */
     public static function getYamlFilePathByClass($className, $type, $name)
     {
@@ -704,5 +709,17 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     {
         TestUtil::setCurrentStore($store);
         return $this;
+    }
+
+    /**
+     * Calling of the helper method
+     *
+     * @param string $method
+     * @param array $args
+     * @return mixed
+     */
+    public function __call($method, array $args)
+    {
+        return TestUtil::call($method, $args);
     }
 }

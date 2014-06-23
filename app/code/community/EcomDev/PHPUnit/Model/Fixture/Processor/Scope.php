@@ -17,7 +17,7 @@
  */
 
 class EcomDev_PHPUnit_Model_Fixture_Processor_Scope
-    implements EcomDev_PHPUnit_Model_Fixture_Processor_Interface
+    implements EcomDev_PHPUnit_Model_Fixture_ProcessorInterface
 {
     const STORAGE_KEY = 'scope';
 
@@ -35,10 +35,10 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Scope
     /**
      * Does nothing
      *
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Scope
      */
-    public function initialize(EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function initialize(EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         return $this;
     }
@@ -48,18 +48,18 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Scope
      *
      * @param string $type
      * @param array $row
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      * @return boolean|Mage_Core_Model_Abstract
      */
-    protected function _handleScopeRow($type, $row, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    protected function _handleScopeRow($type, $row, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         $previousScope = array();
 
         if ($fixture->isScopeLocal()
             && $fixture->getStorageData(self::STORAGE_KEY,
-                                        EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED) !== null) {
+                                        EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED) !== null) {
             $previousScope = $fixture->getStorageData(self::STORAGE_KEY,
-                                                      EcomDev_PHPUnit_Model_Fixture_Interface::SCOPE_SHARED);
+                                                      EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED);
         }
 
         if (isset($previousScope[$type][$row[$type . '_id']])) {
@@ -135,12 +135,12 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Scope
      *
      * @param array                                   $data
      * @param string                                  $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @throws RuntimeException
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Scope
      */
-    public function apply(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function apply(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         EcomDev_PHPUnit_Test_Case_Util::app()->disableEvents();
         // Validate received fixture data
@@ -173,11 +173,11 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Scope
      *
      * @param array[] $data
      * @param string $key
-     * @param EcomDev_PHPUnit_Model_Fixture_Interface $fixture
+     * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Processor_Scope
      */
-    public function discard(array $data, $key, EcomDev_PHPUnit_Model_Fixture_Interface $fixture)
+    public function discard(array $data, $key, EcomDev_PHPUnit_Model_FixtureInterface $fixture)
     {
         if ($fixture->getStorageData(self::STORAGE_KEY) === null) {
             return $this;
