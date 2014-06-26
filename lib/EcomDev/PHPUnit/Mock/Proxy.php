@@ -27,6 +27,14 @@ class EcomDev_PHPUnit_Mock_Proxy
 {
     protected $mockInstance;
 
+    protected $className;
+
+    public function __construct(PHPUnit_Framework_TestCase $testCase, $className)
+    {
+        $this->className = $className;
+        parent::__construct($testCase, $className);
+    }
+
     /**
      * Adds method name to a mock builder
      *
@@ -157,6 +165,19 @@ class EcomDev_PHPUnit_Mock_Proxy
         throw new RuntimeException(
             'Mock object proxy cannot be used for retrieving invocation mockers, '
                 . 'use getMockInstance method for real mock object'
+        );
+    }
+
+    /**
+     * @param $originalObject
+     * @return PHPUnit_Framework_MockObject_InvocationMocker
+     * @since  Method available since Release 2.0.0
+     */
+    public function __phpunit_setOriginalObject($originalObject)
+    {
+        throw new RuntimeException(
+            'Mock object proxy cannot be used for retrieving invocation mockers, '
+            . 'use getMockInstance method for real mock object'
         );
     }
 
