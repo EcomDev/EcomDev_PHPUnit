@@ -27,6 +27,14 @@ class EcomDev_PHPUnit_Mock_Proxy
 {
     protected $mockInstance;
 
+    protected $className;
+
+    public function __construct(PHPUnit_Framework_TestCase $testCase, $className)
+    {
+        $this->className = $className;
+        parent::__construct($testCase, $className);
+    }
+
     /**
      * Adds method name to a mock builder
      *
