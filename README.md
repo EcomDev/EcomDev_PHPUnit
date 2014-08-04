@@ -1,3 +1,5 @@
+<a href="http://www.ecomdev.org/services/magento-development?utm_source=github&utm_medium=logo&utm_campaign=github">![EcomDev](http://www.ecomdev.org/wp-content/themes/ecomdev/images/logo.png)</a>
+
 Magento PHPUnit Integration
 ===========================
 
@@ -73,7 +75,8 @@ If you want to take a part in improving our extension please create branches bas
 
 ###Create your contribution branch: 
    
-        $ git checkout -b [your-name]/[feature] dev
+	$ git checkout -b [your-name]/[feature] dev
 
 
 Then submit them for pull request. 
+
