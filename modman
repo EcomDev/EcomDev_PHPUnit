@@ -5,7 +5,6 @@ phpunit.xml.dist                        phpunit.xml.dist
 app/code/community/EcomDev/*            app/code/community/EcomDev/
 lib/EcomDev/*                           lib/EcomDev/
 lib/Spyc                                lib/Spyc
-lib/vfsStream                           lib/vfsStream
 shell/*.php                             shell/
 
 # Run shell installer
