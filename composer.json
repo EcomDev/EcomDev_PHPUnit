@@ -8,6 +8,9 @@
         "magento-hackathon/magento-composer-installer": "*",
         "phpunit/phpunit": "4.1.*"
     },
+    "replace": {
+        "ivanchepurnyi/ecomdev_phpunit":"*"
+    },
     "authors":[
         {
             "name":"Ivan Chepurnyi"
