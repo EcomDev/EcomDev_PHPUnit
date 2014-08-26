@@ -412,7 +412,7 @@ class EcomDev_PHPUnit_Model_Fixture
         if (empty($this->_fixture)) {
             $this->_fixture = $data;
         } else {
-            $this->_fixture = array_merge_recursive($this->_fixture, $data);
+            $this->_fixture = array_replace_recursive($this->_fixture, $data);
         }
 
         return $this;
