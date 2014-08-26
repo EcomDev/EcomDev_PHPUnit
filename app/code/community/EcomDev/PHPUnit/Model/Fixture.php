@@ -301,7 +301,7 @@ class EcomDev_PHPUnit_Model_Fixture
     public function loadByTestCase(PHPUnit_Framework_TestCase $testCase)
     {
         $fixtures = EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(
-            get_class($testCase), 'loadFixture', array('class', 'method'), $testCase->getName(false)
+            get_class($testCase), 'loadFixture', array('method', 'class'), $testCase->getName(false)
         );
 
         $this->_loadFixtureFiles($fixtures, $testCase);
