@@ -372,7 +372,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
      *
      * @see Mage_Core_Controller_Request_Http::getBaseUrl()
      */
-    public function getBaseUrl()
+    public function getBaseUrl($raw = false)
     {
         return $this->_baseUrl;
     }
