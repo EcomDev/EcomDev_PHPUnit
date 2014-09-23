@@ -185,11 +185,15 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Scope
 
         EcomDev_PHPUnit_Test_Case_Util::app()->disableEvents();
         $scope = array_reverse($fixture->getStorageData(self::STORAGE_KEY));
+        if ($isSecureArea = Mage::registery('isSecureArea') != true) {
+            Mage::register('isSecureArea', true);
+        }
         foreach ($scope as $models) {
             foreach ($models as $model) {
                 $model->delete();
             }
         }
+        Mage::register('isSecureArea', $isSecureArea);
 
         $fixture->setStorageData(self::STORAGE_KEY, null);
 
