@@ -481,7 +481,7 @@ class EcomDev_PHPUnit_Model_Fixture
         $this->setStorageData(self::STORAGE_KEY_FIXTURE, null);
 
         $processors = $this->getProcessors();
-        foreach ($this->_fixture as $part => $data) {
+        foreach (array_reverse($this->_fixture, true) as $part => $data) {
             if (isset($processors[$part])) {
                 $processors[$part]->discard($data, $part, $this);
             }
