@@ -141,8 +141,13 @@ USAGE;
             die($this->usageHelp());
         }
 
-        $this->_args['module'] = dirname(dirname(__FILE__));
-        $this->_args['project'] = PHPUNIT_MAGE_PATH;
+        if (!$this->getArg('module')) {
+            $this->_args['module'] = dirname(dirname(__FILE__));
+        }
+        
+        if (!$this->getArg('project')) {
+            $this->_args['project'] = PHPUNIT_MAGE_PATH;
+        }
 
         $action = $this->getArg('action') ?: $this->getArg('a');
         switch ($action) {
