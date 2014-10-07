@@ -160,6 +160,16 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
             $value = $backend->getValue();
         }
 
+        if (is_array($value)) {
+            Mage::throwException(
+                sprintf(
+                    'There is a collision in configuration value %s. Got: %s',
+                    $path,
+                    print_r($value, true)
+                )
+            );
+        }
+        
         Mage::getConfig()->setNode($path, $value);
         return $this;
     }
