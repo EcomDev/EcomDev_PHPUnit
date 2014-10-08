@@ -112,7 +112,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
         $this->_originalIndexers = $this->_requiredIndexers;
         if (!empty($this->_options['addRequiredIndex'])) {
             foreach ($this->_options['addRequiredIndex'] as $data) {
-                if (preg_match('/^([a-z0-9_\\-])+\\s+([a-z0-9_\\-])\s*$/i', $data, $match)
+                if (preg_match('/^([a-z0-9_\\-]+)\\s+([a-z0-9_\\-]+)\s*$/i', $data, $match)
                     && $match[1] == $entityType) {
                     $this->_requiredIndexers[] = $match[2];
                 }
