@@ -50,12 +50,18 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
 
         $suite = new self('Magento Test Suite');
 
+        $excludedModules = Mage::getConfig()->getNode('phpunit/suite/exclude');
+        
         // Walk through different groups in modules for finding test cases
         foreach ($groups->children() as $group) {
             foreach ($modules->children() as $module) {
                 $realModule = Mage::getConfig()->getNode('modules/' . $module->getName());
                 if (!$realModule || !$realModule->is('active')) {
                     $suite->addTest(self::warning('There is no module with name: ' . $module->getName()));
+                    continue;
+                }
+                
+                if (isset($excludedModules->{$module->getName()})) {
                     continue;
                 }
 

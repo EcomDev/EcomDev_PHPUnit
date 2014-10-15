@@ -1,0 +1,39 @@
+vfs:
+  app:
+    code:
+      community:
+        EcomDev:
+          PHPUnit:
+            Test:
+              Model:
+                ExampleClass.php: |
+                                    <?php
+
+                                      /**
+                                       * @loadSharedFixture sharedClassFixture.yaml
+                                       * @loadFixture classFixture.yaml
+                                       */
+                                      class EcomDev_PHPUnitTest_Test_Model_ExampleClass extends EcomDev_PHPUnit_Test_Case
+                                      {
+                                          /**
+                                           * @loadSharedFixture sharedMethodFixture.yaml
+                                           * @loadFixture methodFixture.yaml
+                                           */
+                                          public function testLoadFixtureOrder()
+                                          {
+
+                                          }
+                                      }
+                fixtures:
+                  classFixture.yaml: >
+                    config:
+                      default/sample/path: classFixtureValue
+                  sharedClassFixture.yaml: >
+                     config:
+                       default/sample/path: sharedClassFixtureValue
+                  sharedMethodFixture.yaml: >
+                     config:
+                       default/sample/path: sharedMethodFixtureValue
+                  methodFixture.yaml: >
+                     config:
+                       default/sample/path: methodFixtureValue
