@@ -55,6 +55,8 @@
     </global>
     <phpunit>
         <suite>
+            <modules /> <!-- List of modules included into test suite -->
+            <exclude /> <!-- List of modules that are excluded from test suite -->
             <yaml>
                 <model>ecomdev_phpunit/yaml_loader</model>
                 <loaders>
