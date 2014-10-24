@@ -55,6 +55,8 @@
     </global>
     <phpunit>
         <suite>
+            <modules /> <!-- List of modules included into test suite -->
+            <exclude /> <!-- List of modules that are excluded from test suite -->
             <yaml>
                 <model>ecomdev_phpunit/yaml_loader</model>
                 <loaders>
@@ -112,6 +114,37 @@
                     <catalog_product>ecomdev_phpunit/fixture_eav_catalog_product</catalog_product>
                     <catalog_category>ecomdev_phpunit/fixture_eav_catalog_category</catalog_category>
                 </eav>
+                <default_data>
+                    <category>
+                        <root>
+                            <entity_id>1</entity_id>
+                            <parent_id>0</parent_id>
+                            <path>1</path>
+                            <position>0</position>
+                            <level>0</level>
+                            <children_count>1</children_count>
+                            <name>Root Catalog</name>
+                            <url_key>root-catalog</url_key>
+                            <is_active>1</is_active>
+                            <is_anchor>0</is_anchor>
+                            <attribute_set_id>0</attribute_set_id>
+                        </root>
+                        <default_category>
+                            <entity_id>2</entity_id>
+                            <parent_id>1</parent_id>
+                            <path>1/2</path>
+                            <position>1</position>
+                            <level>1</level>
+                            <children_count>0</children_count>
+                            <name>Default Category</name>
+                            <url_key>default-category</url_key>
+                            <is_active>1</is_active>
+                            <is_anchor>0</is_anchor>
+                            <display_mode>PRODUCTS</display_mode>
+                            <include_in_menu>1</include_in_menu>
+                        </default_category>
+                    </category>
+                </default_data>
             </fixture>
             <app>
                 <!-- Application class name for running tests -->

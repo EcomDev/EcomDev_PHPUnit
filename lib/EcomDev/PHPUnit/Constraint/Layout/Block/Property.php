@@ -81,7 +81,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Property
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_ConstraintAbstract::getActualValue()
      */
-    protected function getActualValue($other)
+    protected function getActualValue($other = null)
     {
         if ($this->_useActualValue) {
             if ($this->_actualValue instanceof Varien_Object) {

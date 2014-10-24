@@ -139,6 +139,19 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
     {
         Mage::getConfig()->loadScopeSnapshot();
         Mage::getConfig()->loadDb();
+        
+        // Flush website and store configuration caches
+        foreach (Mage::app()->getWebsites(true) as $website) {
+            EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+            $website, '_configCache', array()
+            );
+        }
+        foreach (Mage::app()->getStores(true) as $store) {
+            EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+            $store, '_configCache', array()
+            );
+        }
+        
         return $this;
     }
 
@@ -160,6 +173,16 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
             $value = $backend->getValue();
         }
 
+        if (is_array($value)) {
+            Mage::throwException(
+                sprintf(
+                    'There is a collision in configuration value %s. Got: %s',
+                    $path,
+                    print_r($value, true)
+                )
+            );
+        }
+        
         Mage::getConfig()->setNode($path, $value);
         return $this;
     }

@@ -43,10 +43,19 @@ class EcomDev_PHPUnit_Test_Case_Helper_Session
      */
     public function helperMockSession($classAlias, array $methods = array())
     {
+        if (!empty($methods) && !in_array('start', $methods, true)) {
+            $methods[] = 'start';
+        }
+        
         $sessionMock = EcomDev_PHPUnit_Helper::invoke('mockModel', $classAlias, $methods)
             ->disableOriginalConstructor();
 
         TestUtil::replaceByMock('singleton', $classAlias, $sessionMock);
+
+        $sessionMock->expects($this->testCase->any())
+            ->method('start')
+            ->willReturnSelf();
+        
         return $sessionMock;
     }
 
@@ -58,6 +67,8 @@ class EcomDev_PHPUnit_Test_Case_Helper_Session
      */
     public function helperAdminSession(array $resources = array())
     {
+        $this->helperMockSession('core/session', array('renew'));        
+        $this->helperMockSession('adminhtml/session', array('renew'));        
         $session = $this->helperMockSession('admin/session', array('refreshAcl'));
         $user = $this->createUser();
         $this->loadRules($user, $this->getAcl(), $resources);

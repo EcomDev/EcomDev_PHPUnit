@@ -292,7 +292,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
             return false;
         }
 
-        return $blockInfo['root'] === true;
+        return $blockInfo['is_root'] === true;
     }
 
     /**
