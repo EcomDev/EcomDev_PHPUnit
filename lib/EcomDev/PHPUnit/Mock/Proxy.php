@@ -30,6 +30,26 @@ class EcomDev_PHPUnit_Mock_Proxy
     protected $mockInstance;
 
     /**
+     * Original mocked class alias
+     * 
+     * @var string
+     */
+    protected $classAlias;
+
+    /**
+     * Added class alias as property
+     * 
+     * @param PHPUnit_Framework_TestCase $testCase
+     * @param array|string $type
+     * @param null $classAlias
+     */
+    public function __construct(PHPUnit_Framework_TestCase $testCase, $type, $classAlias = null)
+    {
+        parent::__construct($testCase, $type);
+        $this->classAlias = $classAlias;
+    }
+
+    /**
      * Adds method name to a mock builder
      *
      * @param string $methodName
@@ -111,6 +131,18 @@ class EcomDev_PHPUnit_Mock_Proxy
     public function expects(PHPUnit_Framework_MockObject_Matcher_Invocation $matcher)
     {
         return $this->getMockInstance()->expects($matcher);
+    }
+
+    /**
+     * Invokes replaceByMock test util method with current mock object proxy instance
+     * 
+     * @param $type
+     * @return $this
+     */
+    public function replaceByMock($type)
+    {
+        EcomDev_PHPUnit_Test_Case_Util::replaceByMock($type, $this->classAlias, $this);
+        return $this;
     }
 
     /**

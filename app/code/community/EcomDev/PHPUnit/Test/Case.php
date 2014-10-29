@@ -24,6 +24,7 @@ use EcomDev_PHPUnit_Helper as TestHelper;
  *
  * @method EcomDev_PHPUnit_Mock_Proxy mockClassAlias(string $type, $classAlias, array $methods = array(), array $constructorArgs = array())
  * @method EcomDev_PHPUnit_Mock_Proxy mockModel($classAlias, array $methods = array(), array $constructorArgs = array())
+ * @method EcomDev_PHPUnit_Mock_Proxy mockResourceModel($classAlias, array $methods = array(), array $constructorArgs = array())
  * @method EcomDev_PHPUnit_Mock_Proxy mockBlock($classAlias, array $methods = array(), array $constructorArgs = array())
  * @method EcomDev_PHPUnit_Mock_Proxy mockHelper($classAlias, array $methods = array(), array $constructorArgs = array())
  * @method EcomDev_PHPUnit_Mock_Proxy mockSession($classAlias, array $methods = array())
