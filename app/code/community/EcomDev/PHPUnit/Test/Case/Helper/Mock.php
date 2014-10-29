@@ -56,6 +56,21 @@ class EcomDev_PHPUnit_Test_Case_Helper_Mock extends EcomDev_PHPUnit_AbstractHelp
     }
 
     /**
+     * Creates a mock for a resource model by its class alias
+     *
+     * @param string $classAlias
+     * @param array $methods
+     * @param array $constructorArgs
+     *
+     * @return EcomDev_PHPUnit_Mock_Proxy
+     */
+    public function helperMockResourceModel($classAlias, array $methods = array(), array $constructorArgs = array())
+    {
+        return $this->helperMockClassAlias('resource_model', $classAlias, $methods, $constructorArgs);
+    }
+
+
+    /**
      * Creates a mock for a block by its class alias
      *
      * @param string $classAlias

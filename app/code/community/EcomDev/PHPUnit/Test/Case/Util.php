@@ -501,7 +501,7 @@ class EcomDev_PHPUnit_Test_Case_Util
     public static function getGroupedClassMockBuilder(PHPUnit_Framework_TestCase $testCase, $type, $classAlias)
     {
         $className = self::getGroupedClassName($type, $classAlias);
-        return new EcomDev_PHPUnit_Mock_Proxy($testCase, $className);
+        return new EcomDev_PHPUnit_Mock_Proxy($testCase, $className, $classAlias);
     }
 
     /**
