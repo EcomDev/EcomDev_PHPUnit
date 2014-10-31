@@ -511,6 +511,7 @@ class EcomDev_PHPUnit_Test_Case_Util
     public static function setUp()
     {
         self::app()->resetDispatchedEvents();
+        self::$originalStore = Mage::app()->getStore()->getCode();
     }
 
     /**
