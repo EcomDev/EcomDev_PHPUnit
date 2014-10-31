@@ -89,10 +89,15 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Eav
         $this->getResource()->beginTransaction();
 
         foreach ($data as $entityType => $values) {
-            $eavLoaders[] = $this->_getEavLoader($entityType)
+            $eavLoaders[$entityType] = $this->_getEavLoader($entityType)
                 ->setFixture($fixture)
-                ->setOptions($fixture->getOptions())
-                ->loadEntity($entityType, $values);
+                ->setOptions($fixture->getOptions());
+            
+            if ($eavLoaders[$entityType] instanceof EcomDev_PHPUnit_Model_Mysql4_Fixture_RestoreAwareInterface) {
+                $eavLoaders[$entityType]->saveData($entityType);
+            }
+            
+            $eavLoaders[$entityType]->loadEntity($entityType, $values);
         }
 
         $this->getResource()->commit();
@@ -126,16 +131,35 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Eav
                                                       EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_SHARED);
         }
 
+        $typesToRestore = array();
         $this->getResource()->beginTransaction();
         foreach (array_keys($data) as $entityType) {
+            $eavLoader = $this->_getEavLoader($entityType);
+                
             if (in_array($entityType, $ignoreCleanUp)) {
+                if ($eavLoader instanceof EcomDev_PHPUnit_Model_Mysql4_Fixture_RestoreAwareInterface) {
+                    $eavLoader->clearData($entityType);
+                }
                 continue;
             }
-            $this->_getEavLoader($entityType)
-                ->cleanEntity($entityType);
-        }
+            
+            $eavLoader->cleanEntity($entityType);
 
+            if ($eavLoader instanceof EcomDev_PHPUnit_Model_Mysql4_Fixture_RestoreAwareInterface) {
+                $typesToRestore[$entityType] = $eavLoader;
+            }
+        }
         $this->getResource()->commit();
+        
+        if ($typesToRestore) {
+            $this->getResource()->beginTransaction();
+            foreach ($typesToRestore as $entityType => $eavLoader) {
+                $eavLoader->restoreData($entityType)
+                    ->clearData($entityType);
+            }
+            $this->getResource()->commit();
+        }
+        
         return $this;
     }
 }

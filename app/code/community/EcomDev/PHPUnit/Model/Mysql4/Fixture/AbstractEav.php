@@ -22,7 +22,10 @@
  */
 abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
 	extends EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractComplex
+    implements EcomDev_PHPUnit_Model_Mysql4_Fixture_RestoreAwareInterface
 {
+    const RESTORE_KEY = 'restore_%s_data';
+    
     /**
      * List of indexers required to build
      *
@@ -36,6 +39,20 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
      * @var array
      */
     protected $_originalIndexers = array();
+
+    /**
+     * List of tables that should be restored after run
+     * 
+     * @var string[]
+     */
+    protected $_restoreTables = array();
+
+    /**
+     * Default data for eav entity
+     * 
+     * @var array
+     */
+    protected $_defaultData = array();
 
     /**
      * Retrieve required indexers for re-building
@@ -99,6 +116,69 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
         return $this;
     }
 
+
+    /**
+     * Saves data for restoring it after fixture has been cleaned up
+     *
+     * @param string $code storage code
+     * @return $this
+     */
+    public function saveData($code)
+    {
+        if ($this->_restoreTables) {
+            $storageKey = sprintf(self::RESTORE_KEY, $code);
+            $data = array();
+            foreach ($this->_restoreTables as $table) {
+                $select = $this->_getReadAdapter()->select();
+                $select->from($table);
+                $data[$table] = $this->_getReadAdapter()->fetchAll($select);
+            }
+            $this->_fixture->setStorageData($storageKey, $data);
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Restored saved data
+     *
+     * @param string $code storage code
+     * @return $this
+     */
+    public function restoreData($code)
+    {
+        if ($this->_restoreTables) {
+            $storageKey = sprintf(self::RESTORE_KEY, $code);
+            $data = $this->_fixture->getStorageData($storageKey);
+            foreach ($this->_restoreTables as $table) {
+                if (!empty($data[$table])) {
+                    $this->_getWriteAdapter()->insertOnDuplicate(
+                        $table,
+                        $data[$table]
+                    );
+                }
+            }
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Clears storage from stored backup data
+     *
+     * @param $code
+     * @return $this
+     */
+    public function clearData($code)
+    {
+        if ($this->_restoreTables) {
+            $storageKey = sprintf(self::RESTORE_KEY, $code);
+            $this->_fixture->setStorageData($storageKey, array());
+        }
+        
+        return $this;
+    }
+
     /**
      * Loads EAV data into DB tables
      *
@@ -139,16 +219,43 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
         // and rows list as value
         // See getCustomTableRecords
         $customValues = array();
+        
+        if ($this->_defaultData) {
+            $dataToInsert = $this->_defaultData;
+            // Prevent insertion of default data, 
+            // if there is already data available
+            foreach ($values as $index => $row) {
+                if (isset($row[$this->_getEntityIdField($entityTypeModel)]) 
+                    && isset($dataToInsert[$this->_getEntityIdField($entityTypeModel)])) {
+                    $dataToInsert = array();
+                    break;
+                }
+            }
+            
+            foreach ($dataToInsert as $row) {
+                array_unshift($values, $row);
+            }
+        }
+        
 
-        foreach ($values as $index => &$row) {
+        foreach ($values as $index => $row) {
             if (!isset($row[$this->_getEntityIdField($entityTypeModel)])) {
                 throw new RuntimeException('Entity Id should be specified in EAV fixture');
             }
 
             // Fulfill necessary information
-            $row['entity_type_id'] = $entityTypeModel->getEntityTypeId();
+            $values[$index]['entity_type_id'] = $entityTypeModel->getEntityTypeId();
+            $row = $values[$index]; 
+            
             if (!isset($row['attribute_set_id'])) {
-                $row['attribute_set_id'] = $entityTypeModel->getDefaultAttributeSetId();
+                $defaultAttributeSet = $entityTypeModel->getDefaultAttributeSetId();
+                
+                // Fix Magento core issue with attribute set information for customer and its address
+                if (in_array($entityType, array('customer', 'customer_address'))) {
+                    $defaultAttributeSet = 0;
+                }
+                
+                $values[$index]['attribute_set_id'] = $defaultAttributeSet;
             }
 
             // Preparing entity table record

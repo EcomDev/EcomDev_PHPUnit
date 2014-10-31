@@ -23,9 +23,36 @@
  */
 class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Category extends EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Abstract
 {
+    const XML_PATH_DEFAULT_DATA = 'phpunit/suite/fixture/default_data/category';
+    
     protected $_requiredIndexers = array(
         'catalog_category_flat'
     );
+    
+    protected function _construct()
+    {
+        parent::_construct();
+        $defaultData = Mage::getConfig()->getNode(self::XML_PATH_DEFAULT_DATA);
+        
+        if ($defaultData) {
+            foreach ($defaultData->children() as $item) {
+                if (!isset($item->entity_id)) {
+                    continue;
+                }
+                
+                $entityId = (string)$item->entity_id;
+                $this->_defaultData[$entityId] = array();
+                foreach ($item->children() as $value) {
+                    $this->_defaultData[$entityId][$value->getName()] = (string)$value;
+                }
+            }
+        }
+        
+        $this->_restoreTables[] = $this->getTable('catalog/category');
+        foreach (array('datetime', 'decimal', 'int', 'text', 'varchar') as $suffix) {
+            $this->_restoreTables[] = $this->getTable(array('catalog/category', $suffix));
+        }
+    }
 
     /**
      * Overridden to add easy fixture loading for product associations

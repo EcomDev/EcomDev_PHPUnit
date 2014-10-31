@@ -173,6 +173,9 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
         ));
 
         if ($test instanceof PHPUnit_Framework_TestCase) {
+            EcomDev_PHPUnit_Helper::tearDown();
+            EcomDev_PHPUnit_Test_Case_Util::tearDown();
+            
             EcomDev_PHPUnit_Test_Case_Util::getFixture(get_class($test))
                 ->setScope(EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_LOCAL)
                 ->discard(); // Clear applied fixture
@@ -180,9 +183,6 @@ class EcomDev_PHPUnit_Test_Listener implements PHPUnit_Framework_TestListener
             if (EcomDev_PHPUnit_Test_Case_Util::getExpectation(get_class($test))->isLoaded()) {
                 EcomDev_PHPUnit_Test_Case_Util::getExpectation(get_class($test))->discard();
             }
-
-            EcomDev_PHPUnit_Test_Case_Util::tearDown();
-            EcomDev_PHPUnit_Helper::tearDown();
         }
 
         Mage::dispatchEvent('phpunit_test_end_after', array(
