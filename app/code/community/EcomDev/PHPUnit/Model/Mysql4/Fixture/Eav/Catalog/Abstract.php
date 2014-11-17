@@ -28,6 +28,22 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_Eav_Catalog_Abstract
     const SCOPE_TYPE_WEBSITE = 'websites';
 
     /**
+     * Overridden to support array arguments (entity name and suffix) in Magento <1.6
+     *
+     * @param string|array $entityName
+     *
+     * @return string
+     */
+    public function getTable($entityName) {
+        if (is_array($entityName) && version_compare(Mage::getVersion(), "1.6", "<")) {
+            list($entityName, $entitySuffix) = $entityName;
+            return parent::getTable($entityName) . "_$entitySuffix";
+        } else {
+            return parent::getTable($entityName);
+        }
+    }
+
+    /**
      * Overridden to add GWS implementation for attribute records
      *
      * @param array $row
