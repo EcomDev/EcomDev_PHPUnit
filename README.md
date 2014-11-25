@@ -5,7 +5,7 @@ Magento PHPUnit Integration
 
 Magento is a quite complex platform without built in unit test suite, so the code is not oriented on running tests over it.
 
-This extension was created especially for resolving this problem and promoting test driven development practices in Magento developers community. It doesn't change core files or brake your Magento instalment database, because all the system objects are replaced during the run-time with the test ones and a separate database connection is used for tests.
+This extension was created especially for resolving this problem and promoting test driven development practices in Magento developers community. It doesn't change core files or break your Magento installation database. All system objects are replaced during run-time with the test objects, and a separate database connection is used for tests.
 
 System Requirements
 -------------------
