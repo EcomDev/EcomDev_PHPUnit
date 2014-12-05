@@ -70,5 +70,13 @@ class EcomDev_PHPUnitTest_Test_Helper_Mock extends EcomDev_PHPUnit_Test_Case
         $this->assertAttributeContains('some_value', 'constructorArgs', $mock);
     }
 
-
+    public function testReplaceByMockConstructor()
+    {
+        $firstQuote = Mage::getModel('sales/quote');
+        $mock = $this->getModelMock('sales/service_quote', array('_validate'), false, array($firstQuote));
+        $this->replaceByMock('model', 'sales/service_quote', $mock);
+        $secondQuote = Mage::getModel('sales/quote');
+        $service = Mage::getModel('sales/service_quote', $secondQuote);
+        $this->assertEquals(spl_object_hash($secondQuote), spl_object_hash($service->getQuote()));
+    }
 }
