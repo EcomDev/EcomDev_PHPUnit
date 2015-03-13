@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHP Unit test suite for Magento
  *
@@ -15,8 +16,7 @@
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
-
-class EcomDev_PHPUnit_Model_Fixture_Processor_Config 
+class EcomDev_PHPUnit_Model_Fixture_Processor_Config
     implements EcomDev_PHPUnit_Model_Fixture_ProcessorInterface
 {
     /**
@@ -33,8 +33,8 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
     /**
      * Apply cache options from the fixture data
      *
-     * @param array                                   $data
-     * @param string                                  $key
+     * @param array $data
+     * @param string $key
      * @param EcomDev_PHPUnit_Model_FixtureInterface $fixture
      *
      * @return $this
@@ -60,11 +60,13 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
 
         Mage::getConfig()->loadScopeSnapshot();
 
+        /* Loading database configuration before apply fixtures */
+        Mage::getConfig()->loadDb();
+
+        /* Override database configurations from fixtures */
         foreach ($configuration as $path => $value) {
             $this->_setConfigNodeValue($path, $value);
         }
-
-        Mage::getConfig()->loadDb();
 
         // Flush website and store configuration caches
         foreach (Mage::app()->getWebsites(true) as $website) {
@@ -139,19 +141,19 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
     {
         Mage::getConfig()->loadScopeSnapshot();
         Mage::getConfig()->loadDb();
-        
+
         // Flush website and store configuration caches
         foreach (Mage::app()->getWebsites(true) as $website) {
             EcomDev_Utils_Reflection::setRestrictedPropertyValue(
-            $website, '_configCache', array()
+                $website, '_configCache', array()
             );
         }
         foreach (Mage::app()->getStores(true) as $store) {
             EcomDev_Utils_Reflection::setRestrictedPropertyValue(
-            $store, '_configCache', array()
+                $store, '_configCache', array()
             );
         }
-        
+
         return $this;
     }
 
@@ -167,7 +169,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
     {
         if (($originalNode = Mage::getConfig()->getNode($path)) && $originalNode->getAttribute('backend_model')) {
             $backendModel = $originalNode->getAttribute('backend_model');
-            $backend = Mage::getModel((string) $backendModel);
+            $backend = Mage::getModel((string)$backendModel);
             $backend->setPath($path)->setValue($value);
             EcomDev_Utils_Reflection::invokeRestrictedMethod($backend, '_beforeSave');
             $value = $backend->getValue();
@@ -182,7 +184,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
                 )
             );
         }
-        
+
         Mage::getConfig()->setNode($path, $value);
         return $this;
     }
