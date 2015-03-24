@@ -225,10 +225,10 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         $this->replaceRegistry(self::REGISTRY_PATH_SHARED_STORAGE, new Varien_Object());
         return $this;
     }
-    
+
     /**
      * Sets cache options for test case
-     * 
+     *
      * @param array $options
      * @return EcomDev_PHPUnit_Model_App
      */
@@ -243,7 +243,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Retrieve cache options for test case
-     * 
+     *
      * @return array
      */
     public function getCacheOptions()
@@ -358,7 +358,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Returns request for test suite
-     * 
+     *
      * @see Mage_Core_Model_App::getRequest()
      * @return EcomDev_PHPUnit_Controller_Request_Http
      */
@@ -376,7 +376,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Returns response for test suite
-     * 
+     *
      * @see Mage_Core_Model_App::getResponse()
      * @return EcomDev_PHPUnit_Controller_Response_Http
      */
@@ -527,13 +527,13 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     {
         if ($this->_eventsEnabled) {
             parent::dispatchEvent($eventName, $args);
-
-            if (!isset($this->_dispatchedEvents[$eventName])) {
-                $this->_dispatchedEvents[$eventName] = 0;
-            }
-
-            $this->_dispatchedEvents[$eventName]++;
         }
+
+        if (!isset($this->_dispatchedEvents[$eventName])) {
+            $this->_dispatchedEvents[$eventName] = 0;
+        }
+
+        $this->_dispatchedEvents[$eventName]++;
 
         return $this;
     }
