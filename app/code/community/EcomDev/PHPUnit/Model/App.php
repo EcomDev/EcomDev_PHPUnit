@@ -59,35 +59,11 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     const XML_PATH_CONTROLLER_RESPONSE = 'phpunit/suite/controller/response/class';
 
     /**
-     * Old configuration model to be returned back
-     * after unit tests are finished
-     *
-     * @var Mage_Core_Model_Config
-     */
-    protected static $_oldConfig = null;
-
-    /**
-     * Old application model to be returned back
-     * after unit tests are finished
-     *
-     * @var Mage_Core_Model_App
-     */
-    protected static $_oldApplication = null;
-
-    /**
-     * Old event collection to be returned back
-     * after the unit tests are finished
-     *
-     * @var Varien_Event_Collection
-     */
-    protected static $_oldEventCollection = null;
-
-    /**
-     * List of singletons in original application
+     * Test scope data to be returned back after unit tests are finished
      *
      * @var array
      */
-    protected static $_oldRegistry = null;
+    protected static $_testScopeStack = array();
 
     /**
      * Configuration model class name for unit tests
@@ -143,10 +119,12 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     public static function applyTestScope()
     {
         // Save old environment variables
-        self::$_oldApplication = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_app');
-        self::$_oldConfig = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config');
-        self::$_oldEventCollection = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events');
-        self::$_oldRegistry = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry');
+        self::$_testScopeStack[] = array(
+            'app'      => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_app'),
+            'config'   => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config'),
+            'events'   => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events'),
+            'registry' => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry'),
+        );
 
 
         // Setting environment variables for unit tests
@@ -434,11 +412,17 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
      */
     public static function discardTestScope()
     {
+        if(empty(self::$_testScopeStack)) {
+            throw new RuntimeException('No test scope to discard');
+        }
+
+        $previousScope = array_pop(self::$_testScopeStack);
+
         // Setting environment variables for unit tests
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', self::$_oldApplication);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', self::$_oldConfig);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', self::$_oldEventCollection);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', self::$_oldRegistry);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', $previousScope['app']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', $previousScope['config']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', $previousScope['events']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', $previousScope['registry']);
     }
 
     /**
