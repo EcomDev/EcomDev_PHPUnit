@@ -17,7 +17,17 @@
  */
 
 
-require_once 'abstract.php';
+if (file_exists($abstractShell = 'abstract.php')) {
+    // OK
+} elseif (strlen(dirname($argv[0])) && file_exists($abstractShell = dirname($argv[0]) . '/abstract.php')) {
+    // OK
+} else {
+    echo "ERROR: Failed to locate abstract.php which is a needed dependency from magentos shell folder.\n";
+    echo "\n";
+    exit(1);
+}
+
+require_once $abstractShell;
 
 // Only this workaround fixes Magento core issue in 1.8 :(
 $abstractShell = new ReflectionClass('Mage_Shell_Abstract');
