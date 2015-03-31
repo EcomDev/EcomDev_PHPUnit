@@ -3,7 +3,7 @@ app/etc/modules/*.xml                   app/etc/modules/
 app/code/community/EcomDev/*            app/code/community/EcomDev/
 lib/EcomDev/*                           lib/EcomDev/
 lib/Spyc                                lib/Spyc
-lib/vfsStream                           lib/vfsStream
+vendor/mikey179/vfsStream               lib/vfsStream
 shell/*.php                             shell/
 
 # Run shell installer
