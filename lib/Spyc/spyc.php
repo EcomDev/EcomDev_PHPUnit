@@ -1011,8 +1011,8 @@ class Spyc {
 
 // Enable use of Spyc from command line
 // The syntax is the following: php spyc.php spyc.yaml
-
-define ('SPYC_FROM_COMMAND_LINE', false);
+if (!defined('SPYC_FROM_COMMAND_LINE'))
+  define ('SPYC_FROM_COMMAND_LINE', false);
 
 do {
   if (!SPYC_FROM_COMMAND_LINE) break;
