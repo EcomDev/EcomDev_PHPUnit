@@ -77,6 +77,10 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
                 $store, '_configCache', array()
             );
         }
+        $store = Mage::app()->getStore();
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+            $store, '_configCache', array()
+        );
         return $this;
     }
 
@@ -151,6 +155,10 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Config
             $store, '_configCache', array()
             );
         }
+        $store = Mage::app()->getStore();
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue(
+            $store, '_configCache', array()
+        );
         
         return $this;
     }
