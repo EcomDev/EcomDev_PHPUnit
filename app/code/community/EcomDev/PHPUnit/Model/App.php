@@ -134,7 +134,20 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', array());
 
         // All unit tests will be run in admin scope, to get rid of frontend restrictions
-        Mage::app()->initTest();
+        // Init modules runs install process for table structures,
+        // It is required for setting up proper setup script
+        try {
+            set_error_handler(function ($errorCode, $errorMessage) {
+                echo $errorMessage, $errorCode;
+                debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+                exit;
+            });
+            Mage::app()->initTest();
+            restore_error_handler();
+        } catch (Exception $e) {
+            echo $e->getMessage(), "\n", $e->getTraceAsString();
+            exit;
+        }
     }
 
     /**
@@ -383,7 +396,6 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     protected function _getClassNameFromConfig($configPath, $interface = null)
     {
         $className = (string)$this->getConfig()->getNode($configPath);
-
         $reflection = EcomDev_Utils_Reflection::getReflection($className);
         if ($interface !== null && !$reflection->implementsInterface($interface)) {
             throw new RuntimeException(
