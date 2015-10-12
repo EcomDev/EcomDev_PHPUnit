@@ -245,7 +245,6 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
 
             // Fulfill necessary information
             $values[$index]['entity_type_id'] = $entityTypeModel->getEntityTypeId();
-            $row = $values[$index]; 
             
             if (!isset($row['attribute_set_id'])) {
                 $defaultAttributeSet = $entityTypeModel->getDefaultAttributeSetId();
@@ -257,6 +256,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
                 
                 $values[$index]['attribute_set_id'] = $defaultAttributeSet;
             }
+            $row = $values[$index];
 
             // Preparing entity table record
             $entity = $this->_getTableRecord($row, $entityTableColumns);
