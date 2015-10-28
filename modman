@@ -4,7 +4,7 @@ app/code/community/EcomDev/*            app/code/community/EcomDev/
 lib/EcomDev/*                           lib/EcomDev/
 lib/Spyc                                lib/Spyc
 lib/vfsStream                           lib/vfsStream
-shell/*.php                             shell/
+shell/ecomdev-phpunit.php               shell/ecomdev-phpunit.php
 
 # Run shell installer
 @shell  cd $PROJECT/shell && php -f ecomdev-phpunit.php -- --action install
