@@ -177,6 +177,8 @@ USAGE;
                 echo "EcomDev_PHPUnit module version is {$version} \n";
                 break;
             default:
+                /* Force show help */
+                $this->_args['h'] = true;
                 $this->_showHelp();
                 break;
         }
