@@ -17,7 +17,7 @@
  */
 
 
-require_once 'abstract.php';
+require_once realpath(dirname($_SERVER["SCRIPT_FILENAME"])) . DIRECTORY_SEPARATOR . 'abstract.php';
 
 // Only this workaround fixes Magento core issue in 1.8 :(
 $abstractShell = new ReflectionClass('Mage_Shell_Abstract');
