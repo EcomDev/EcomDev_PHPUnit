@@ -22,7 +22,7 @@ Build Status
 Documentation
 -------------
 
-* [EcomDev_PHPUnit version 0.2.0](http://www.ecomdev.org/wp-content/uploads/2011/05/EcomDev_PHPUnit-0.2.0-Manual.pdf)
+* [EcomDev_PHPUnit version 0.2.0](http://www.ecomdev.org/wp-content/uploads/2011/05/EcomDev_PHPUnit-0.2.0-Manual.pdf) ([Alternative link](https://db.tt/ZHg5ehIv))
 
 Also you may follow our related [blogposts](http://www.ecomdev.org/tag/phpunit).
 
