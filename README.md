@@ -40,7 +40,7 @@ Installation
       ```json
       {
             "require": {
-               "ecomdev/ecomdev_phpunit": "*"
+               "ivanchepurnyi/ecomdev_phpunit": "*"
             }
       }
       ```
