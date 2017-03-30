@@ -66,7 +66,8 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Scope
             return false;
         }
 
-        $scopeModel = Mage::getModel($this->modelByType[$type]);
+        $scopeModel = Mage::getModel($this->modelByType[$type])->load($row[$type . '_id']);
+        $isNew = !$scopeModel->getId();
         $scopeModel->setData($row);
 
         // Change property for saving new objects with specified ids
@@ -78,7 +79,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Scope
         );
 
         try {
-            $scopeModel->isObjectNew(true);
+            $scopeModel->isObjectNew($isNew);
             $scopeModel->save();
         } catch (Exception $e) {
             Mage::logException($e);
