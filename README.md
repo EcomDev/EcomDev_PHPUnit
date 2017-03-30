@@ -50,7 +50,7 @@ Installation
     # Shell scripts needs to be run from this directory
     cd $YOUR_MAGENTO_DIRECTORY/shell 
     # Specify your test database name and base url for controller tests
-    php ecomdev-phpunit.php -a magento-config --db-name $DB_NAME --base-url http://your.magento.url/
+    php ecomdev-phpunit.php -- -a magento-config --db-name $DB_NAME --base-url http://your.magento.url/
     ```
     If you receive a warning on PHPUnit checks for optional packages, run the following command
     ```bash
