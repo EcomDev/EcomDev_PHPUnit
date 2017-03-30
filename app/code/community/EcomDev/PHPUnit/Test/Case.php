@@ -300,6 +300,24 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Retrieves a block by its alias.
+     *
+     *
+     * @param string $blockAlias
+     * @return Mage_Core_Block_Template|bool
+     */
+    public function getBlock($blockAlias)
+    {
+        $tmpName = uniqid('m') . '_' . uniqid('p');
+        $this->app()->getLayout()->createBlock($blockAlias, $tmpName);
+        $getBlock = $this->app()->getLayout()->getBlock($tmpName);
+        $this->app()->getLayout()->removeOutputBlock($tmpName);
+
+        return $getBlock;
+    }
+
+
+    /**
      * Retrieves annotation by its name from different sources (class, method) based on meta information
      *
      * @param string $className
