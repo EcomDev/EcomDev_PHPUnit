@@ -73,7 +73,7 @@ Contributions
 
 If you want to take a part in improving our extension please create branches based on dev one. 
 
-###Create your contribution branch: 
+### Create your contribution branch: 
    
 	$ git checkout -b [your-name]/[feature] dev
 
