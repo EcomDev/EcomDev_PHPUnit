@@ -175,6 +175,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
         $this->_route = null;
         $this->_directFrontNames = null;
         $this->_controllerModule = null;
+        $this->_beforeForwardInfo = null;
         return $this;
     }
 
