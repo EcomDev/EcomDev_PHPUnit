@@ -1,5 +1,7 @@
 # EcomDev_PHPUnit definition
 app/etc/modules/*.xml                   app/etc/modules/
+app/etc/local.xml.phpunit               app/etc/local.xml.phpunit
+phpunit.xml.dist                        phpunit.xml.dist
 app/code/community/EcomDev/*            app/code/community/EcomDev/
 lib/EcomDev/*                           lib/EcomDev/
 lib/Spyc                                lib/Spyc
