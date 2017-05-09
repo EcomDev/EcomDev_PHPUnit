@@ -44,6 +44,11 @@ Installation
             }
       }
       ```
+      As Composer does not run trigger `modman` install scripts, open your terminal in the Magento `shell` directory:
+
+      ```bash
+      php ecomdev-phpunit.php -a install --module /path/to/magento/vendor/ecomdev/ecomdev_phpunit --project /path/to/magento
+      ```
 
 3. Open your terminal and navigate to your magento directory for performing the following command, they are required to configure system for running the test suite 
     ```bash
