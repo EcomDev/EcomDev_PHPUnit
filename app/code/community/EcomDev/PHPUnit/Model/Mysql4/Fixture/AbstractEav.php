@@ -255,7 +255,7 @@ abstract class EcomDev_PHPUnit_Model_Mysql4_Fixture_AbstractEav
                     $defaultAttributeSet = 0;
                 }
                 
-                $values[$index]['attribute_set_id'] = $defaultAttributeSet;
+                $row['attribute_set_id'] = $defaultAttributeSet;
             }
 
             // Preparing entity table record
