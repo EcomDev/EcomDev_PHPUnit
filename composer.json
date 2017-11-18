@@ -8,7 +8,7 @@
         "magento-hackathon/magento-composer-installer": "*"
     },
     "replace": {
-        "ivanchepurnyi/ecomdev_phpunit":"*"
+        "ecomdev/ecomdev_phpunit":"*"
     },
     "authors":[
         {
