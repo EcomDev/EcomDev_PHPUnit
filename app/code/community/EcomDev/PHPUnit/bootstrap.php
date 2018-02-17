@@ -11,6 +11,10 @@ if (isset($_SERVER['MAGENTO_DIRECTORY'])) {
     $_baseDir = getcwd();
 }
 
+if(preg_match('/(.*)\.modman/', $_baseDir, $matches)) {
+    $_baseDir = $matches[1].'htdocs';
+}
+
 // Include Mage file by detecting app root
 require_once $_baseDir . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php';
 
