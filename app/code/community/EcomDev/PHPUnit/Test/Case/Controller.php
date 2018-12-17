@@ -1160,7 +1160,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         self::assertThatLayout(
             self::layoutBlock(
                 $blockName,
-                EcomDev_PHPUnit_Constraint_Layout_Block::TYPE_RENDERED,
+                EcomDev_PHPUnit_Constraint_Layout_Block::TYPE_RENDERED_CONTENT,
                 $constraint
             ),
             $message
@@ -1180,7 +1180,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
         self::assertThatLayout(
             self::layoutBlock(
                 $blockName,
-                EcomDev_PHPUnit_Constraint_Layout_Block::TYPE_RENDERED,
+                EcomDev_PHPUnit_Constraint_Layout_Block::TYPE_RENDERED_CONTENT,
                 self::logicalNot($constraint)
             ),
             $message

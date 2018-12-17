@@ -107,7 +107,7 @@ class EcomDev_PHPUnit_Model_Fixture_Processor_Tables
             $this->getResource()->cleanTable($tableEntity);
         }
         foreach (array_keys($data) as $tableEntity) {
-            if (isset($restoreTableData[$tableEntity])) {
+            if ( ! empty($restoreTableData[$tableEntity])) {
                 $this->getResource()->loadTableData($tableEntity, $restoreTableData[$tableEntity]);
             }
         }

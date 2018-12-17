@@ -158,6 +158,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
         // From Http request
         $this->_paramSources = array('_GET', '_POST');
         $this->_requestUri = null;
+        $this->_params = array();
         $this->_baseUrl = null;
         $this->_basePath = null;
         $this->_pathInfo = '';
@@ -174,6 +175,7 @@ class EcomDev_PHPUnit_Controller_Request_Http
         $this->_route = null;
         $this->_directFrontNames = null;
         $this->_controllerModule = null;
+        $this->_beforeForwardInfo = null;
         return $this;
     }
 

@@ -532,6 +532,15 @@ class EcomDev_PHPUnit_Model_Layout
     public function getOutput()
     {
         $this->record(self::ACTION_RENDER, 'layout');
-        return parent::getOutput();
+
+        // parent::getOutput() with Inchoo_PHP7 fix:
+        $out = '';
+        if (!empty($this->_output)) {
+            foreach ($this->_output as $callback) {
+                $out .= $this->getBlock($callback[0])->{$callback[1]}();
+            }
+        }
+
+        return $out;
     }
 }
