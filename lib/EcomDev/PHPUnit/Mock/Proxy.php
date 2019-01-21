@@ -215,5 +215,13 @@ class EcomDev_PHPUnit_Mock_Proxy
         );
     }
 
-    
+
+    public function __phpunit_hasMatchers()
+    {
+        throw new RuntimeException(
+            'Mock object proxy cannot be used for retrieving invocation mockers, '
+            . 'use getMockInstance method for real mock object'
+        );
+    }
+
 }
