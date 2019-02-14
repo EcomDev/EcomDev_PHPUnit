@@ -93,14 +93,4 @@ class EcomDev_PHPUnit_Test_Suite_Group extends PHPUnit_Framework_TestSuite
             unset($this->groups[self::NO_GROUP_KEYWORD]);
         }
     }
-
-    /**
-     * Outputs test suite name from annotations
-     *
-     * @see PHPUnit_Framework_TestSuite::toString()
-     */
-    public function toString()
-    {
-        return $this->suiteName !== null ?  $this->suiteName : $this->name;
-    }
 }
