@@ -1,19 +1,9 @@
 {
-    "name": "ecomdev/ecomdev_phpunit",
-    "license": "OSL-3.0",
-    "type": "magento-module",
-    "description": "Magento PHPUnit Integration",
-    "homepage": "http://www.ecomdev.org/shop/code-testing/php-unit-test-suite.html",
     "require": {
         "magento-hackathon/magento-composer-installer": "*",
-        "phpunit/phpunit": "4.1.*"
+        "phpunit/phpunit": "^8"
     },
     "replace": {
         "ivanchepurnyi/ecomdev_phpunit":"*"
-    },
-    "authors":[
-        {
-            "name":"Ivan Chepurnyi"
-        }
-    ]
+    }
 }

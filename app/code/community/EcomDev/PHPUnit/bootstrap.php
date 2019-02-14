@@ -51,6 +51,12 @@ if (!defined('ECOMDEV_PHPUNIT_NO_AUTOLOADER')) {
             )
         );
 
-        @include $filePath . '.php';
+        $class = explode('/', $filePath);
+        if($class[0] !== 'PHPUnit'){
+            include $filePath . '.php';
+        }else{
+            $filePath = str_replace('/', '\\', $filePath);
+            class_alias('\\'. $filePath, '\\'. $className);
+        }
     });
 }
