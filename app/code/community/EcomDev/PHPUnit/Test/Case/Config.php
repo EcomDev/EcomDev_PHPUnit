@@ -24,6 +24,132 @@
 abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Case
 {
     /**
+     * Get the adminhtml menu config nodes.
+     *
+     * @return Varien_Simplexml_Element
+     */
+    protected static function _getAdminhtmlMenu()
+    {
+        /** @var Varien_Simplexml_Element $menuNode */
+        $menuNode = Mage::getSingleton('admin/config')->getAdminhtmlConfig()->getNode('menu');
+
+        if (!($menuNode instanceof Varien_Simplexml_Element))
+        {
+            self::fail('Could not load adminhtml menu');
+        }
+
+        return $menuNode;
+    }
+
+
+    /**
+     * Receive the Class::Action to a route.
+     *
+     * @param $module
+     * @param $controller
+     * @param $action
+     *
+     * @return void
+     * @throws Mage_Core_Exception
+     */
+    protected static function _routeToMethod($module, $controller = null, $action = null)
+    {
+        /** @var Mage_Core_Controller_Varien_Router_Abstract $router */
+        $router = self::app()->getFrontController()->getRouterByRoute($module);
+
+        $front = $router->getFront();
+
+        if ($module == 'adminhtml')
+        { // correct adminhtml to admin, because the router only knows that
+            $module = 'admin';
+        }
+
+        /**
+         * Searching router args by module name from route using it as key
+         */
+        $modules = $router->getModuleByFrontName($module);
+
+        if (!is_array($modules))
+        { // no modules? meh...
+            return null;
+        }
+
+        // get controller name
+        if (!$controller)
+        {
+            $controller = $front->getDefault('controller');
+        }
+
+        // get action name
+        if (!$action)
+        {
+            $action = $front->getDefault('action');
+        }
+
+        /**
+         * Going through modules to find appropriate controller
+         */
+        foreach ($modules as $realModule)
+        {
+            $controllerFileName = $router->getControllerFileName($realModule, $controller);
+            if (!$router->validateControllerFileName($controllerFileName))
+            { // no filename for this controller found: go on searching
+                continue;
+            }
+
+            $controllerClassName = $router->getControllerClassName($realModule, $controller);
+            if (!$controllerClassName)
+            { // no controller found for this module: go on searching
+                continue;
+            }
+
+            // include controller file if needed
+            if (!class_exists($controllerClassName, false))
+            { // not yet loaded: try to
+                if (!file_exists($controllerFileName))
+                { // configured but no file given: ignore bullshit and continue
+                    continue;
+                }
+
+                require_once $controllerFileName;
+
+                if (!class_exists($controllerClassName, false))
+                {
+                    throw Mage::exception(
+                              'Mage_Core',
+                              Mage::helper('core')->__(
+                                  'Controller file was loaded but class does not exist'
+                              )
+                    );
+                }
+            }
+
+            if (in_array($action . 'Action', get_class_methods($controllerClassName)))
+            { // yeha found: return like "Class::methodAction"
+                return $controllerClassName . '::' . $action . 'Action';
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Validate if a route has an controller and action.
+     *
+     * @param $module
+     * @param $controller
+     * @param $action
+     *
+     * @return bool
+     * @throws Mage_Core_Exception
+     */
+    protected static function _validateRoute($module, $controller = null, $action = null)
+    {
+        return (bool) self::_routeToMethod($module, $controller, $action);
+    }
+
+    /**
      * Returns a new instance of EcomDev_PHPUnit_Constraint_Config
      *
      * @param EcomDev_PHPUnit_Constraint_ConfigInterface $configConstraint
@@ -63,7 +189,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             new EcomDev_PHPUnit_Constraint_Config_Module($moduleName, $type, $expectedValue)
         );
     }
-    
+
     /**
      * A new constraint for checking resources node
      *
@@ -76,7 +202,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
                                           $type = EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED,
                                           $expectedValue = null)
     {
-        
+
         return self::config(
             new EcomDev_PHPUnit_Constraint_Config_Resource($moduleName, $type,
                                                            self::app()->getConfig()->getModuleDir('', $moduleName),
@@ -121,7 +247,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             new EcomDev_PHPUnit_Constraint_Config_ClassAlias($group, $classAlias, $expectedClassName, $type)
         );
     }
-    
+
     /**
      * A new constraint for checking table alias nodes
      *
@@ -224,13 +350,13 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             $moduleName = self::getModuleNameFromCallStack();
         }
         self::assertThatConfig(
-            self::configResource($moduleName, 
-                                 EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, 
+            self::configResource($moduleName,
+                                 EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED,
                                  $expectedResourceName),
             $message
         );
     }
-    
+
     /**
      * Asserts that config resource for module is NOT defined
      *
@@ -246,8 +372,8 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
         }
         self::assertThatConfig(
             self::logicalNot(
-                self::configResource($moduleName, 
-                                     EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED, 
+                self::configResource($moduleName,
+                                     EcomDev_PHPUnit_Constraint_Config_Resource::TYPE_SETUP_DEFINED,
                                      $expectedResourceName)
             ),
             $message
@@ -436,7 +562,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     {
         self::assertSchemeSetupNotExists($moduleName, $expectedResourceName, $message);
     }
-    
+
     /**
      * Asserts that config node value is equal to the expected value.
      *
@@ -1085,7 +1211,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
             $message
         );
     }
-    
+
     /**
      * Assert that table alias is mapped to expected table name
      *
@@ -1539,5 +1665,103 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     {
         $nodePath = 'websites/' . self::app()->getWebsite($website)->getCode() . '/' . $nodePath;
         self::assertConfigNodeNotValue($nodePath, $expectedValue, $message, $type);
+    }
+
+
+    /**
+     * Assert that a menu in the backend exists.
+     *
+     * @param        $node
+     * @param string $message
+     *
+     * @return void
+     */
+    public static function assertAdminhtmlMenu($node, $message = '')
+    {
+        $menuNode = self::_getAdminhtmlMenu();
+
+        if (!$message)
+        {
+            $message = sprintf('Failed asserting that menu %s is set.', $node);
+        }
+
+        self::assertThat(
+            $menuNode->xpath($node),
+            self::logicalNot(self::isEmpty()),
+            $message
+        );
+    }
+
+
+    /**
+     * Assert that a menu in the backend will run a specific action.
+     *
+     * @param        $node
+     * @param        $expectedAction
+     * @param string $message
+     *
+     * @return void
+     */
+    public static function assertAdminhtmlMenuAction($node, $expectedAction, $message = '')
+    {
+        $menuNode = self::_getAdminhtmlMenu();
+
+        if (!$message)
+        { // no message: generate default
+            $message = sprintf('Failed asserting that menu %s has a proper action.', $node);
+        }
+
+        if (array() == ($nodeValue = $menuNode->xpath($node . '/action')))
+        { // empty: not found
+            self::fail(sprintf('Adminhtml menu %s could not be found.', $node));
+        }
+
+        self::assertThat(
+            $expectedAction,
+            self::equalTo((string) $nodeValue[0]),
+            $message
+        );
+    }
+
+
+    /**
+     * Assert that a menu in the backend will be fetched by a router.
+     *
+     * @param        $node
+     * @param string $message
+     *
+     * @return void
+     */
+    public static function assertAdminhtmlMenuHasRouter($node, $message = '')
+    {
+        $menuNode = self::_getAdminhtmlMenu();
+
+        if (!$message)
+        { // no message: generate default
+            $message = sprintf(
+                'Failed asserting that menu %s action will be fetched by a router.',
+                $node
+            );
+        }
+
+        if (array() == ($nodeValue = $menuNode->xpath($node . '/action')))
+        { // empty: menu not found
+            self::fail(sprintf('Adminhtml menu %s could not be found.', $node));
+        }
+
+        $route = (string) $nodeValue[0];
+
+        // fetch module, controller and action if given
+        $routeSet   = explode('/', $route);
+        $module     = array_shift($routeSet);
+        $controller = array_shift($routeSet);
+        $action     = array_shift($routeSet);
+        $found      = self::_validateRoute($module, $controller, $action);
+
+        self::assertThat(
+            $found,
+            self::isTrue(),
+            $message
+        );
     }
 }
