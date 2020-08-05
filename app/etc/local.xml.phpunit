@@ -27,5 +27,6 @@
     </default>
     <phpunit>
         <allow_same_db>0</allow_same_db>
+        <disable_modules></disable_modules>
     </phpunit>
 </config>
