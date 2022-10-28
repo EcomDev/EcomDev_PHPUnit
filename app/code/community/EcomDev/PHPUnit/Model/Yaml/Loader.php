@@ -109,6 +109,6 @@ class EcomDev_PHPUnit_Model_Yaml_Loader
      */
     public function load($filePath)
     {
-        return Spyc::YAMLLoad($filePath);
+        return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($filePath));
     }
 }
