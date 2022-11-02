@@ -23,7 +23,7 @@ abstract class EcomDev_PHPUnit_AbstractHelper
     implements EcomDev_PHPUnit_HelperInterface
 {
     /**
-     * @var PHPUnit_Framework_TestCase
+     * @var \PHPUnit\Framework\TestCase
      */
     protected $testCase;
 
@@ -84,11 +84,11 @@ abstract class EcomDev_PHPUnit_AbstractHelper
     /**
      * Sets test case property for helper
      *
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      *
      * @return $this
      */
-    public function setTestCase(PHPUnit_Framework_TestCase $testCase)
+    public function setTestCase(\PHPUnit\Framework\TestCase $testCase)
     {
         $this->testCase = $testCase;
         return $this;

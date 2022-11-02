@@ -39,11 +39,11 @@ class EcomDev_PHPUnit_Mock_Proxy
     /**
      * Added class alias as property
      * 
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      * @param array|string $type
      * @param null $classAlias
      */
-    public function __construct(PHPUnit_Framework_TestCase $testCase, $type, $classAlias = null)
+    public function __construct(\PHPUnit\Framework\TestCase $testCase, $type, $classAlias = null)
     {
         parent::__construct($testCase, $type);
         $this->classAlias = $classAlias;

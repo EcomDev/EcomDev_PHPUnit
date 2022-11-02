@@ -295,10 +295,10 @@ class EcomDev_PHPUnit_Model_Fixture
     /**
      * Loads fixture files from test case annotations
      *
-     * @param PHPUnit_Framework_TestCase $testCase
-     * @return PHPUnit_Framework_TestCase
+     * @param \PHPUnit\Framework\TestCase $testCase
+     * @return \PHPUnit\Framework\TestCase
      */
-    public function loadByTestCase(PHPUnit_Framework_TestCase $testCase)
+    public function loadByTestCase(\PHPUnit\Framework\TestCase $testCase)
     {
         $fixtures = EcomDev_PHPUnit_Test_Case_Util::getAnnotationByNameFromClass(
             get_class($testCase), 'loadFixture', array('method', 'class'), $testCase->getName(false)
@@ -376,7 +376,7 @@ class EcomDev_PHPUnit_Model_Fixture
      */
     protected function _loadFixtureFiles(array $fixtures, $classOrInstance)
     {
-        $isShared = ($this->isScopeShared() || !$classOrInstance instanceof PHPUnit_Framework_TestCase);
+        $isShared = ($this->isScopeShared() || !$classOrInstance instanceof \PHPUnit\Framework\TestCase);
         foreach ($fixtures as $fixture) {
             if (empty($fixture) && $isShared) {
                 $fixture = self::DEFAULT_SHARED_FIXTURE_NAME;
@@ -747,7 +747,7 @@ class EcomDev_PHPUnit_Model_Fixture
             return $this->_vfs;
         }
 
-        throw new PHPUnit_Framework_SkippedTestError(
+        throw new \PHPUnit\Framework\SkippedTestError(
             'The test was skipped, since vfsStream component is not installed. '
             . 'Try install submodules required for this functionality'
         );

@@ -33,7 +33,7 @@ use EcomDev_PHPUnit_Helper as TestHelper;
  * @method EcomDev_PHPUnit_Mock_Proxy guestSession()
  * @method Varien_Event_Observer generateObserver(array $eventData, string $eventName = null)
  */
-abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
+abstract class EcomDev_PHPUnit_Test_Case extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -87,7 +87,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @return EcomDev_PHPUnit_Constraint_Or
      */
-    public static function logicalOr()
+    public static function logicalOr(): \PHPUnit\Framework\Constraint\LogicalOr
     {
         $constraints = func_get_args();
 
@@ -174,7 +174,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      *
      * @return EcomDev_PHPUnit_Constraint_Json
      */
-    public static function isJson()
+    public static function isJson(): \PHPUnit\Framework\Constraint\IsJson
     {
         return new EcomDev_PHPUnit_Constraint_Json(
             EcomDev_PHPUnit_Constraint_Json::TYPE_VALID
@@ -204,7 +204,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends PHPUnit_Framework_TestCase
      * @param string $string
      * @param string $message
      */
-    public static function assertJson($string, $message = '')
+    public static function assertJson($string, $message = ''): void
     {
         self::assertThat($string, self::isJson(), $message);
     }

@@ -142,9 +142,9 @@ class EcomDev_PHPUnit_Helper
     /**
      * Sets test case to each helper instance
      *
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      */
-    public static function setTestCase(PHPUnit_Framework_TestCase $testCase)
+    public static function setTestCase(\PHPUnit\Framework\TestCase $testCase)
     {
         foreach (self::$helpers as $helper) {
             $helper->setTestCase($testCase);

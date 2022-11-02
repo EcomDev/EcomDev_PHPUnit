@@ -1854,7 +1854,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * (non-PHPdoc)
      * @see EcomDev_PHPUnit_Test_Case::setUp()
      */
-    protected function setUp()
+    protected function setUp():void
     {
         parent::setUp();
 

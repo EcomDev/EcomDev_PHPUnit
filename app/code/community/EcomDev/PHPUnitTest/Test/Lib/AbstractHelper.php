@@ -16,7 +16,7 @@
  * @author     Ivan Chepurnyi <ivan.chepurnyi@ecomdev.org>
  */
 
-class EcomDev_PHPUnitTest_Test_Lib_AbstractHelper extends PHPUnit_Framework_TestCase
+class EcomDev_PHPUnitTest_Test_Lib_AbstractHelper extends \PHPUnit\Framework\TestCase
 {
     /**
      *
@@ -25,7 +25,7 @@ class EcomDev_PHPUnitTest_Test_Lib_AbstractHelper extends PHPUnit_Framework_Test
      */
     protected $helper = null;
 
-    protected function setUp()
+    protected function setUp():void
     {
         $this->helper = $this->getMockBuilder('EcomDev_PHPUnit_AbstractHelper')
             ->setMethods(array('hasMethod', 'callMethod'))

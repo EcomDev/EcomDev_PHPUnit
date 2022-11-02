@@ -26,7 +26,7 @@ class EcomDev_PHPUnitTest_Test_Helper_Call extends EcomDev_PHPUnit_Test_Case
     /**
      * Creates new helper for test
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->helper = $this->getMockForAbstractClass('EcomDev_PHPUnit_HelperInterface');
         $this->helper->expects($this->any())

@@ -42,8 +42,8 @@ interface EcomDev_PHPUnit_HelperInterface
     /**
      * Sets test case for usage in helper
      *
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      * @return $this
      */
-    public function setTestCase(PHPUnit_Framework_TestCase $testCase);
+    public function setTestCase(\PHPUnit\Framework\TestCase $testCase);
 }

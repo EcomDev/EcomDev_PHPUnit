@@ -201,7 +201,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     /**
      * Executes configuration constraint
      *
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint $constraint
      * @param string  $message
      * @return void
      */
