@@ -1,7 +1,5 @@
 <?php
 
-use PHPUnit\Framework\Test;
-
 /**
  * PHP Unit test suite for Magento
  *
@@ -135,7 +133,7 @@ class EcomDev_PHPUnit_Test_Listener implements \PHPUnit\Framework\TestListener
     /**
      * A test started.
      *
-     * @param  \PHPUnit\Framework\Test $test
+     * @param \PHPUnit\Framework\Test $test
      */
     public function startTest(\PHPUnit\Framework\Test $test): void
     {
@@ -165,7 +163,7 @@ class EcomDev_PHPUnit_Test_Listener implements \PHPUnit\Framework\TestListener
     /**
      * A test ended.
      *
-     * @param  \PHPUnit\Framework\Test $test
+     * @param \PHPUnit\Framework\Test $test
      * @param  float                  $time
      */
     public function endTest(\PHPUnit\Framework\Test $test, $time): void
@@ -197,7 +195,7 @@ class EcomDev_PHPUnit_Test_Listener implements \PHPUnit\Framework\TestListener
     /**
      * An error occurred.
      *
-     * @param  \PHPUnit\Framework\Test $test
+     * @param \PHPUnit\Framework\Test $test
      * @param  Exception              $e
      * @param  float                  $time
      */
@@ -215,11 +213,11 @@ class EcomDev_PHPUnit_Test_Listener implements \PHPUnit\Framework\TestListener
     /**
      * A failure occurred.
      *
-     * @param  \PHPUnit\Framework\Test                 $test
+     * @param \PHPUnit\Framework\Test $test
      * @param  \PHPUnit\Framework\AssertionFailedError $e
      * @param  float                                  $time
      */
-    public function addFailure(\PHPUnit\Framework\Test $test,\PHPUnit\Framework\AssertionFailedError $e, $time): void
+    public function addFailure(\PHPUnit\Framework\Test $test, \PHPUnit\Framework\AssertionFailedError $e, $time): void
     {
         Mage::dispatchEvent('phpunit_test_failure', array(
             'test' => $test,
@@ -233,7 +231,7 @@ class EcomDev_PHPUnit_Test_Listener implements \PHPUnit\Framework\TestListener
     /**
      * Incomplete test.
      *
-     * @param  \PHPUnit\Framework\Test $test
+     * @param \PHPUnit\Framework\Test $test
      * @param  Exception              $e
      * @param  float                  $time
      */
@@ -251,7 +249,7 @@ class EcomDev_PHPUnit_Test_Listener implements \PHPUnit\Framework\TestListener
     /**
      * Skipped test.
      *
-     * @param  \PHPUnit\Framework\Test $test
+     * @param \PHPUnit\Framework\Test $test
      * @param  Exception              $e
      * @param  float                  $time
      */
