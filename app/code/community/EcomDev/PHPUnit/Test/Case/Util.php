@@ -17,6 +17,8 @@
  */
 
 use EcomDev_PHPUnit_Helper as TestHelper;
+use PHPUnit\Framework\MockObject\MockBuilder;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class EcomDev_PHPUnit_Test_Case_Util
 {
@@ -424,19 +426,28 @@ class EcomDev_PHPUnit_Test_Case_Util
      *
      * @param string $type
      * @param string $classAlias
-     * @param PHPUnit_Framework_MockObject_MockObject|PHPUnit_Framework_MockObject_MockBuilder $mock
-     * @throws PHPUnit_Framework_Exception
+     * @param MockObject|MockBuilder $mock
      * @return void
+     *@throws \PHPUnit\Framework\Exception
      */
     public static function replaceByMock($type, $classAlias, $mock)
     {
         if ($mock instanceof EcomDev_PHPUnit_Mock_Proxy) {
             $mock = $mock->getMockInstance();
-        } elseif ($mock instanceof PHPUnit_Framework_MockObject_MockBuilder) {
+        } elseif ($mock instanceof MockBuilder) {
             $mock = $mock->getMock();
-        } elseif (!$mock instanceof PHPUnit_Framework_MockObject_MockObject) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(
-                1, 'PHPUnit_Framework_MockObject_MockObject'
+        } elseif (!$mock instanceof MockObject) {
+            $stack = debug_backtrace(false);
+
+            throw new \PHPUnit\Framework\Exception(
+                sprintf(
+                    'Argument #%d%sof %s::%s() must be a %s',
+                    1,
+                    ' (No Value) ',
+                    $stack[1]['class'],
+                    $stack[1]['function'],
+                    'PHPUnit_Framework_MockObject_MockObject'
+                )
             );
         }
 
