@@ -21,7 +21,7 @@ class EcomDev_PHPUnitTest_Test_Lib_AbstractHelper extends \PHPUnit\Framework\Tes
     /**
      *
      *
-     * @var EcomDev_PHPUnit_AbstractHelper|PHPUnit_Framework_MockObject_MockObject
+     * @var EcomDev_PHPUnit_AbstractHelper|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $helper = null;
 
@@ -46,7 +46,7 @@ class EcomDev_PHPUnitTest_Test_Lib_AbstractHelper extends \PHPUnit\Framework\Tes
         foreach ($map as $method => $result) {
             $stubMap[] = array($method, $result !== false);
 
-            if ($result instanceof PHPUnit_Framework_MockObject_Stub) {
+            if ($result instanceof \PHPUnit\Framework\MockObject\Stub) {
                 $stubResult[$method] = $result;
             }
         }
@@ -59,7 +59,7 @@ class EcomDev_PHPUnitTest_Test_Lib_AbstractHelper extends \PHPUnit\Framework\Tes
         $this->helper->expects($this->any())
             ->method('callMethod')
             ->will($this->returnCallback(function ($method, array $args) use ($helper, $stubResult) {
-                $invocation = new PHPUnit_Framework_MockObject_Invocation_Object(
+                $invocation = new \PHPUnit\Framework\MockObject\InvocationHandler(
                     get_class($helper), $method, $args, $helper
                 );
                 return $stubResult[$method]->invoke($invocation);

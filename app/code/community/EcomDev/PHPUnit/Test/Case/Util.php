@@ -347,7 +347,7 @@ class EcomDev_PHPUnit_Test_Case_Util
             }
         }
 
-        throw new RuntimeException('Unable to retrieve module name from call stack, because assertion is not called from PHPUnit_Framework_Test_Case based class method');
+        throw new RuntimeException('Unable to retrieve module name from call stack, because assertion is not called from \PHPUnit\Framework\TestCase based class method');
     }
 
     /**
@@ -438,17 +438,7 @@ class EcomDev_PHPUnit_Test_Case_Util
             $mock = $mock->getMock();
         } elseif (!$mock instanceof MockObject) {
             $stack = debug_backtrace(false);
-
-            throw new \PHPUnit\Framework\Exception(
-                sprintf(
-                    'Argument #%d%sof %s::%s() must be a %s',
-                    1,
-                    ' (No Value) ',
-                    $stack[1]['class'],
-                    $stack[1]['function'],
-                    'PHPUnit_Framework_MockObject_MockObject'
-                )
-            );
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(1, '\PHPUnit\Framework\MockObject\MockObject');
         }
 
         // Remove addition of /data suffix if version is more than 1.6.x

@@ -83,15 +83,15 @@ abstract class EcomDev_PHPUnit_Test_Case extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Returns a EcomDev_PHPUnit_Constraint_Or matcher object.
+     * Returns a \PHPUnit\Framework\Constraint\LogicalOr matcher object.
      *
-     * @return EcomDev_PHPUnit_Constraint_Or
+     * @return \PHPUnit\Framework\Constraint\LogicalOr
      */
     public static function logicalOr(): \PHPUnit\Framework\Constraint\LogicalOr
     {
         $constraints = func_get_args();
 
-        $constraint = new EcomDev_PHPUnit_Constraint_Or;
+        $constraint = new \PHPUnit\Framework\Constraint\LogicalOr();
         $constraint->setConstraints($constraints);
 
         return $constraint;
@@ -334,7 +334,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends \PHPUnit\Framework\TestCase
      *
      * @param string $type
      * @param string $classAlias
-     * @param PHPUnit_Framework_MockObject_MockObject|PHPUnit_Framework_MockObject_MockBuilder $mock
+     * @param \PHPUnit\Framework\MockObject\MockObject|PHPUnit\Framework\MockObject\MockBuilder $mock
      * @return $this
      */
     protected function replaceByMock($type, $classAlias, $mock)
@@ -554,7 +554,7 @@ abstract class EcomDev_PHPUnit_Test_Case extends \PHPUnit\Framework\TestCase
      * @param  boolean $callOriginalConstructor
      * @param  boolean $callOriginalClone
      * @param  boolean $callAutoload
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     public function getGroupedClassMock($type, $classAlias, $methods = array(), $isAbstract = false,
                                         array $constructorArguments = array(),

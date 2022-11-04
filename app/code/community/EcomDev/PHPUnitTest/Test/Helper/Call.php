@@ -19,7 +19,7 @@
 class EcomDev_PHPUnitTest_Test_Helper_Call extends EcomDev_PHPUnit_Test_Case
 {
     /**
-     * @var EcomDev_PHPUnit_HelperInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var EcomDev_PHPUnit_HelperInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $helper;
 

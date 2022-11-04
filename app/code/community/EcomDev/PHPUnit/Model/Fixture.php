@@ -729,7 +729,7 @@ class EcomDev_PHPUnit_Model_Fixture
      * Returns VFS wrapper instance
      *
      * @return EcomDev_PHPUnit_Model_Fixture_Vfs
-     * @throws PHPUnit_Framework_SkippedTestError
+     * @throws \PHPUnit\Framework\SkippedTestError
      */
     public function getVfs()
     {

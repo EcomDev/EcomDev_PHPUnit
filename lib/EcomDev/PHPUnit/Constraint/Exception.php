@@ -21,7 +21,7 @@
  *
  *
  */
-class EcomDev_PHPUnit_Constraint_Exception extends PHPUnit_Framework_ExpectationFailedException
+class EcomDev_PHPUnit_Constraint_Exception extends \PHPUnit\Framework\AssertionFailedError
 {
     protected $diff = null;
 

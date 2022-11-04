@@ -38,17 +38,17 @@ class EcomDev_PHPUnit_Constraint_Controller_Response_Header
      *
      * @param string $headerName
      * @param string $type
-     * @param PHPUnit_Framework_Constraint $constraint
-     * @throws PHPUnit_Framework_Exception
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
+     * @throws \PHPUnit\Framework\Exception
      */
-    public function __construct($headerName, $type, PHPUnit_Framework_Constraint $constraint = null)
+    public function __construct($headerName, $type, \PHPUnit\Framework\Constraint\Constraint $constraint = null)
     {
         if (empty($headerName) || !is_string($headerName)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string', $headerName);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(1, 'string', $headerName);
         }
 
         $this->_expectedValueValidation += array(
-            self::TYPE_CONSTRAINT => array(true, null, 'PHPUnit_Framework_Constraint')
+            self::TYPE_CONSTRAINT => array(true, null, '\PHPUnit\Framework\Constraint\Constraint')
         );
 
         parent::__construct($type, $constraint);

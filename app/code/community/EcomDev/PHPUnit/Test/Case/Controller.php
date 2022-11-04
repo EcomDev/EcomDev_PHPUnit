@@ -135,10 +135,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param string $blockName
      * @param string $propertyName
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @return EcomDev_PHPUnit_Constraint_Layout_Block_Property
      */
-    public static function layoutBlockProperty($blockName, $propertyName, PHPUnit_Framework_Constraint $constraint)
+    public static function layoutBlockProperty($blockName, $propertyName, \PHPUnit\Framework\Constraint\Constraint $constraint)
     {
         return new EcomDev_PHPUnit_Constraint_Layout_Block_Property($blockName, $propertyName, $constraint);
     }
@@ -161,10 +161,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param string $type
      * @param string $headerName
-     * @param PHPUnit_Framework_Constraint|null $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint|null $constraint
      * @return EcomDev_PHPUnit_Constraint_Controller_Response_Header
      */
-    public static function responseHeader($headerName, $type, PHPUnit_Framework_Constraint $constraint = null)
+    public static function responseHeader($headerName, $type, \PHPUnit\Framework\Constraint\Constraint $constraint = null)
     {
         return new EcomDev_PHPUnit_Constraint_Controller_Response_Header($headerName, $type, $constraint);
     }
@@ -172,10 +172,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Controller response body constraint creation
      *
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @return EcomDev_PHPUnit_Constraint_Controller_Response_Body
      */
-    public static function responseBody(PHPUnit_Framework_Constraint $constraint)
+    public static function responseBody(\PHPUnit\Framework\Constraint\Constraint $constraint)
     {
         return new EcomDev_PHPUnit_Constraint_Controller_Response_Body($constraint);
     }
@@ -437,10 +437,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert shortcut for response assertions
      *
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      */
-    public static function assertThatResponse(PHPUnit_Framework_Constraint $constraint, $message)
+    public static function assertThatResponse(\PHPUnit\Framework\Constraint\Constraint $constraint, $message)
     {
         self::assertThat(self::getResponse(), $constraint, $message);
     }
@@ -485,10 +485,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert that response header is evaluated by a specified constraint
      *
      * @param string $headerName
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      */
-    public static function assertResponseHeader($headerName, PHPUnit_Framework_Constraint $constraint, $message = '')
+    public static function assertResponseHeader($headerName, \PHPUnit\Framework\Constraint\Constraint $constraint, $message = '')
     {
         self::assertThatResponse(
             self::responseHeader(
@@ -504,10 +504,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert that response header is not evaluated by a specified constraint
      *
      * @param string $headerName
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      */
-    public static function assertResponseHeaderNot($headerName, PHPUnit_Framework_Constraint $constraint, $message = '')
+    public static function assertResponseHeaderNot($headerName, \PHPUnit\Framework\Constraint\Constraint $constraint, $message = '')
     {
         self::assertThatResponse(
             self::responseHeader(
@@ -662,10 +662,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert that response body is evaluated by the constraint
      *
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      */
-    public static function assertResponseBody(PHPUnit_Framework_Constraint $constraint, $message = '')
+    public static function assertResponseBody(\PHPUnit\Framework\Constraint\Constraint $constraint, $message = '')
     {
         self::assertThatResponse(
             self::responseBody($constraint),
@@ -676,10 +676,10 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert that response body is not evaluated by the constraint
      *
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      */
-    public static function assertResponseBodyNot(PHPUnit_Framework_Constraint $constraint, $message = '')
+    public static function assertResponseBodyNot(\PHPUnit\Framework\Constraint\Constraint $constraint, $message = '')
     {
         self::assertThatResponse(
             self::logicalNot(
@@ -939,11 +939,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
     /**
      * Assert shortcut for layout constaints
      *
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
-     * @internal param \EcomDev_PHPUnit_Constraint_AbstractLayout|\PHPUnit_Framework_Constraint $constaint
+     * @internal param \EcomDev_PHPUnit_Constraint_AbstractLayout|\PHPUnit\Framework\Constraint\Constraint $constaint
      */
-    public static function assertThatLayout(PHPUnit_Framework_Constraint $constraint, $message)
+    public static function assertThatLayout(\PHPUnit\Framework\Constraint\Constraint $constraint, $message)
     {
         self::assertThat(self::getLayout(), $constraint, $message);
     }
@@ -1151,11 +1151,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert that layout block rendered content is evaluated by constraint
      *
      * @param string $blockName
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      */
     public static function assertLayoutBlockRenderedContent($blockName,
-        PHPUnit_Framework_Constraint $constraint, $message = '')
+    \PHPUnit\Framework\Constraint\Constraint $constraint, $message = '')
     {
         self::assertThatLayout(
             self::layoutBlock(
@@ -1171,11 +1171,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      * Assert that layout block rendered content is not evaluated by constraint
      *
      * @param string $blockName
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      */
     public static function assertLayoutBlockRenderedContentNot($blockName,
-        PHPUnit_Framework_Constraint $constraint, $message = '')
+    \PHPUnit\Framework\Constraint\Constraint $constraint, $message = '')
     {
         self::assertThatLayout(
             self::layoutBlock(
@@ -1361,7 +1361,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
             );
         }
 
-        $logicalAnd = new PHPUnit_Framework_Constraint_And();
+        $logicalAnd = new \PHPUnit\Framework\Constraint\LogicalAnd();
         $logicalAnd->setConstraints($constaints);
         self::assertThatLayout($logicalAnd, $message);
     }
@@ -1382,7 +1382,7 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
             );
         }
 
-        $logicalAnd = new PHPUnit_Framework_Constraint_And();
+        $logicalAnd = new \PHPUnit\Framework\Constraint\LogicalAnd();
         $logicalAnd->setConstraints($constaints);
         self::assertThatLayout($logicalAnd, $message);
     }
@@ -1531,11 +1531,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param string $blockName
      * @param string $propertyName
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      */
     public static function assertLayoutBlockProperty($blockName, $propertyName,
-        PHPUnit_Framework_Constraint $constraint, $message = '')
+        \PHPUnit\Framework\Constraint\Constraint $constraint, $message = '')
     {
         self::assertThatLayout(
             self::layoutBlockProperty($blockName, $propertyName, $constraint),
@@ -1548,11 +1548,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Controller extends EcomDev_PHPUnit_Test
      *
      * @param string $blockName
      * @param string $propertyName
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      */
     public static function assertLayoutBlockPropertyNot($blockName, $propertyName,
-        PHPUnit_Framework_Constraint $constraint, $message = '')
+        \PHPUnit\Framework\Constraint\Constraint $constraint, $message = '')
     {
         self::assertThatLayout(
             self::logicalNot(

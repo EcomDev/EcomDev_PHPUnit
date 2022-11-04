@@ -56,12 +56,12 @@ class EcomDev_PHPUnit_Constraint_Config_ClassAlias
      * @param string $classAlias
      * @param string $expectedClassName
      * @param string $type
-     * @throws PHPUnit_Framework_Exception
+     * @throws \PHPUnit\Framework\Exception
      */
     public function __construct($group, $classAlias, $expectedClassName, $type = self::TYPE_CLASS_ALIAS)
     {
         if (!isset($this->_textByGroup[$group])) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(
                 1,
                 implode(
                     '|',
@@ -78,7 +78,7 @@ class EcomDev_PHPUnit_Constraint_Config_ClassAlias
         }
 
         if (!strpos($classAlias, '/')) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(2, 'class/alias', $classAlias);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(2, 'class/alias', $classAlias);
         }
 
         list($this->_classAliasPrefix, $this->_classAliasName) = explode('/', $classAlias, 2);
@@ -127,7 +127,7 @@ class EcomDev_PHPUnit_Constraint_Config_ClassAlias
     /**
      * Custom failure description for showing config related errors
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     * @see \PHPUnit\Framework\Constraint\Constraint::customFailureDescription()
      */
     protected function customFailureDescription($other)
     {

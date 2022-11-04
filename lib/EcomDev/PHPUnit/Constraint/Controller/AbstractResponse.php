@@ -26,7 +26,7 @@ abstract class EcomDev_PHPUnit_Constraint_Controller_AbstractResponse
     /**
      * Custom failure description for showing response related errors
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     * @see \PHPUnit\Framework\Constraint\Constraint::customFailureDescription()
      */
     protected function customFailureDescription($other)
     {

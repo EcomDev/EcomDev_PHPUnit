@@ -72,7 +72,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Mock_Proxy extends \PHPUnit\Framework\TestCas
         $mockInstance = $this->mockProxy->getMockInstance();
 
         $this->assertInstanceOf(
-            'PHPUnit_Framework_MockObject_MockObject',
+            '\PHPUnit\Framework\MockObject\MockObject',
             $mockInstance
         );
 
@@ -96,7 +96,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Mock_Proxy extends \PHPUnit\Framework\TestCas
     {
         $this->assertAttributeEmpty('mockInstance', $this->mockProxy);
         $this->assertInstanceOf(
-            'PHPUnit_Framework_MockObject_Builder_InvocationMocker',
+            '\PHPUnit\Framework\MockObject\Builder\InvocationMocker',
             $this->mockProxy->expects($this->any())->method('compareValues')
         );
         $this->assertAttributeInstanceOf('EcomDev_PHPUnit_AbstractConstraint', 'mockInstance', $this->mockProxy);

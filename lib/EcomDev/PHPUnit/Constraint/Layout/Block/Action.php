@@ -76,21 +76,21 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Action extends EcomDev_PHPUnit_Con
      * @param int|null $invocationCount
      * @param array $arguments
      * @param string $searchType
-     * @throws PHPUnit_Framework_Exception
+     * @throws \PHPUnit\Framework\Exception
      */
     public function __construct($blockName, $method, $type, $invocationCount = null,
         array $arguments = null, $searchType = self::SEARCH_TYPE_AND)
     {
         if (empty($blockName) || !is_string($blockName)) {
-            PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string', $blockName);
+            EcomDev_PHPUnit_Helper::createInvalidArgumentException(1, 'string', $blockName);
         }
 
         if (empty($method) || !is_string($method)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(2, 'string', $method);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(2, 'string', $method);
         }
 
         if (!is_string($searchType)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(6, 'string', $searchType);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(6, 'string', $searchType);
         }
 
         $this->_expectedValueValidation += array(

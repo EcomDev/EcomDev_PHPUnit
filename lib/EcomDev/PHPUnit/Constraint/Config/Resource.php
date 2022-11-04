@@ -50,7 +50,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource
      * @param string $type
      * @param string $moduleDirectory
      * @param mixed $expectedValue
-     * @throws PHPUnit_Framework_Exception
+     * @throws \PHPUnit\Framework\Exception
      * @internal param string $nodePath
      */
     public function __construct($moduleName, $type, $moduleDirectory = null, $expectedValue = null)
@@ -76,7 +76,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource
         
         if (($this->_type === self::TYPE_SETUP_SCHEME_EXISTS || $this->_type === self::TYPE_SETUP_DATA_EXISTS)
             && !is_dir($moduleDirectory)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(3, 'real directory', $moduleDirectory);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(3, 'real directory', $moduleDirectory);
         }
     }
     
@@ -228,7 +228,7 @@ class EcomDev_PHPUnit_Constraint_Config_Resource
     /**
      * Custom failure description for showing config related errors
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     * @see \PHPUnit\Framework\Constraint\Constraint::customFailureDescription()
      */
     protected function customFailureDescription($other)
     {

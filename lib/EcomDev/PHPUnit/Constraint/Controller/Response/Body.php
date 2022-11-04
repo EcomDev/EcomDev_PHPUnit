@@ -28,13 +28,13 @@ class EcomDev_PHPUnit_Constraint_Controller_Response_Body
     /**
      * Constraint for controller response body assertions
      *
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $type
      */
-    public function __construct(PHPUnit_Framework_Constraint $constraint = null, $type = self::TYPE_CONSTRAINT)
+    public function __construct(\PHPUnit\Framework\Constraint\Constraint $constraint = null, $type = self::TYPE_CONSTRAINT)
     {
         $this->_expectedValueValidation += array(
-            self::TYPE_CONSTRAINT => array(true, null, 'PHPUnit_Framework_Constraint')
+            self::TYPE_CONSTRAINT => array(true, null, '\PHPUnit\Framework\Constraint\Constraint')
         );
 
         parent::__construct($type, $constraint);
