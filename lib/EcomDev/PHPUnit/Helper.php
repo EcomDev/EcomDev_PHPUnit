@@ -193,4 +193,20 @@ class EcomDev_PHPUnit_Helper
         });
     }
 
+    public static function createInvalidArgumentException(int $argument, string $type, $value = null): PHPUnit\Framework\Exception
+    {
+        $stack = debug_backtrace(false);
+
+        return new \PHPUnit\Framework\Exception(
+            sprintf(
+                'Argument #%d%sof %s::%s() must be a %s',
+                $argument,
+                $value !== null ? ' (' . gettype($value) . '#' . $value . ')' : ' (No Value) ',
+                $stack[1]['class'],
+                $stack[1]['function'],
+                $type
+            )
+        );
+    }
+
 }
