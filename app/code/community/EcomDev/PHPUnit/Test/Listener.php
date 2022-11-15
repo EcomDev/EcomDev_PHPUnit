@@ -146,7 +146,7 @@ class EcomDev_PHPUnit_Test_Listener implements \PHPUnit\Framework\TestListener
             EcomDev_PHPUnit_Test_Case_Util::getFixture(get_class($test))
                 ->setScope(EcomDev_PHPUnit_Model_FixtureInterface::SCOPE_LOCAL)
                 ->loadByTestCase($test);
-            $annotations = PHPUnit\Util\Test::parseTestMethodAnnotations($test::class, $test->getName());
+            $annotations = PHPUnit\Util\Test::parseTestMethodAnnotations($test::class, $test->getName(false));
             EcomDev_PHPUnit_Test_Case_Util::getFixture()
                 ->setOptions($annotations['method'])
                 ->apply();
