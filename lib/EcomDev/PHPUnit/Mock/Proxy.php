@@ -17,16 +17,106 @@
  */
 
 use EcomDev_Utils_Reflection as ReflectionUtil;
+use PHPUnit\Framework\MockObject\Builder\InvocationMocker as BuilderInvocationMocker;
+use PHPUnit\Framework\MockObject\CannotUseAddMethodsException;
+use PHPUnit\Framework\MockObject\CannotUseOnlyMethodsException;
+use PHPUnit\Framework\MockObject\ClassAlreadyExistsException;
+use PHPUnit\Framework\MockObject\ClassIsFinalException;
+use PHPUnit\Framework\MockObject\DuplicateMethodException;
+use PHPUnit\Framework\MockObject\Generator;
+use PHPUnit\Framework\MockObject\InvalidMethodNameException;
+use PHPUnit\Framework\MockObject\InvocationHandler;
+use PHPUnit\Framework\MockObject\MockBuilder;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\OriginalConstructorInvocationRequiredException;
+use PHPUnit\Framework\MockObject\ReflectionException;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
+use PHPUnit\Framework\MockObject\RuntimeException;
+use PHPUnit\Framework\MockObject\UnknownTypeException;
 
 /**
  * PHPUnit Mock Object Proxy
  *
  * Used to support mock builder auto-apply as soon as expects method is called.
+ * @method \PHPUnit\Framework\MockObject\Builder\InvocationMocker method($constraint)
  */
-class EcomDev_PHPUnit_Mock_Proxy
-    extends PHPUnit_Framework_MockObject_MockBuilder
-    implements PHPUnit_Framework_MockObject_MockObject
+class EcomDev_PHPUnit_Mock_Proxy implements PHPUnit\Framework\MockObject\MockObject
 {
+    /**
+     * @var TestCase
+     */
+    private $testCase;
+
+    /**
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @var null|string[]
+     */
+    private $methods = [];
+
+    /**
+     * @var bool
+     */
+    private $emptyMethodsArray = false;
+
+    /**
+     * @var string
+     */
+    private $mockClassName = '';
+
+    /**
+     * @var array
+     */
+    private $constructorArgs = [];
+
+    /**
+     * @var bool
+     */
+    private $originalConstructor = true;
+
+    /**
+     * @var bool
+     */
+    private $originalClone = true;
+
+    /**
+     * @var bool
+     */
+    private $autoload = true;
+
+    /**
+     * @var bool
+     */
+    private $cloneArguments = false;
+
+    /**
+     * @var bool
+     */
+    private $callOriginalMethods = false;
+
+    /**
+     * @var ?object
+     */
+    private $proxyTarget;
+
+    /**
+     * @var bool
+     */
+    private $allowMockingUnknownTypes = true;
+
+    /**
+     * @var bool
+     */
+    private $returnValueGeneration = true;
+
+    /**
+     * @var Generator
+     */
+    private $generator;
+
     protected $mockInstance;
 
     /**
@@ -39,14 +129,16 @@ class EcomDev_PHPUnit_Mock_Proxy
     /**
      * Added class alias as property
      * 
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      * @param array|string $type
      * @param null $classAlias
      */
-    public function __construct(PHPUnit_Framework_TestCase $testCase, $type, $classAlias = null)
+    public function __construct(\PHPUnit\Framework\TestCase $testCase, $type, $classAlias = null)
     {
-        parent::__construct($testCase, $type);
         $this->classAlias = $classAlias;
+        $this->testCase  = $testCase;
+        $this->type      = $type;
+        $this->generator = new Generator;
     }
 
     /**
@@ -95,7 +187,7 @@ class EcomDev_PHPUnit_Mock_Proxy
     /**
      * Proxied mock instance retrieval
      *
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     public function getMockInstance()
     {
@@ -121,36 +213,17 @@ class EcomDev_PHPUnit_Mock_Proxy
     }
 
 
-    /**
-     * Registers a new expectation in the mock object and returns the match
-     * object which can be infused with further details.
-     *
-     * @param  PHPUnit_Framework_MockObject_Matcher_Invocation $matcher
-     * @return PHPUnit_Framework_MockObject_Builder_InvocationMocker
-     */
-    public function expects(PHPUnit_Framework_MockObject_Matcher_Invocation $matcher)
+    public function expects(InvocationOrder $invocationRule): BuilderInvocationMocker
     {
-        return $this->getMockInstance()->expects($matcher);
+        return $this->getMockInstance()->expects($invocationRule);
     }
 
-    /**
-     * Invokes replaceByMock test util method with current mock object proxy instance
-     * 
-     * @param $type
-     * @return $this
-     */
     public function replaceByMock($type)
     {
         EcomDev_PHPUnit_Test_Case_Util::replaceByMock($type, $this->classAlias, $this);
         return $this;
     }
 
-    /**
-     * Returns invocation mocker for
-     *
-     * @throws RuntimeException
-     * @return PHPUnit_Framework_MockObject_InvocationMocker
-     */
     public function __phpunit_getInvocationMocker()
     {
         throw new RuntimeException(
@@ -159,40 +232,15 @@ class EcomDev_PHPUnit_Mock_Proxy
         );
     }
 
-    /**
-     * Returns static invocation mocker
-     *
-     * @throws RuntimeException
-     * @return PHPUnit_Framework_MockObject_InvocationMocker
-     */
-    public static function __phpunit_getStaticInvocationMocker()
+    public function __phpunit_setOriginalObject($originalObject): void
     {
         throw new RuntimeException(
-            'Mock object proxy cannot be used for retrieving invocation mockers, '
+            'Mock object proxy cannot be used for setting original object, '
             . 'use getMockInstance method for real mock object'
         );
     }
 
-    /**
-     * @param $originalObject
-     * @return PHPUnit_Framework_MockObject_InvocationMocker
-     * @since  Method available since Release 2.0.0
-     */
-    public function __phpunit_setOriginalObject($originalObject)
-    {
-        throw new RuntimeException(
-            'Mock object proxy cannot be used for retrieving invocation mockers, '
-            . 'use getMockInstance method for real mock object'
-        );
-    }
-
-    /**
-     * Verifies that the current expectation is valid. If everything is OK the
-     * code should just return, if not it must throw an exception.
-     *
-     * @throws PHPUnit_Framework_ExpectationFailedException
-     */
-    public function __phpunit_verify()
+    public function __phpunit_verify(bool $unsetInvocationMocker = true): void
     {
         throw new RuntimeException(
             'Mock object proxy cannot be used for verifying mock'
@@ -200,13 +248,6 @@ class EcomDev_PHPUnit_Mock_Proxy
         );
     }
 
-    /**
-     * Forwards all method calls to mock instance
-     *
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
     public function __call($name, $arguments)
     {
         return call_user_func_array(
@@ -215,5 +256,434 @@ class EcomDev_PHPUnit_Mock_Proxy
         );
     }
 
-    
+
+    public function __phpunit_getInvocationHandler(): InvocationHandler
+    {
+        throw new RuntimeException(
+            'Mock object proxy cannot be used for retrieving invocation handler'
+            . 'use getMockInstance method for real mock object'
+        );
+    }
+
+    public function __phpunit_hasMatchers(): bool
+    {
+        throw new RuntimeException(
+            'Mock object proxy cannot be used for verifying mock'
+            . 'use getMockInstance method for real mock object'
+        );
+    }
+
+    public function __phpunit_setReturnValueGeneration(bool $returnValueGeneration): void
+    {
+        throw new RuntimeException(
+            'Mock object proxy cannot be used for setting return value generation'
+            . 'use getMockInstance method for real mock object'
+        );
+    }
+
+    /**
+     * Creates a mock object using a fluent interface.
+     *
+     * @throws \PHPUnit\Framework\InvalidArgumentException
+     * @throws ClassAlreadyExistsException
+     * @throws ClassIsFinalException
+     * @throws DuplicateMethodException
+     * @throws InvalidMethodNameException
+     * @throws OriginalConstructorInvocationRequiredException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     * @throws UnknownTypeException
+     *
+     * @psalm-return MockObject&MockedType
+     */
+    public function getMock(): MockObject
+    {
+        $object = $this->generator->getMock(
+            $this->type,
+            !$this->emptyMethodsArray ? $this->methods : null,
+            $this->constructorArgs,
+            $this->mockClassName,
+            $this->originalConstructor,
+            $this->originalClone,
+            $this->autoload,
+            $this->cloneArguments,
+            $this->callOriginalMethods,
+            $this->proxyTarget,
+            $this->allowMockingUnknownTypes,
+            $this->returnValueGeneration
+        );
+
+        $this->testCase->registerMockObject($object);
+
+        return $object;
+    }
+
+    /**
+     * Creates a mock object for an abstract class using a fluent interface.
+     *
+     * @psalm-return MockObject&MockedType
+     *
+     * @throws \PHPUnit\Framework\Exception
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
+    public function getMockForAbstractClass(): MockObject
+    {
+        $object = $this->generator->getMockForAbstractClass(
+            $this->type,
+            $this->constructorArgs,
+            $this->mockClassName,
+            $this->originalConstructor,
+            $this->originalClone,
+            $this->autoload,
+            $this->methods,
+            $this->cloneArguments
+        );
+
+        $this->testCase->registerMockObject($object);
+
+        return $object;
+    }
+
+    /**
+     * Creates a mock object for a trait using a fluent interface.
+     *
+     * @psalm-return MockObject&MockedType
+     *
+     * @throws \PHPUnit\Framework\Exception
+     * @throws ReflectionException
+     * @throws RuntimeException
+     */
+    public function getMockForTrait(): MockObject
+    {
+        $object = $this->generator->getMockForTrait(
+            $this->type,
+            $this->constructorArgs,
+            $this->mockClassName,
+            $this->originalConstructor,
+            $this->originalClone,
+            $this->autoload,
+            $this->methods,
+            $this->cloneArguments
+        );
+
+        $this->testCase->registerMockObject($object);
+
+        return $object;
+    }
+
+    /**
+     * Specifies the subset of methods to mock. Default is to mock none of them.
+     *
+     * @deprecated https://github.com/sebastianbergmann/phpunit/pull/3687
+     *
+     * @return $this
+     */
+    public function setMethods(?array $methods = null): self
+    {
+        if ($methods === null) {
+            $this->methods = $methods;
+        } else {
+            $this->methods = array_merge($this->methods ?? [], $methods);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Specifies the subset of methods to mock, requiring each to exist in the class.
+     *
+     * @param string[] $methods
+     *
+     * @throws CannotUseOnlyMethodsException
+     * @throws ReflectionException
+     *
+     * @return $this
+     */
+    public function onlyMethods(array $methods): self
+    {
+        if (empty($methods)) {
+            $this->emptyMethodsArray = true;
+
+            return $this;
+        }
+
+        try {
+            $reflector = new ReflectionClass($this->type);
+            // @codeCoverageIgnoreStart
+        } catch (\ReflectionException $e) {
+            throw new ReflectionException(
+                $e->getMessage(),
+                (int) $e->getCode(),
+                $e
+            );
+        }
+        // @codeCoverageIgnoreEnd
+
+        foreach ($methods as $method) {
+            if (!$reflector->hasMethod($method)) {
+                throw new CannotUseOnlyMethodsException($this->type, $method);
+            }
+        }
+
+        $this->methods = array_merge($this->methods ?? [], $methods);
+
+        return $this;
+    }
+
+    /**
+     * Specifies methods that don't exist in the class which you want to mock.
+     *
+     * @param string[] $methods
+     *
+     * @throws CannotUseAddMethodsException
+     * @throws ReflectionException
+     * @throws RuntimeException
+     *
+     * @return $this
+     */
+    public function addMethods(array $methods): self
+    {
+        if (empty($methods)) {
+            $this->emptyMethodsArray = true;
+
+            return $this;
+        }
+
+        try {
+            $reflector = new ReflectionClass($this->type);
+            // @codeCoverageIgnoreStart
+        } catch (\ReflectionException $e) {
+            throw new ReflectionException(
+                $e->getMessage(),
+                (int) $e->getCode(),
+                $e
+            );
+        }
+        // @codeCoverageIgnoreEnd
+
+        foreach ($methods as $method) {
+            if ($reflector->hasMethod($method)) {
+                throw new CannotUseAddMethodsException($this->type, $method);
+            }
+        }
+
+        $this->methods = array_merge($this->methods ?? [], $methods);
+
+        return $this;
+    }
+
+    /**
+     * Specifies the subset of methods to not mock. Default is to mock all of them.
+     *
+     * @deprecated https://github.com/sebastianbergmann/phpunit/pull/3687
+     *
+     * @throws ReflectionException
+     */
+    public function setMethodsExcept(array $methods = []): self
+    {
+        return $this->setMethods(
+            array_diff(
+                $this->generator->getClassMethods($this->type),
+                $methods
+            )
+        );
+    }
+
+    /**
+     * Specifies the arguments for the constructor.
+     *
+     * @return $this
+     */
+    public function setConstructorArgs(array $args): self
+    {
+        $this->constructorArgs = $args;
+
+        return $this;
+    }
+
+    /**
+     * Specifies the name for the mock class.
+     *
+     * @return $this
+     */
+    public function setMockClassName(string $name): self
+    {
+        $this->mockClassName = $name;
+
+        return $this;
+    }
+
+    /**
+     * Disables the invocation of the original constructor.
+     *
+     * @return $this
+     */
+    public function disableOriginalConstructor(): self
+    {
+        $this->originalConstructor = false;
+
+        return $this;
+    }
+
+    /**
+     * Enables the invocation of the original constructor.
+     *
+     * @return $this
+     */
+    public function enableOriginalConstructor(): self
+    {
+        $this->originalConstructor = true;
+
+        return $this;
+    }
+
+    /**
+     * Disables the invocation of the original clone constructor.
+     *
+     * @return $this
+     */
+    public function disableOriginalClone(): self
+    {
+        $this->originalClone = false;
+
+        return $this;
+    }
+
+    /**
+     * Enables the invocation of the original clone constructor.
+     *
+     * @return $this
+     */
+    public function enableOriginalClone(): self
+    {
+        $this->originalClone = true;
+
+        return $this;
+    }
+
+    /**
+     * Disables the use of class autoloading while creating the mock object.
+     *
+     * @return $this
+     */
+    public function disableAutoload(): self
+    {
+        $this->autoload = false;
+
+        return $this;
+    }
+
+    /**
+     * Enables the use of class autoloading while creating the mock object.
+     *
+     * @return $this
+     */
+    public function enableAutoload(): self
+    {
+        $this->autoload = true;
+
+        return $this;
+    }
+
+    /**
+     * Disables the cloning of arguments passed to mocked methods.
+     *
+     * @return $this
+     */
+    public function disableArgumentCloning(): self
+    {
+        $this->cloneArguments = false;
+
+        return $this;
+    }
+
+    /**
+     * Enables the cloning of arguments passed to mocked methods.
+     *
+     * @return $this
+     */
+    public function enableArgumentCloning(): self
+    {
+        $this->cloneArguments = true;
+
+        return $this;
+    }
+
+    /**
+     * Enables the invocation of the original methods.
+     *
+     * @return $this
+     */
+    public function enableProxyingToOriginalMethods(): self
+    {
+        $this->callOriginalMethods = true;
+
+        return $this;
+    }
+
+    /**
+     * Disables the invocation of the original methods.
+     *
+     * @return $this
+     */
+    public function disableProxyingToOriginalMethods(): self
+    {
+        $this->callOriginalMethods = false;
+        $this->proxyTarget         = null;
+
+        return $this;
+    }
+
+    /**
+     * Sets the proxy target.
+     *
+     * @return $this
+     */
+    public function setProxyTarget(object $object): self
+    {
+        $this->proxyTarget = $object;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function allowMockingUnknownTypes(): self
+    {
+        $this->allowMockingUnknownTypes = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function disallowMockingUnknownTypes(): self
+    {
+        $this->allowMockingUnknownTypes = false;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableAutoReturnValueGeneration(): self
+    {
+        $this->returnValueGeneration = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function disableAutoReturnValueGeneration(): self
+    {
+        $this->returnValueGeneration = false;
+
+        return $this;
+    }
 }

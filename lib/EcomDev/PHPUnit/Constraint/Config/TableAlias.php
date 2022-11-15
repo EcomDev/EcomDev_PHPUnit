@@ -32,12 +32,12 @@ class EcomDev_PHPUnit_Constraint_Config_TableAlias
      * @param string $tableAlias
      * @param string $expectedTableName
      * @param string $type
-     * @throws PHPUnit_Framework_Exception
+     * @throws \PHPUnit\Framework\Exception
      */
     public function __construct($tableAlias, $expectedTableName, $type = self::TYPE_TABLE_ALIAS)
     {
         if (!strpos($tableAlias, '/')) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(2, 'table alias', $tableAlias);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(2, 'table alias', $tableAlias);
         }
 
         list($this->_tableAliasPrefix, $this->_tableAliasName) = explode('/', $tableAlias, 2);
@@ -93,7 +93,7 @@ class EcomDev_PHPUnit_Constraint_Config_TableAlias
     /**
      * Custom failure description for showing config related errors
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     * @see \PHPUnit\Framework\Constraint\Constraint::customFailureDescription()
      */
     protected function customFailureDescription($other)
     {

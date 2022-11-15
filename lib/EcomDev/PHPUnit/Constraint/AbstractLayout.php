@@ -25,7 +25,7 @@ abstract class EcomDev_PHPUnit_Constraint_AbstractLayout extends EcomDev_PHPUnit
     /**
      * Custom failure description for showing layout related errors
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     * @see \PHPUnit\Framework\Constraint\Constraint::customFailureDescription()
      */
     protected function customFailureDescription($other)
     {

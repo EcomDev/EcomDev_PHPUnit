@@ -217,7 +217,7 @@ class EcomDev_PHPUnit_Constraint_Config_Module
     /**
      * Custom failure description for showing config related errors
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     * @see \PHPUnit\Framework\Constraint\Constraint::customFailureDescription()
      */
     protected function customFailureDescription($other)
     {

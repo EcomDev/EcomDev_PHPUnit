@@ -201,11 +201,11 @@ abstract class EcomDev_PHPUnit_Test_Case_Config extends EcomDev_PHPUnit_Test_Cas
     /**
      * Executes configuration constraint
      *
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string  $message
      * @return void
      */
-    public static function assertThatConfig(PHPUnit_Framework_Constraint $constraint, $message)
+    public static function assertThatConfig(\PHPUnit\Framework\Constraint\Constraint $constraint, $message)
     {
         self::assertThat(Mage::getConfig(), $constraint, $message);
     }

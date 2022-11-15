@@ -17,6 +17,8 @@
  */
 
 use EcomDev_PHPUnit_Helper as TestHelper;
+use PHPUnit\Framework\MockObject\MockBuilder;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class EcomDev_PHPUnit_Test_Case_Util
 {
@@ -188,13 +190,13 @@ class EcomDev_PHPUnit_Test_Case_Util
      * Shortcut for expectation data object retrieval
      * Can be called with arguments array or in usual method
      *
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      * @param string|array $firstArgument
      * @optional @param mixed $arg1
      * @optional @param mixed $arg2
      * @return Varien_Object
      */
-    public static function expected(PHPUnit_Framework_TestCase $testCase, $firstArgument = null)
+    public static function expected(\PHPUnit\Framework\TestCase $testCase, $firstArgument = null)
     {
         if (!self::getExpectation(get_class($testCase))->isLoaded()) {
             self::getExpectation()->loadByTestCase($testCase);
@@ -287,11 +289,11 @@ class EcomDev_PHPUnit_Test_Case_Util
     /**
      * Retrieves the module name for current test case
      *
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      * @return string
      * @throws RuntimeException if module name was not found for the passed class name
      */
-    public static function getModuleName(PHPUnit_Framework_TestCase $testCase)
+    public static function getModuleName(\PHPUnit\Framework\TestCase $testCase)
     {
         return self::getModuleNameByClassName($testCase);
     }
@@ -311,7 +313,7 @@ class EcomDev_PHPUnit_Test_Case_Util
             $sources = array($sources);
         }
 
-        $allAnnotations =  PHPUnit_Util_Test::parseTestMethodAnnotations(
+        $allAnnotations =  \PHPUnit\Util\Test::parseTestMethodAnnotations(
             $className, $testName
         );
 
@@ -340,12 +342,12 @@ class EcomDev_PHPUnit_Test_Case_Util
     {
         $backTrace = debug_backtrace(true);
         foreach ($backTrace as $call) {
-            if (isset($call['object']) && $call['object'] instanceof PHPUnit_Framework_TestCase) {
+            if (isset($call['object']) && $call['object'] instanceof \PHPUnit\Framework\TestCase) {
                 return self::getModuleName($call['object']);
             }
         }
 
-        throw new RuntimeException('Unable to retrieve module name from call stack, because assertion is not called from PHPUnit_Framework_Test_Case based class method');
+        throw new RuntimeException('Unable to retrieve module name from call stack, because assertion is not called from \PHPUnit\Framework\TestCase based class method');
     }
 
     /**
@@ -424,20 +426,19 @@ class EcomDev_PHPUnit_Test_Case_Util
      *
      * @param string $type
      * @param string $classAlias
-     * @param PHPUnit_Framework_MockObject_MockObject|PHPUnit_Framework_MockObject_MockBuilder $mock
-     * @throws PHPUnit_Framework_Exception
+     * @param MockObject|MockBuilder $mock
      * @return void
+     *@throws \PHPUnit\Framework\Exception
      */
     public static function replaceByMock($type, $classAlias, $mock)
     {
         if ($mock instanceof EcomDev_PHPUnit_Mock_Proxy) {
             $mock = $mock->getMockInstance();
-        } elseif ($mock instanceof PHPUnit_Framework_MockObject_MockBuilder) {
+        } elseif ($mock instanceof MockBuilder) {
             $mock = $mock->getMock();
-        } elseif (!$mock instanceof PHPUnit_Framework_MockObject_MockObject) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(
-                1, 'PHPUnit_Framework_MockObject_MockObject'
-            );
+        } elseif (!$mock instanceof MockObject) {
+            $stack = debug_backtrace(false);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(1, '\PHPUnit\Framework\MockObject\MockObject');
         }
 
         // Remove addition of /data suffix if version is more than 1.6.x
@@ -493,12 +494,12 @@ class EcomDev_PHPUnit_Test_Case_Util
     /**
      * Retrieve mock builder for grouped class alias
      *
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      * @param string                     $type block|model|helper
      * @param string                     $classAlias
      * @return EcomDev_PHPUnit_Mock_Proxy
      */
-    public static function getGroupedClassMockBuilder(PHPUnit_Framework_TestCase $testCase, $type, $classAlias)
+    public static function getGroupedClassMockBuilder(\PHPUnit\Framework\TestCase $testCase, $type, $classAlias)
     {
         $className = self::getGroupedClassName($type, $classAlias);
         return new EcomDev_PHPUnit_Mock_Proxy($testCase, $className, $classAlias);

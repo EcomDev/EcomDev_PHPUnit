@@ -50,12 +50,12 @@ class EcomDev_PHPUnit_Constraint_Layout_Block extends EcomDev_PHPUnit_Constraint
      * @param string $blockName
      * @param string $type
      * @param string|null $expectedValue
-     * @throws PHPUnit_Framework_Exception
+     * @throws \PHPUnit\Framework\Exception
      */
     public function __construct($blockName, $type, $expectedValue = null)
     {
         if (empty($blockName) || !is_string($blockName)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string', $blockName);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(1, 'string', $blockName);
         }
 
         $this->_blockName = $blockName;

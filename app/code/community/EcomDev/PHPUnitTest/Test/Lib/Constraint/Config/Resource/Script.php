@@ -12,7 +12,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Constraint_Config_Resource_Script extends Eco
      */
     protected $constraint = null;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->constraint = $this->getMockBuilder('EcomDev_PHPUnit_Constraint_Config_Resource_Script')
                 ->disableOriginalConstructor()
