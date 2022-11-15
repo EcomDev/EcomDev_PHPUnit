@@ -296,7 +296,7 @@ class EcomDev_PHPUnit_Constraint_Controller_Request extends EcomDev_PHPUnit_Abst
     /**
      * Custom failure description for showing request related errors
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     * @see \PHPUnit\Framework\Constraint\Constraint::customFailureDescription()
      */
     protected function customFailureDescription($other)
     {

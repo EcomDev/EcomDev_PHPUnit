@@ -23,7 +23,7 @@
  * if they were added to 'phpunit/suite/modules' configuration node
  *
  */
-class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
+class EcomDev_PHPUnit_Test_Suite extends \PHPUnit\Framework\TestSuite
 {
     // Configuration path constants
     const XML_PATH_UNIT_TEST_GROUPS = 'phpunit/suite/groups';
@@ -36,7 +36,7 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
     /**
      * This method loads all available test suites for PHPUnit
      *
-     * @return PHPUnit_Framework_TestSuite
+     * @return \PHPUnit\Framework\TestSuite
      */
     public static function suite()
     {
@@ -129,10 +129,10 @@ class EcomDev_PHPUnit_Test_Suite extends PHPUnit_Framework_TestSuite
             $className = uc_words(ltrim($classPath, DS), '_', DS);
 
             // Add unit test case only
-            // if it is a valid class extended from PHPUnit_Framework_TestCase
+            // if it is a valid class extended from \PHPUnit\Framework\TestCase
             if (class_exists($className, true)) {
                 $reflectionClass = EcomDev_Utils_Reflection::getReflection($className);
-                if (!$reflectionClass->isSubclassOf('PHPUnit_Framework_TestCase')
+                if (!$reflectionClass->isSubclassOf('\PHPUnit\Framework\TestCase')
                     || $reflectionClass->isAbstract()) {
                     continue;
                 }

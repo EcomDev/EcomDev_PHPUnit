@@ -77,28 +77,28 @@ class EcomDev_PHPUnit_Constraint_Config_EventObserver
      * @param string $observerMethod
      * @param string $type
      * @param string|null $observerName
-     * @throws PHPUnit_Framework_Exception
+     * @throws \PHPUnit\Framework\Exception
      */
     public function __construct($area, $eventName, $observerClassAlias, $observerMethod, $type = self::TYPE_DEFINED, $observerName = null)
     {
         if (empty($area) || !is_string($area)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string', $area);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(1, 'string', $area);
         }
 
         if (empty($eventName) || !is_string($eventName)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(2, 'string', $eventName);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(2, 'string', $eventName);
         }
 
         if (empty($observerClassAlias) || !is_string($observerClassAlias)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(3, 'string', $observerClassAlias);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(3, 'string', $observerClassAlias);
         }
 
         if (empty($observerMethod) || !is_string($observerMethod)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(4, 'string', $observerMethod);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(4, 'string', $observerMethod);
         }
 
         if ($observerName !== null && !is_string($observerName)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(6, 'string', $observerName);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(6, 'string', $observerName);
         }
 
         $this->_area = $area;
@@ -166,7 +166,7 @@ class EcomDev_PHPUnit_Constraint_Config_EventObserver
     /**
      * Custom failure description for showing config related errors
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     * @see \PHPUnit\Framework\Constraint\Constraint::customFailureDescription()
      */
     protected function customFailureDescription($other)
     {

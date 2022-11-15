@@ -19,7 +19,7 @@
 
 use EcomDev_PHPUnit_Helper as Helper;
 
-class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
+class EcomDev_PHPUnitTest_Test_Lib_Helper extends \PHPUnit\Framework\TestCase
 {
     /**
      * Preserved array of already set helpers,
@@ -30,7 +30,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
     protected $initializedHelpers;
 
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // Retrieve existing helpers and store them for future revert
         $this->initializedHelpers = EcomDev_Utils_Reflection::getRestrictedPropertyValue(
@@ -54,7 +54,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
      *
      * @param int $count
      * @param bool $setThem
-     * @return EcomDev_PHPUnit_HelperInterface[]|PHPUnit_Framework_MockObject_MockObject[]
+     * @return EcomDev_PHPUnit_HelperInterface[]|\PHPUnit\Framework\MockObject\MockObject[]
      */
     protected function getHelpersForTest($count = 2, $setThem = false)
     {
@@ -261,7 +261,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
     /**
      * Creates invoke method tests stub
      *
-     * @return EcomDev_PHPUnit_HelperInterface[]|PHPUnit_Framework_MockObject_MockObject[]
+     * @return EcomDev_PHPUnit_HelperInterface[]|\PHPUnit\Framework\MockObject\MockObject[]
      */
     protected function invokeStub()
     {
@@ -347,7 +347,7 @@ class EcomDev_PHPUnitTest_Test_Lib_Helper extends PHPUnit_Framework_TestCase
         foreach ($helpers as $helper) {
             $helper->expects($this->once())
                 ->method('setTestCase')
-                ->with(new PHPUnit_Framework_Constraint_IsIdentical($this))
+                ->with(new \PHPUnit\Framework\Constraint\IsIdentical($this))
                 ->will($this->returnSelf());
         }
 

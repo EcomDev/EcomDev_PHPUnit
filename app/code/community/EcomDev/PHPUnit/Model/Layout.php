@@ -62,7 +62,7 @@ class EcomDev_PHPUnit_Model_Layout
      * Replaces creation of some block by mock object
      *
      * @param string $classAlias
-     * @param PHPUnit_Framework_MockObject_MockObject|PHPUnit_Framework_MockObject_MockBuilder $mock
+     * @param \PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockBuilder $mock
      * @return EcomDev_PHPUnit_Model_Layout
      */
     public function replaceBlockCreation($classAlias, $mock)
@@ -327,7 +327,7 @@ class EcomDev_PHPUnit_Model_Layout
                     $helperName = implode('/', $helperName);
                     $arg = $arg->asArray();
                     unset($arg['@']);
-                    $args[$key] = call_user_func_array(array(Mage::helper($helperName), $helperMethod), $arg);
+                    $args[$key] = call_user_func_array(array(Mage::helper($helperName), $helperMethod), array_values($arg));
                 } else {
                     /**
                      * if there is no helper we hope that this is assoc array

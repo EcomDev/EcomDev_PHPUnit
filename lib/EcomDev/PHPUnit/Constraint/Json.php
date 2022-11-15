@@ -47,7 +47,7 @@ class EcomDev_PHPUnit_Constraint_Json extends EcomDev_PHPUnit_AbstractConstraint
     public function __construct($type, $expectedValue = null, $matchType = self::MATCH_AND)
     {
         if ($expectedValue !== null && (empty($matchType) || !is_string($matchType))) {
-            PHPUnit_Util_InvalidArgumentHelper::factory(3, 'string', $matchType);
+            EcomDev_PHPUnit_Helper::createInvalidArgumentException(3, 'string', $matchType);
         }
 
         $this->_expectedValueValidation += array(
@@ -155,7 +155,7 @@ class EcomDev_PHPUnit_Constraint_Json extends EcomDev_PHPUnit_AbstractConstraint
     /**
      * Custom failure description for showing json related errors
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::customFailureDescription()
+     * @see \PHPUnit\Framework\Constraint\Constraint::customFailureDescription()
      */
     protected function customFailureDescription($other, $description, $not)
     {

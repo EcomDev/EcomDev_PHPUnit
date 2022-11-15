@@ -37,12 +37,12 @@ abstract class EcomDev_PHPUnit_Constraint_AbstractConfig
      * @param string $nodePath
      * @param string $type
      * @param mixed $expectedValue
-     * @throws PHPUnit_Framework_Exception
+     * @throws \PHPUnit\Framework\Exception
      */
     public function __construct($nodePath, $type, $expectedValue = null)
     {
         if (empty($nodePath) || !is_string($nodePath)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string', $type);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(1, 'string', $type);
         }
 
         $this->_nodePath = $nodePath;

@@ -142,9 +142,9 @@ class EcomDev_PHPUnit_Helper
     /**
      * Sets test case to each helper instance
      *
-     * @param PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit\Framework\TestCase $testCase
      */
-    public static function setTestCase(PHPUnit_Framework_TestCase $testCase)
+    public static function setTestCase(\PHPUnit\Framework\TestCase $testCase)
     {
         foreach (self::$helpers as $helper) {
             $helper->setTestCase($testCase);
@@ -191,6 +191,22 @@ class EcomDev_PHPUnit_Helper
         return array_filter(self::$helpers, function ($item) use ($className) {
             return get_class($item) === $className;
         });
+    }
+
+    public static function createInvalidArgumentException(int $argument, string $type, $value = null): PHPUnit\Framework\Exception
+    {
+        $stack = debug_backtrace(false);
+
+        return new \PHPUnit\Framework\Exception(
+            sprintf(
+                'Argument #%d%sof %s::%s() must be a %s',
+                $argument,
+                $value !== null ? ' (' . gettype($value) . '#' . $value . ')' : ' (No Value) ',
+                $stack[1]['class'],
+                $stack[1]['function'],
+                $type
+            )
+        );
     }
 
 }

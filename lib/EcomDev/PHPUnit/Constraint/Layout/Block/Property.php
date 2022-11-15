@@ -44,19 +44,19 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Property
      *
      * @param string $blockName
      * @param mixed|null $propertyName
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param \PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $type
-     * @throws PHPUnit_Framework_Exception
+     * @throws \PHPUnit\Framework\Exception
      */
-    public function __construct($blockName, $propertyName, PHPUnit_Framework_Constraint $constraint,
+    public function __construct($blockName, $propertyName, \PHPUnit\Framework\Constraint\Constraint $constraint,
         $type = self::TYPE_CONSTRAINT)
     {
         if (empty($blockName) || !is_string($blockName)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string', $blockName);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(1, 'string', $blockName);
         }
 
         if (empty($propertyName) || !is_string($propertyName)) {
-            throw PHPUnit_Util_InvalidArgumentHelper::factory(2, 'string', $propertyName);
+            throw EcomDev_PHPUnit_Helper::createInvalidArgumentException(2, 'string', $propertyName);
         }
 
         parent::__construct($type, $constraint);
@@ -69,7 +69,7 @@ class EcomDev_PHPUnit_Constraint_Layout_Block_Property
      * Retuns number of constraint assertions
      *
      * (non-PHPdoc)
-     * @see PHPUnit_Framework_Constraint::count()
+     * @see \PHPUnit\Framework\Constraint\Constraint::count()
      */
     public function count()
     {
