@@ -59,35 +59,11 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     const XML_PATH_CONTROLLER_RESPONSE = 'phpunit/suite/controller/response/class';
 
     /**
-     * Old configuration model to be returned back
-     * after unit tests are finished
-     *
-     * @var Mage_Core_Model_Config
-     */
-    protected static $_oldConfig = null;
-
-    /**
-     * Old application model to be returned back
-     * after unit tests are finished
-     *
-     * @var Mage_Core_Model_App
-     */
-    protected static $_oldApplication = null;
-
-    /**
-     * Old event collection to be returned back
-     * after the unit tests are finished
-     *
-     * @var Varien_Event_Collection
-     */
-    protected static $_oldEventCollection = null;
-
-    /**
-     * List of singletons in original application
+     * Test scope data to be returned back after unit tests are finished
      *
      * @var array
      */
-    protected static $_oldRegistry = null;
+    protected static $_testScopeStack = array();
 
     /**
      * Configuration model class name for unit tests
@@ -143,10 +119,12 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     public static function applyTestScope()
     {
         // Save old environment variables
-        self::$_oldApplication = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_app');
-        self::$_oldConfig = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config');
-        self::$_oldEventCollection = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events');
-        self::$_oldRegistry = EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry');
+        self::$_testScopeStack[] = array(
+            'app'      => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_app'),
+            'config'   => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_config'),
+            'events'   => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_events'),
+            'registry' => EcomDev_Utils_Reflection::getRestrictedPropertyValue('Mage', '_registry'),
+        );
 
 
         // Setting environment variables for unit tests
@@ -156,7 +134,20 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', array());
 
         // All unit tests will be run in admin scope, to get rid of frontend restrictions
-        Mage::app()->initTest();
+        // Init modules runs install process for table structures,
+        // It is required for setting up proper setup script
+        try {
+            set_error_handler(function ($errorCode, $errorMessage) {
+                echo $errorMessage, $errorCode;
+                debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+                exit;
+            });
+            Mage::app()->initTest();
+            restore_error_handler();
+        } catch (Exception $e) {
+            echo $e->getMessage(), "\n", $e->getTraceAsString();
+            exit;
+        }
     }
 
     /**
@@ -225,10 +216,10 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
         $this->replaceRegistry(self::REGISTRY_PATH_SHARED_STORAGE, new Varien_Object());
         return $this;
     }
-    
+
     /**
      * Sets cache options for test case
-     * 
+     *
      * @param array $options
      * @return EcomDev_PHPUnit_Model_App
      */
@@ -243,7 +234,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Retrieve cache options for test case
-     * 
+     *
      * @return array
      */
     public function getCacheOptions()
@@ -358,7 +349,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Returns request for test suite
-     * 
+     *
      * @see Mage_Core_Model_App::getRequest()
      * @return EcomDev_PHPUnit_Controller_Request_Http
      */
@@ -376,7 +367,7 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
 
     /**
      * Returns response for test suite
-     * 
+     *
      * @see Mage_Core_Model_App::getResponse()
      * @return EcomDev_PHPUnit_Controller_Response_Http
      */
@@ -405,7 +396,6 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     protected function _getClassNameFromConfig($configPath, $interface = null)
     {
         $className = (string)$this->getConfig()->getNode($configPath);
-
         $reflection = EcomDev_Utils_Reflection::getReflection($className);
         if ($interface !== null && !$reflection->implementsInterface($interface)) {
             throw new RuntimeException(
@@ -434,11 +424,17 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
      */
     public static function discardTestScope()
     {
+        if(empty(self::$_testScopeStack)) {
+            throw new RuntimeException('No test scope to discard');
+        }
+
+        $previousScope = array_pop(self::$_testScopeStack);
+
         // Setting environment variables for unit tests
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', self::$_oldApplication);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', self::$_oldConfig);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', self::$_oldEventCollection);
-        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', self::$_oldRegistry);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_app', $previousScope['app']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_config', $previousScope['config']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_events', $previousScope['events']);
+        EcomDev_Utils_Reflection::setRestrictedPropertyValue('Mage', '_registry', $previousScope['registry']);
     }
 
     /**
@@ -527,13 +523,13 @@ class EcomDev_PHPUnit_Model_App extends Mage_Core_Model_App
     {
         if ($this->_eventsEnabled) {
             parent::dispatchEvent($eventName, $args);
-
-            if (!isset($this->_dispatchedEvents[$eventName])) {
-                $this->_dispatchedEvents[$eventName] = 0;
-            }
-
-            $this->_dispatchedEvents[$eventName]++;
         }
+
+        if (!isset($this->_dispatchedEvents[$eventName])) {
+            $this->_dispatchedEvents[$eventName] = 0;
+        }
+
+        $this->_dispatchedEvents[$eventName]++;
 
         return $this;
     }
